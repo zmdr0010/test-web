@@ -274,8 +274,8 @@
 
     function onTouchStart(evt) {
       const tc = evt.touches[0]
-      const offsetX = tc.offsetX
-      const offsetY = tc.offsetY
+      const offsetX = tc.pageX
+      const offsetY = tc.pageY
       console.log(`touch start : offset x : ${offsetX}, y : ${offsetY}`)
       const sizeLabel = document.getElementById('id-size-label')
       sizeLabel.innerText = `touch start : offset x : ${offsetX}, y : ${offsetY}`
@@ -286,8 +286,8 @@
     function onTouchMove(evt) {
       if (!isMouseDown) return
       const tc = evt.touches[0]
-      const offsetX = tc.offsetX
-      const offsetY = tc.offsetY
+      const offsetX = tc.pageX
+      const offsetY = tc.pageY
       // const sizeLabel = document.getElementById('id-size-label')
       // sizeLabel.innerText = `touch move : offset x : ${offsetX}, y : ${offsetY}`
       console.log(`touch move : offset x : ${offsetX}, y : ${offsetY}`)
