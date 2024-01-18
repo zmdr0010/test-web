@@ -32,7 +32,7 @@
       const displaySize = document.getElementById('id-display-size')
       console.log('displaySize h : ' + displaySize.offsetHeight)
 
-      const canvasW = window.innerWidth - 8 * 2
+      let canvasW = window.innerWidth - 8 * 2
       let canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
       canvas.width = canvasW
       canvas.height = canvasH
@@ -77,9 +77,18 @@
       let marginY = 200
       let count = 0
 
+      const lastX = div * marginX + startMarginX
       let lastY = Math.floor((simpleInfoList.length-1) / div)
       let lastSy = lastY * marginY + startMarginY
       console.log(`lastY : ${lastY}, lastSy : ${lastSy}, canvasH : ${canvasH}`)
+
+      if (lastX > canvasW) {
+        console.log("------------ canvas resize width")
+        canvasW = lastX
+        canvas.width = canvasW
+        displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+      }
+
       if (lastSy > canvasH) {
         console.log("------------ canvas resize")
         canvasH = lastSy + 300
