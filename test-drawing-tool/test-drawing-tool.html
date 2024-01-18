@@ -24,32 +24,108 @@
     <input type="number" id="id-raw-num" name="raw-num" min="1" max="100" value="5" />
     <label for="id-size">size (1-100):</label>
     <input type="number" id="id-size" name="size" min="1" max="500" value="20" />
-    <button id="id-change-btn" onclick="onClickChange()">change size</button>
+    <label for="id-start-color">start color (0-255):</label>
+    <input type="number" id="id-start-color" name="size" min="0" max="255" value="200" />
+    <button id="id-change-btn" onclick="onClickChange()">change</button>
+    <label for="id-memo">memo :</label>
+    <input type="text" id="id-memo" name="memo"/>
     <button id="id-save-btn" onclick="onClickSave()">save</button>
   </div>
   <div>
-    <label id="id-size-label">10x10, raw-num : 5, size : 20</label>
+    <label id="id-size-label">10x10, raw-num : 5, size : 20, startColor : 200</label>
   </div>
 
   <canvas id="id-canvas"></canvas>
 
   <script>
+    const START_X = 30
+    const START_Y = 30
+
+    let ctx
+    let canvasW = 100
+    let canvasH = 100
     let row = 10
     let column = 10
     let rawNum = 5
     let size = 20
+    let startColor = 200
+    let colorInterval = 40
+    let raw = []
 
     function init() {
       const canvas = document.getElementById('id-canvas')
-      const ctx = canvas.getContext('2d')
+      ctx = canvas.getContext('2d')
       console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
       console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
       console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
 
-      let canvasW = window.innerWidth - 8 * 2
-      let canvasH = window.innerHeight - 8 * 2
+      canvasW = window.innerWidth - 8 * 2
+      canvasH = window.innerHeight - 8 * 2
       canvas.width = canvasW
       canvas.height = canvasH
+
+      initMemo()
+
+      initColorInterval()
+      initRaw()
+      draw()
+
+      addEventListener("mousedown", onMouseDown)
+    }
+
+    function initMemo() {
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      console.log(`y : ${y}, m : ${m}, d : ${d}, h : ${h}, mm : ${mm}, s : ${s}`)
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}`
+      document.getElementById('id-memo').value = memo
+    }
+
+    function initColorInterval() {
+      colorInterval = startColor / rawNum
+    }
+
+    function initRaw() {
+      const length = row * column
+      raw = []
+
+      for (let i=0; i<length; i++) {
+        raw.push(0)
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvasW, canvasH)
+
+      for (let i=0; i<raw.length; i++) {
+        const r = raw[i]
+        const colorVal = startColor - r * colorInterval
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + START_X
+        const sy = size * y + START_Y
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.fill()
+      }
+    }
+
+    function checkColor() {
+      for (let i=0; i<raw.length; i++) {
+        let r = raw[i]
+        if (r >= rawNum) {
+          r = 0
+          raw[i] = r
+        }
+      }
     }
 
     function onClickChange() {
@@ -58,31 +134,78 @@
       const inputColumn = document.getElementById('id-column')
       const inputRawNum = document.getElementById('id-raw-num')
       const inputSize = document.getElementById('id-size')
+      const inputStartColor = document.getElementById('id-start-color')
       const cRow = Number(inputRow.value)
       const cColumn = Number(inputColumn.value)
       const cRawNum = Number(inputRawNum.value)
       const cSize = Number(inputSize.value)
-      console.log(`changing row : ${cRow}, column : ${cColumn}, raw-num : ${cRawNum}, size : ${cSize}`)
-      console.log(`row : ${row}, column : ${column}, raw-num : ${rawNum}, size : ${size}`)
+      const cStartColor = Number(inputStartColor.value)
+      console.log(`changing row : ${cRow}, column : ${cColumn}, raw-num : ${cRawNum}, size : ${cSize}, startColor : ${cStartColor}`)
+      console.log(`row : ${row}, column : ${column}, raw-num : ${rawNum}, size : ${size}, startColor : ${startColor}`)
 
-      if (cRow === row && cColumn === column && cRawNum === rawNum && cSize === size) {
+      if (cRow === row && cColumn === column && cRawNum === rawNum && cSize === size && cStartColor === startColor) {
         console.log('value not changed')
       } else {
         console.log('start to change')
-        const isResizing = ((row !== cRow) || (column !== cColumn) || (size !== cSize))
+        // const isResizing = ((row !== cRow) || (column !== cColumn) || (size !== cSize))
+        const isResizing = ((row !== cRow) || (column !== cColumn))
+        const isChangingColor = ((startColor !== cStartColor) || (rawNum !== cRawNum))
         row = cRow
         column = cColumn
         rawNum = cRawNum
         size = cSize
+        startColor = cStartColor
         const sizeLabel = document.getElementById('id-size-label')
-        sizeLabel.innerText = `${row}x${column}, raw-num : ${rawNum}, size : ${size}`
+        sizeLabel.innerText = `${row}x${column}, raw-num : ${rawNum}, size : ${size}, startColor : ${startColor}`
 
-        console.log(`isResizing : ${isResizing}`)
+        // console.log(`isResizing : ${isResizing}`)
+        if(isChangingColor) {
+          initColorInterval()
+          checkColor()
+        }
+        if(isResizing)initRaw()
+        draw()
       }
     }
 
     function onClickSave() {
       console.log("click save")
+      const memo = document.getElementById('id-memo').value
+      let result = `${memo}/${row}/${column}/${rawNum}/`
+
+      for (let i=0; i<raw.length; i++) {
+        const r = raw[i]
+        if (i === raw.length-1) {
+          result += `${r}`
+        } else {
+          result += `${r},`
+        }
+      }
+
+      const name = memo
+      const link = document.createElement("a")
+      const file = new Blob([result], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function onMouseDown(evt) {
+      const offsetX = evt.offsetX
+      const offsetY = evt.offsetY
+      console.log(`move down : offset x : ${offsetX}, y : ${offsetY}`)
+      const x = Math.floor((offsetX - START_X) / size)
+      const y = Math.floor((offsetY - START_Y) / size)
+      console.log(` x : ${x}, y : ${y}`)
+      if (x >= 0 && x < row && y >= 0 && y < column) {
+        const index = y * row + x
+        let r = raw[index]
+        r++
+        if (r >= rawNum) r = 0
+        raw[index] = r
+        draw()
+      }
     }
   </script>
 </body>
