@@ -6,9 +6,9 @@
   <title>Test rbx raw drawing tool 01</title>
 
   <style>
-    :root {
-      overscroll-behavior:  none;
-    }
+    /*:root {*/
+    /*  overscroll-behavior:  none;*/
+    /*}*/
 
     body {
       -webkit-user-drag: none;
@@ -102,6 +102,10 @@
       addEventListener("mouseup", onMouseUp)
       addEventListener("mouseout", onMouseUp)
       addEventListener("mousemove", onMouseMove)
+      addEventListener("touchcancel", onMouseUp)
+      addEventListener("touchend", onMouseUp)
+      addEventListener("touchstart", onTouchStart)
+      addEventListener("touchmove", onTouchMove)
     }
 
     function initMemo() {
@@ -265,6 +269,24 @@
       const offsetX = evt.offsetX
       const offsetY = evt.offsetY
       console.log(`mouse move : offset x : ${offsetX}, y : ${offsetY}`)
+      checkOffset(offsetX, offsetY)
+    }
+
+    function onTouchStart(evt) {
+      const tc = evt.touches[0]
+      const offsetX = tc.offsetX
+      const offsetY = tc.offsetY
+      console.log(`touch start : offset x : ${offsetX}, y : ${offsetY}`)
+      isMouseDown = true
+      checkOffset(offsetX, offsetY)
+    }
+
+    function onTouchMove(evt) {
+      if (!isMouseDown) return
+      const tc = evt.touches[0]
+      const offsetX = tc.offsetX
+      const offsetY = tc.offsetY
+      console.log(`touch move : offset x : ${offsetX}, y : ${offsetY}`)
       checkOffset(offsetX, offsetY)
     }
 
