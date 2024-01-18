@@ -19,6 +19,11 @@
     <label>memo/row/column/raw_num/raw</label>
   </div>
   <div style="margin: 4px">
+    <label for="id-size">size (1-100):</label>
+    <input type="number" id="id-size" name="size" min="1" max="500" value="20" />
+    <button id="id-change-btn" onclick="onClickChange()">change size</button>
+  </div>
+  <div style="margin: 4px">
     <input type="text" id="id-raw-string" name="raw-string" />
     <button id="id-draw-btn" onclick="onClickDraw()">draw</button>
     <button id="id-clear-btn" onclick="onClickClear()">clear</button>
@@ -31,6 +36,7 @@
     let ctx
     let canvasW = 100
     let canvasH = 100
+    let size = 20
 
     function init() {
       const canvas = document.getElementById('id-canvas')
@@ -45,12 +51,23 @@
       canvas.height = canvasH
     }
 
+    function onClickChange() {
+      console.log("click change")
+      const cSize = Number(document.getElementById('id-size').value)
+      if (size === cSize) {
+        console.log("value not changed")
+      } else {
+        size = cSize
+        onClickDraw()
+      }
+    }
+
     function onClickDraw() {
       console.log("click draw")
       ctx.clearRect(0, 0, canvasW, canvasH)
       const rawString = document.getElementById('id-raw-string').value
       const info = parsingStringToInfo(rawString)
-      drawRawSimple(info, ctx, 20, 200, 50, 50)
+      drawRawSimple(info, ctx, size, 200, 50, 50)
     }
 
     function onClickClear() {
