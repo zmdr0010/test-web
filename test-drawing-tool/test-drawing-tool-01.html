@@ -274,8 +274,6 @@
       const offsetX = tc.clientX
       const offsetY = tc.clientY - canvas.offsetTop
       console.log(`touch start : offset x : ${offsetX}, y : ${offsetY}`)
-      const sizeLabel = document.getElementById('id-size-label')
-      sizeLabel.innerText = `cccccc touch start : offset x : ${offsetX}, y : ${offsetY}`
       isMouseDown = true
       checkOffset(offsetX, offsetY)
     }
@@ -285,8 +283,6 @@
       const tc = evt.touches[0]
       const offsetX = tc.clientX
       const offsetY = tc.clientY - canvas.offsetTop
-      // const sizeLabel = document.getElementById('id-size-label')
-      // sizeLabel.innerText = `touch move : offset x : ${offsetX}, y : ${offsetY}`
       console.log(`touch move : offset x : ${offsetX}, y : ${offsetY}`)
       checkOffset(offsetX, offsetY)
     }
