@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test rbx raw drawing tool</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div style="margin: 4px">
+    <label for="id-row">row (4-100):</label>
+    <input type="number" id="id-row" name="row" min="4" max="100" value="10" />
+    <label for="id-column">column (4-100):</label>
+    <input type="number" id="id-column" name="column" min="4" max="100" value="10" />
+    <label for="id-raw-num">raw-num (1-100):</label>
+    <input type="number" id="id-raw-num" name="raw-num" min="1" max="100" value="5" />
+    <label for="id-size">size (1-100):</label>
+    <input type="number" id="id-size" name="size" min="1" max="500" value="20" />
+    <button id="id-change-btn" onclick="onClickChange()">change size</button>
+    <button id="id-save-btn" onclick="onClickSave()">save</button>
+  </div>
+  <div>
+    <label id="id-size-label">10x10, raw-num : 5, size : 20</label>
+  </div>
+
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    let row = 10
+    let column = 10
+    let rawNum = 5
+    let size = 20
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+    }
+
+    function onClickChange() {
+      console.log("click change size")
+      const inputRow = document.getElementById('id-row')
+      const inputColumn = document.getElementById('id-column')
+      const inputRawNum = document.getElementById('id-raw-num')
+      const inputSize = document.getElementById('id-size')
+      const cRow = Number(inputRow.value)
+      const cColumn = Number(inputColumn.value)
+      const cRawNum = Number(inputRawNum.value)
+      const cSize = Number(inputSize.value)
+      console.log(`changing row : ${cRow}, column : ${cColumn}, raw-num : ${cRawNum}, size : ${cSize}`)
+      console.log(`row : ${row}, column : ${column}, raw-num : ${rawNum}, size : ${size}`)
+
+      if (cRow === row && cColumn === column && cRawNum === rawNum && cSize === size) {
+        console.log('value not changed')
+      } else {
+        console.log('start to change')
+        const isResizing = ((row !== cRow) || (column !== cColumn) || (size !== cSize))
+        row = cRow
+        column = cColumn
+        rawNum = cRawNum
+        size = cSize
+        const sizeLabel = document.getElementById('id-size-label')
+        sizeLabel.innerText = `${row}x${column}, raw-num : ${rawNum}, size : ${size}`
+
+        console.log(`isResizing : ${isResizing}`)
+      }
+    }
+
+    function onClickSave() {
+      console.log("click save")
+    }
+  </script>
+</body>
+</html>
