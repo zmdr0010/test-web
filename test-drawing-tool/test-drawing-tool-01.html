@@ -6,10 +6,6 @@
   <title>Test rbx raw drawing tool 01</title>
 
   <style>
-    /*:root {*/
-    /*  overscroll-behavior:  none;*/
-    /*}*/
-
     body {
       -webkit-user-drag: none;
       -moz-user-select: none;
@@ -62,6 +58,7 @@
     const START_X = 30
     const START_Y = 30
 
+    let canvas
     let ctx
     let canvasW = 100
     let canvasH = 100
@@ -78,7 +75,7 @@
     let isMouseDown = false
 
     function init() {
-      const canvas = document.getElementById('id-canvas')
+      canvas = document.getElementById('id-canvas')
       ctx = canvas.getContext('2d')
       console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
       console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
@@ -275,10 +272,10 @@
     function onTouchStart(evt) {
       const tc = evt.touches[0]
       const offsetX = tc.clientX
-      const offsetY = tc.clientY
+      const offsetY = tc.clientY - canvas.offsetTop
       console.log(`touch start : offset x : ${offsetX}, y : ${offsetY}`)
       const sizeLabel = document.getElementById('id-size-label')
-      sizeLabel.innerText = `touch start : offset x : ${offsetX}, y : ${offsetY}`
+      sizeLabel.innerText = `cccccc touch start : offset x : ${offsetX}, y : ${offsetY}`
       isMouseDown = true
       checkOffset(offsetX, offsetY)
     }
@@ -287,7 +284,7 @@
       if (!isMouseDown) return
       const tc = evt.touches[0]
       const offsetX = tc.clientX
-      const offsetY = tc.clientY
+      const offsetY = tc.clientY - canvas.offsetTop
       // const sizeLabel = document.getElementById('id-size-label')
       // sizeLabel.innerText = `touch move : offset x : ${offsetX}, y : ${offsetY}`
       console.log(`touch move : offset x : ${offsetX}, y : ${offsetY}`)
