@@ -36,6 +36,8 @@
     <label for="id-start-color">start color (0-255):</label>
     <input type="number" id="id-start-color" name="size" min="0" max="255" value="200" />
     <button id="id-change-btn" onclick="onClickChange()">change</button>
+    <input type="checkbox" id="id-guide" name="guide" />
+    <label for="id-guide">guide</label>
     <label for="id-memo">memo :</label>
     <input type="text" id="id-memo" name="memo"/>
     <button id="id-save-btn" onclick="onClickSave()">save</button>
@@ -49,6 +51,7 @@
   <script>
     const START_X = 30
     const START_Y = 30
+    const GUIDE_COLOR = 'slateblue'
 
     let ctx
     let canvasW = 100
@@ -60,6 +63,7 @@
     let startColor = 200
     let colorInterval = 40
     let raw = []
+    let guide
 
     function init() {
       const canvas = document.getElementById('id-canvas')
@@ -73,11 +77,17 @@
       canvas.width = canvasW
       canvas.height = canvasH
 
+      guide = document.getElementById('id-guide')
+
       initMemo()
 
       initColorInterval()
       initRaw()
       draw()
+
+      guide.addEventListener('change', () => {
+        draw()
+      })
 
       addEventListener("mousedown", onMouseDown)
     }
@@ -124,6 +134,21 @@
         ctx.beginPath()
         ctx.rect(sx, sy, size, size)
         ctx.fill()
+      }
+
+      // draw guide
+      if (!guide.checked)return
+
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + START_X
+        const sy = size * y + START_Y
+        ctx.strokeStyle = GUIDE_COLOR
+        ctx.strokeWidth = 1
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.stroke()
       }
     }
 
