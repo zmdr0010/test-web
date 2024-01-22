@@ -32,7 +32,7 @@
     const GUIDE_COLOR = 'rgba(100,200,100,100)'
     const SIZE = 5
     const IS_ON_BOUND = true
-    const PLAY_BOUND = [10, 10, 140, 120] // top left right bottom
+    const PLAY_BOUND = [5, 5, 100, 120] // top left right bottom
     const SPEED = 1
     const DELAY = 1000 / 60
     let ctx
@@ -298,7 +298,7 @@
         prevTimeStamp = timestamp
       }
 
-      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}, fps : ${Math.floor(current/frame)}`
+      // displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}, fps : ${Math.floor(current/frame)}`
       ctx.clearRect(0, 0, canvasW, canvasH)
       drawBgGuide(ctx, SIZE)
       drawRawSimple(unitInfo.unit, ctx, SIZE, unitInfo.startColor, unitInfo.x, unitInfo.y)
@@ -344,6 +344,8 @@
       prevY = pos[1]
       unitInfo.sx = unitInfo.x
       unitInfo.sy = unitInfo.y
+
+      displaySize.innerText = `touch start : offset x : ${offsetX}, y : ${offsetY}`
     }
 
     function onTouchMove(evt) {
