@@ -178,45 +178,50 @@
       // bk (9,21)
       // bd (6,9)
 
-      for (let i=0; i<fInfo.raw.length; i++) {
-        const r = fInfo.raw[i]
-        const x = i % fInfo.row
-        const y = Math.floor(i / fInfo.row)
-        const index = (x + 9) + y * cRow
-        if (r>0) cRaw[index] = r
-      }
+      // for (let i=0; i<fInfo.raw.length; i++) {
+      //   const r = fInfo.raw[i]
+      //   const x = i % fInfo.row
+      //   const y = Math.floor(i / fInfo.row)
+      //   const index = (x + 9) + y * cRow
+      //   if (r>0) cRaw[index] = r
+      // }
+      posOnComposite(fInfo, cRow, cRaw, 9, 0)
 
-      for (let i=0; i<lInfo.raw.length; i++) {
-        const r = lInfo.raw[i]
-        const x = i % lInfo.row
-        const y = Math.floor(i / lInfo.row)
-        const index = x + (y + 12) * cRow
-        if (r>0) cRaw[index] = r
-      }
+      // for (let i=0; i<lInfo.raw.length; i++) {
+      //   const r = lInfo.raw[i]
+      //   const x = i % lInfo.row
+      //   const y = Math.floor(i / lInfo.row)
+      //   const index = x + (y + 12) * cRow
+      //   if (r>0) cRaw[index] = r
+      // }
+      posOnComposite(lInfo, cRow, cRaw, 0, 12)
 
-      for (let i=0; i<rInfo.raw.length; i++) {
-        const r = rInfo.raw[i]
-        const x = i % rInfo.row
-        const y = Math.floor(i / rInfo.row)
-        const index = (x + 18) + (y + 12) * cRow
-        if (r>0) cRaw[index] = r
-      }
+      // for (let i=0; i<rInfo.raw.length; i++) {
+      //   const r = rInfo.raw[i]
+      //   const x = i % rInfo.row
+      //   const y = Math.floor(i / rInfo.row)
+      //   const index = (x + 18) + (y + 12) * cRow
+      //   if (r>0) cRaw[index] = r
+      // }
+      posOnComposite(rInfo, cRow, cRaw, 18, 12)
 
-      for (let i=0; i<bkInfo.raw.length; i++) {
-        const r = bkInfo.raw[i]
-        const x = i % bkInfo.row
-        const y = Math.floor(i / bkInfo.row)
-        const index = (x + 9) + (y + 21) * cRow
-        if (r>0) cRaw[index] = r
-      }
+      // for (let i=0; i<bkInfo.raw.length; i++) {
+      //   const r = bkInfo.raw[i]
+      //   const x = i % bkInfo.row
+      //   const y = Math.floor(i / bkInfo.row)
+      //   const index = (x + 9) + (y + 21) * cRow
+      //   if (r>0) cRaw[index] = r
+      // }
+      posOnComposite(bkInfo, cRow, cRaw, 9, 21)
 
-      for (let i=0; i<bdInfo.raw.length; i++) {
-        const r = bdInfo.raw[i]
-        const x = i % bdInfo.row
-        const y = Math.floor(i / bdInfo.row)
-        const index = (x + 6) + (y + 9) * cRow
-        if (r>0) cRaw[index] = r
-      }
+      // for (let i=0; i<bdInfo.raw.length; i++) {
+      //   const r = bdInfo.raw[i]
+      //   const x = i % bdInfo.row
+      //   const y = Math.floor(i / bdInfo.row)
+      //   const index = (x + 6) + (y + 9) * cRow
+      //   if (r>0) cRaw[index] = r
+      // }
+      posOnComposite(bdInfo, cRow, cRaw, 6, 9)
 
       const current = new Date()
       const y = current.getFullYear()
@@ -238,6 +243,16 @@
       }
 
       return cInfo
+    }
+
+    function posOnComposite(info, cRow, cRaw, mx, my) {
+      for (let i=0; i<info.raw.length; i++) {
+        const r = info.raw[i]
+        const x = i % info.row
+        const y = Math.floor(i / info.row)
+        const index = (x + mx) + (y + my) * cRow
+        if (r>0) cRaw[index] = r
+      }
     }
   </script>
 </body>
