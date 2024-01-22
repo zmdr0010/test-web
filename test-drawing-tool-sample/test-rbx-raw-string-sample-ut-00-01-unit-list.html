@@ -51,7 +51,12 @@
               const rInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.lr[j][1]])
               const bkInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bk[k]])
               const bdInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bd[l]])
-              simpleInfoList.push(compositeUt00(fInfo, lInfo, rInfo, bkInfo, bdInfo))
+              const cInfo = compositeUt00(fInfo, lInfo, rInfo, bkInfo, bdInfo)
+              cInfo.fIndex = i
+              cInfo.lrIndex = j
+              cInfo.bkIndex = k
+              cInfo.bdIndex = l
+              simpleInfoList.push(cInfo)
             }
           }
         }
@@ -63,7 +68,7 @@
       let startMarginX = 40
       let startMarginY = 40
       let marginX = 160
-      let marginY = 200
+      let marginY = 250
       let count = 0
 
       const lastX = div * marginX + startMarginX
@@ -95,6 +100,12 @@
         const sy = y * marginY + startMarginY
         drawRawSimple(inf, ctx, size, startColor, sx, sy)
         console.log(`sy : ${sy}`)
+
+        // `fi:${inf.fIndex}, lri:${inf.lrIndex}, bki:${inf.bkIndex}, bdi:${inf.bdIndex}`
+        //const text = `fi:${inf.fIndex}, lri:${inf.lrIndex}, bki:${inf.bkIndex}, bdi:${inf.bdIndex}`
+        const text = `${inf.fIndex}, ${inf.lrIndex}, ${inf.bkIndex}, ${inf.bdIndex}`
+        const my = sy + 180
+        drawText(text, ctx, size*3, sx, my)
 
         count++
       }
@@ -130,6 +141,11 @@
       ctx.beginPath()
       ctx.rect(startX, startY, size, size)
       ctx.fill()
+    }
+
+    function drawText(text, ctx, size, x, y) {
+      ctx.font = `${size}px Arial`
+      ctx.fillText(text, x, y)
     }
 
     function parsingStringToInfo(str) {
