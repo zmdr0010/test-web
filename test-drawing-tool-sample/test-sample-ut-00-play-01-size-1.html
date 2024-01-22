@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample ut-00 play 01 (start x,y - row, column)</title>
+
+  <style>
+    body {
+      -webkit-user-drag: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      position: fixed;
+      overflow: hidden;
+    }
+
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="rbx-raw-string-sample-ut-00.js"></script>
+  <script>
+    const GUIDE_COLOR = 'rgba(100,200,100,100)'
+    const SIZE = 1
+    const IS_ON_BOUND = true
+    const PLAY_BOUND = [5, 5, 80, 120] // top left right bottom
+    const SPEED = 1
+    const DELAY = 1000 / 60
+    let canvas
+    let ctx
+    let canvasW
+    let canvasH
+    let displaySize
+    let isMouseDown = false
+    let unitInfo
+    let prevX = 0
+    let prevY = 0
+    let startTimestamp = 0
+    let prevTimeStamp = 0
+    let frame = 0
+    let totalFrame = 0
+    let isPlaying = true
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      canvasW = window.innerWidth - 8 * 2
+      canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      drawBgGuide(ctx, SIZE)
+
+      const unitList = []
+      unitList.push(compositeUnit(4,3,2,2))
+
+      const unit = unitList[0]
+      const startColor = 200
+      const size = SIZE
+      drawRawSimple(unit, ctx, size, startColor, 50, 50)
+
+      unitInfo = {
+        unit: unit,
+        startColor: startColor,
+        sx: 50,
+        sy: 50,
+        x: 50,
+        y: 50,
+        speed: SPEED
+      }
+
+
+      addEventListener('mousedown', onMouseDown)
+      addEventListener('mouseup', onMouseUp)
+      addEventListener('mouseout', onMouseUp)
+      addEventListener('mousemove', onMouseMove)
+      addEventListener('touchcancel', onMouseUp)
+      addEventListener('touchend', onMouseUp)
+      addEventListener('touchstart', onTouchStart)
+      addEventListener('touchmove', onTouchMove)
+
+      // setInterval(draw, DELAY)
+      requestAnimationFrame(draw)
+    }
+
+    function drawBgGuide(ctx, size) {
+      const w = PLAY_BOUND[2] - PLAY_BOUND[1]
+      const h = PLAY_BOUND[3] - PLAY_BOUND[0]
+      const length = w * h
+      for (let i=0; i<length; i++) {
+        const x = i % w
+        const y = Math.floor(i / w)
+        const sx = size * (x + PLAY_BOUND[1])
+        const sy = size * (y + PLAY_BOUND[0])
+        ctx.strokeStyle = GUIDE_COLOR
+        ctx.lineWidth = 0.3
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.stroke()
+      }
+    }
+
+    function drawRawSimple(info, ctx, size, startColor, startX, startY) {
+      const list = info.raw
+      const row = info.row
+      const rate = startColor / info.raw_num
+
+      for (let i=0; i<list.length; i++) {
+        const b = list[i] - 1
+
+        if (b < 0) continue
+
+        const colorVal = startColor - b * rate
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        // console.log(`i : ${i}, x : ${x}, y : ${y}`)
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+
+      if (!IS_ON_BOUND) return
+
+      const w = info.row * size
+      const h = info.column * size
+      const bsx = startX * size
+      const bsy = startY * size
+      ctx.strokeStyle = 'red'
+      ctx.beginPath()
+      ctx.rect(bsx, bsy, w, h)
+      ctx.stroke()
+
+      const cx = bsx + Math.floor(info.row * 0.5) * size
+      const cy = bsy + Math.floor(info.column * 0.5) * size
+      ctx.fillStyle = 'red'
+      ctx.beginPath()
+      ctx.rect(cx, cy, size, size)
+      ctx.fill()
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      // const startX = size * info.x + info.startX
+      // const startY = size * info.y + info.startY
+      const startX = size * (info.x + info.startX)
+      const startY = size * (info.y + info.startY)
+      // console.log(`draw raw rect ::: startX : ${startX}, startY : ${startY}, size : ${size}`)
+      ctx.fillStyle = info.color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function compositeUnit(fIndex, lrIndex, bkIndex, bdIndex) {
+      const fInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.f[fIndex]])
+      const lInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.lr[lrIndex][0]])
+      const rInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.lr[lrIndex][1]])
+      const bkInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bk[bkIndex]])
+      const bdInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bd[bdIndex]])
+      const cInfo = compositeUt00(fInfo, lInfo, rInfo, bkInfo, bdInfo)
+      return cInfo
+    }
+
+    function compositeUt00(fInfo, lInfo, rInfo, bkInfo, bdInfo) {
+      // 27 x 30
+      const cRow = 27
+      const cColumn = 30
+      const length = cRow * cColumn
+      const cRaw = []
+      // const cRawNum = fInfo.raw_num
+      const cRawNum = Math.max(fInfo.raw_num, lInfo.raw_num, rInfo.raw_num, bkInfo.raw_num, bdInfo.raw_num)
+
+      for (let i=0; i<length; i++) {
+        cRaw.push(0)
+      }
+
+      // f (9,0)
+      // l (0,12)
+      // r (18,12)
+      // bk (9,21)
+      // bd (6,9)
+      posOnComposite(fInfo, cRow, cRaw, 9, 0)
+      posOnComposite(lInfo, cRow, cRaw, 0, 12)
+      posOnComposite(rInfo, cRow, cRaw, 18, 12)
+      posOnComposite(bkInfo, cRow, cRaw, 9, 21)
+      posOnComposite(bdInfo, cRow, cRaw, 6, 9)
+
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      console.log(`y : ${y}, m : ${m}, d : ${d}, h : ${h}, mm : ${mm}, s : ${s}`)
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}_composite`
+
+      const cInfo = {
+        memo: memo,
+        row: cRow,
+        column: cColumn,
+        raw_num: cRawNum,
+        raw: cRaw
+      }
+
+      return cInfo
+    }
+
+    function posOnComposite(info, cRow, cRaw, mx, my) {
+      for (let i=0; i<info.raw.length; i++) {
+        const r = info.raw[i]
+        const x = i % info.row
+        const y = Math.floor(i / info.row)
+        const index = (x + mx) + (y + my) * cRow
+        if (r>0) cRaw[index] = r
+      }
+    }
+
+    function move(info, mx, my) {
+      // ctx.clearRect(0, 0, canvasW, canvasH)
+      // drawBgGuide(ctx, SIZE)
+
+      let x = mx + info.sx
+      let y = my + info.sy
+
+      const dw = Math.floor(unitInfo.unit.row * 0.5)
+      const dh = Math.floor(unitInfo.unit.column * 0.5)
+      const bLeft = PLAY_BOUND[1] - dw
+      const bRight = PLAY_BOUND[2] - dw
+      const bTop = PLAY_BOUND[0] - dh
+      const bBottom = PLAY_BOUND[3] - dh
+      if (x <= bLeft) x = bLeft
+      if (x >= bRight) x = bRight
+      if (y <= bTop) y = bTop
+      if (y >= bBottom) y = bBottom
+
+      info.x = x
+      info.y = y
+      // drawRawSimple(info.unit, ctx, SIZE, info.startColor, x, y)
+    }
+
+    function draw(timestamp) {
+      frame++
+      totalFrame++
+      if (startTimestamp===0) {
+        startTimestamp = timestamp
+      }
+      const current = timestamp - prevTimeStamp
+      if (current > 1000) {
+        frame = 1
+        prevTimeStamp = timestamp
+      }
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}, fps : ${Math.floor(current/frame)}`
+      ctx.clearRect(0, 0, canvasW, canvasH)
+      drawBgGuide(ctx, SIZE)
+      drawRawSimple(unitInfo.unit, ctx, SIZE, unitInfo.startColor, unitInfo.x, unitInfo.y)
+
+      if (isPlaying) requestAnimationFrame(draw)
+    }
+
+    function onMouseDown(evt) {
+      const offsetX = evt.offsetX
+      const offsetY = evt.offsetY
+      console.log(`mouse down : offset x : ${offsetX}, y : ${offsetY}`)
+      isMouseDown = true
+      const pos = checkOffset(offsetX, offsetY)
+      prevX = pos[0]
+      prevY = pos[1]
+      unitInfo.sx = unitInfo.x
+      unitInfo.sy = unitInfo.y
+    }
+
+    function onMouseUp() {
+      isMouseDown = false
+    }
+
+    function onMouseMove(evt) {
+      if (!isMouseDown) return
+      const offsetX = evt.offsetX
+      const offsetY = evt.offsetY
+      console.log(`mouse move : offset x : ${offsetX}, y : ${offsetY}`)
+      const pos = checkOffset(offsetX, offsetY)
+      const mx = pos[0] - prevX
+      const my = pos[1] - prevY
+      move(unitInfo, mx, my)
+    }
+
+    function onTouchStart(evt) {
+      displaySize.innerText = `touch start`
+      const tc = evt.touches[0]
+      const offsetX = tc.clientX
+      const offsetY = tc.clientY - canvas.offsetTop
+      // console.log(`touch start : offset x : ${offsetX}, y : ${offsetY}`)
+      isMouseDown = true
+      const pos = checkOffset(offsetX, offsetY)
+      prevX = pos[0]
+      prevY = pos[1]
+      unitInfo.sx = unitInfo.x
+      unitInfo.sy = unitInfo.y
+    }
+
+    function onTouchMove(evt) {
+      if (!isMouseDown) return
+      const tc = evt.touches[0]
+      const offsetX = tc.clientX
+      const offsetY = tc.clientY - canvas.offsetTop
+      // console.log(`touch move : offset x : ${offsetX}, y : ${offsetY}`)
+      const pos = checkOffset(offsetX, offsetY)
+      const mx = pos[0] - prevX
+      const my = pos[1] - prevY
+      move(unitInfo, mx, my)
+    }
+
+    function checkOffset(offsetX, offsetY) {
+      const x = Math.floor(offsetX / SIZE)
+      const y = Math.floor(offsetY / SIZE)
+      // console.log(` x : ${x}, y : ${y}`)
+      return [x, y]
+    }
+  </script>
+</body>
+</html>
