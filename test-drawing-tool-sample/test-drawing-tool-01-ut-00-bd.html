@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test rbx raw drawing tool 01 ut-00 bd</title>
+
+  <style>
+    body {
+      -webkit-user-drag: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      position: fixed;
+      overflow: hidden;
+    }
+
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div style="margin: 4px">
+    <label for="id-raw-num">raw-num (1-100):</label>
+    <input type="number" id="id-raw-num" name="raw-num" min="1" max="100" value="7" />
+    <label for="id-size">size (1-100):</label>
+    <input type="number" id="id-size" name="size" min="1" max="500" value="20" />
+    <label for="id-start-color">start color (0-255):</label>
+    <input type="number" id="id-start-color" name="size" min="0" max="255" value="200" />
+    <button id="id-change-btn" onclick="onClickChange()">change</button>
+    <input type="checkbox" id="id-guide" name="guide" />
+    <label for="id-guide">guide</label>
+    <label for="id-memo">memo :</label>
+    <input type="text" id="id-memo" name="memo"/>
+    <button id="id-save-btn" onclick="onClickSave()">save</button>
+  </div>
+  <div style="margin: 4px" id="id-select-color-container">
+    <input type="radio" id="id-c-00" name="select-color" value="0" checked>
+    <label for="id-c-00">0</label>
+    <input type="radio" id="id-c-01" name="select-color" value="1">
+    <label for="id-c-01">1</label>
+    <input type="radio" id="id-c-02" name="select-color" value="2">
+    <label for="id-c-02">2</label>
+    <input type="radio" id="id-c-03" name="select-color" value="3">
+    <label for="id-c-03">3</label>
+  </div>
+  <div draggable="false">
+    <label id="id-size-label">15x15, raw-num : 7, size : 20, startColor : 200</label>
+  </div>
+
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    const START_X = 30
+    const START_Y = 30
+    const GUIDE_COLOR = 'slateblue'
+    const T_CODE = 'ut-00-bd'
+
+    let canvas
+    let ctx
+    let canvasW = 100
+    let canvasH = 100
+    let row = 15
+    let column = 15
+    let rawNum = 7
+    let size = 20
+    let startColor = 200
+    let colorInterval = 40
+    let raw = []
+    let selectColorContainer
+    let colorRadioList = []
+    let selectedColor = 0
+    let isMouseDown = false
+    let guide
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      canvasW = window.innerWidth - 8 * 2
+      canvasH = window.innerHeight - 8 * 2 - 150
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      selectColorContainer = document.getElementById('id-select-color-container')
+      guide = document.getElementById('id-guide')
+
+      initMemo()
+
+      initColorInterval()
+      initSelectColor()
+      initRaw()
+      draw()
+
+      guide.addEventListener('change', () => {
+        draw()
+      })
+
+      addEventListener('mousedown', onMouseDown)
+      addEventListener('mouseup', onMouseUp)
+      addEventListener('mouseout', onMouseUp)
+      addEventListener('mousemove', onMouseMove)
+      addEventListener('touchcancel', onMouseUp)
+      addEventListener('touchend', onMouseUp)
+      addEventListener('touchstart', onTouchStart)
+      addEventListener('touchmove', onTouchMove)
+    }
+
+    function initMemo() {
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      console.log(`y : ${y}, m : ${m}, d : ${d}, h : ${h}, mm : ${mm}, s : ${s}`)
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}-${T_CODE}`
+      document.getElementById('id-memo').value = memo
+    }
+
+    function initSelectColor() {
+      colorRadioList = []
+      selectColorContainer.innerHTML = ''
+      selectedColor = 0
+
+      for (let i=0; i<rawNum; i++) {
+        const input = document.createElement('input')
+        input.setAttribute('type', 'radio')
+        input.name = "select-color"
+        input.id = `id-c-${i}`
+        input.checked = (i === 0)
+        input.value = `${i}`
+        input.onchange = (evt) => {
+          selectedColor = Number(evt.target.value)
+          console.log(`radio change : target.value : ${evt.target.value}, selected color : ${selectedColor}`)
+        }
+
+        const label = document.createElement('label')
+        label.innerText = `${i}`
+
+        selectColorContainer.appendChild(input)
+        selectColorContainer.appendChild(label)
+      }
+    }
+
+    function initColorInterval() {
+      colorInterval = startColor / rawNum
+    }
+
+    function initRaw() {
+      const length = row * column
+      raw = []
+
+      for (let i=0; i<length; i++) {
+        raw.push(0)
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvasW, canvasH)
+
+      for (let i=0; i<raw.length; i++) {
+        const r = raw[i]
+        const colorVal = startColor - r * colorInterval
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + START_X
+        const sy = size * y + START_Y
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.fill()
+      }
+
+      // draw guide
+      if (!guide.checked)return
+
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + START_X
+        const sy = size * y + START_Y
+        ctx.strokeStyle = GUIDE_COLOR
+        ctx.lineWidth = 0.3
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.stroke()
+      }
+    }
+
+    function checkColor() {
+      for (let i=0; i<raw.length; i++) {
+        let r = raw[i]
+        if (r >= rawNum) {
+          r = 0
+          raw[i] = r
+        }
+      }
+    }
+
+    function onClickChange() {
+      console.log("click change size")
+      const inputRawNum = document.getElementById('id-raw-num')
+      const inputSize = document.getElementById('id-size')
+      const inputStartColor = document.getElementById('id-start-color')
+      const cRawNum = Number(inputRawNum.value)
+      const cSize = Number(inputSize.value)
+      const cStartColor = Number(inputStartColor.value)
+      console.log(`changing : raw-num : ${cRawNum}, size : ${cSize}, startColor : ${cStartColor}`)
+      console.log(`row : ${row}, column : ${column}, raw-num : ${rawNum}, size : ${size}, startColor : ${startColor}`)
+
+      if (cRawNum === rawNum && cSize === size && cStartColor === startColor) {
+        console.log('value not changed')
+      } else {
+        console.log('start to change')
+        const isChangingColor = ((startColor !== cStartColor) || (rawNum !== cRawNum))
+        rawNum = cRawNum
+        size = cSize
+        startColor = cStartColor
+        const sizeLabel = document.getElementById('id-size-label')
+        sizeLabel.innerText = `${row}x${column}, raw-num : ${rawNum}, size : ${size}, startColor : ${startColor}`
+
+        // console.log(`isResizing : ${isResizing}`)
+        if(isChangingColor) {
+          initColorInterval()
+          checkColor()
+          initSelectColor()
+        }
+
+        draw()
+      }
+    }
+
+    function onClickSave() {
+      console.log("click save")
+      const memo = document.getElementById('id-memo').value
+      let result = `${memo}/${row}/${column}/${rawNum}/`
+
+      for (let i=0; i<raw.length; i++) {
+        const r = raw[i]
+        if (i === raw.length-1) {
+          result += `${r}`
+        } else {
+          result += `${r},`
+        }
+      }
+
+      const name = memo
+      const link = document.createElement("a")
+      const file = new Blob([result], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function onMouseDown(evt) {
+      const offsetX = evt.offsetX
+      const offsetY = evt.offsetY
+      console.log(`mouse down : offset x : ${offsetX}, y : ${offsetY}`)
+      isMouseDown = true
+      checkOffset(offsetX, offsetY)
+    }
+
+    function onMouseUp() {
+      isMouseDown = false
+    }
+
+    function onMouseMove(evt) {
+      if (!isMouseDown) return
+      const offsetX = evt.offsetX
+      const offsetY = evt.offsetY
+      console.log(`mouse move : offset x : ${offsetX}, y : ${offsetY}`)
+      checkOffset(offsetX, offsetY)
+    }
+
+    function onTouchStart(evt) {
+      const tc = evt.touches[0]
+      const offsetX = tc.clientX
+      const offsetY = tc.clientY - canvas.offsetTop
+      console.log(`touch start : offset x : ${offsetX}, y : ${offsetY}`)
+      isMouseDown = true
+      checkOffset(offsetX, offsetY)
+    }
+
+    function onTouchMove(evt) {
+      if (!isMouseDown) return
+      const tc = evt.touches[0]
+      const offsetX = tc.clientX
+      const offsetY = tc.clientY - canvas.offsetTop
+      console.log(`touch move : offset x : ${offsetX}, y : ${offsetY}`)
+      checkOffset(offsetX, offsetY)
+    }
+
+    function checkOffset(offsetX, offsetY) {
+      const x = Math.floor((offsetX - START_X) / size)
+      const y = Math.floor((offsetY - START_Y) / size)
+      console.log(` x : ${x}, y : ${y}`)
+      if (x >= 0 && x < row && y >= 0 && y < column) {
+        const index = y * row + x
+        raw[index] = selectedColor
+        draw()
+      }
+    }
+  </script>
+</body>
+</html>

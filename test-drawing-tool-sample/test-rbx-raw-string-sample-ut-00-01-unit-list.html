@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test rbx raw string sample ut-00 01 unit list</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="rbx-raw-string-sample-ut-00.js"></script>
+  <script>
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      // f:5, l-r:5, bk:5, bd:5
+      // unit num : 5 x 5 x 5 x 5 = 625
+
+
+      const simpleInfoList = []
+      for (let i=0; i<5; i++) { // f
+        for (let j=0; j<5; j++) { // l-r
+          for (let k=0; k<5; k++) { // bk
+            for (let l=0; l<5; l++) { // bd
+              const fInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.f[i]])
+              const lInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.lr[j][0]])
+              const rInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.lr[j][1]])
+              const bkInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bk[k]])
+              const bdInfo = parsingStringToInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bd[l]])
+              simpleInfoList.push(compositeUt00(fInfo, lInfo, rInfo, bkInfo, bdInfo))
+            }
+          }
+        }
+      }
+
+      const startColor = 200
+      const size = 5
+      let div = 8
+      let startMarginX = 40
+      let startMarginY = 40
+      let marginX = 160
+      let marginY = 200
+      let count = 0
+
+      const lastX = div * marginX + startMarginX
+      let lastY = Math.floor((simpleInfoList.length-1) / div)
+      let lastSy = lastY * marginY + startMarginY
+      console.log(`lastY : ${lastY}, lastSy : ${lastSy}, canvasH : ${canvasH}`)
+
+      if (lastX > canvasW) {
+        console.log("------------ canvas resize width")
+        canvasW = lastX
+        canvas.width = canvasW
+        displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+      }
+
+      if ((lastSy + 200) > canvasH) {
+        console.log("------------ canvas resize")
+        canvasH = lastSy + 200
+        canvas.height = canvasH
+        displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+      }
+
+      displaySize.innerText = displaySize.innerText + `lastY : ${lastY}, lastSy : ${lastSy}, canvasH : ${canvasH}`
+
+      for (const key in simpleInfoList) {
+        const inf = simpleInfoList[key]
+        const x = count % div
+        const y = Math.floor(count / div)
+        const sx = x * marginX + startMarginX
+        const sy = y * marginY + startMarginY
+        drawRawSimple(inf, ctx, size, startColor, sx, sy)
+        console.log(`sy : ${sy}`)
+
+        count++
+      }
+    }
+
+    function drawRawSimple(info, ctx, size, startColor, startX, startY) {
+      const list = info.raw
+      const row = info.row
+      const rate = startColor / info.raw_num
+
+      for (let i=0; i<list.length; i++) {
+        const b = list[i] - 1
+
+        if (b < 0) continue
+
+        const colorVal = startColor - b * rate
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        // console.log(`i : ${i}, x : ${x}, y : ${y}`)
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      const startX = size * info.x + info.startX
+      const startY = size * info.y + info.startY
+      ctx.fillStyle = info.color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function compositeUt00(fInfo, lInfo, rInfo, bkInfo, bdInfo) {
+      // 27 x 30
+      const cRow = 27
+      const cColumn = 30
+      const length = cRow * cColumn
+      const cRaw = []
+      // const cRawNum = fInfo.raw_num
+      const cRawNum = Math.max(fInfo.raw_num, lInfo.raw_num, rInfo.raw_num, bkInfo.raw_num, bdInfo.raw_num)
+
+      for (let i=0; i<length; i++) {
+        cRaw.push(0)
+      }
+
+      // f (9,0)
+      // l (0,12)
+      // r (18,12)
+      // bk (9,21)
+      // bd (6,9)
+
+      for (let i=0; i<fInfo.raw.length; i++) {
+        const r = fInfo.raw[i]
+        const x = i % fInfo.row
+        const y = Math.floor(i / fInfo.row)
+        const index = (x + 9) + y * cRow
+        if (r>0) cRaw[index] = r
+      }
+
+      for (let i=0; i<lInfo.raw.length; i++) {
+        const r = lInfo.raw[i]
+        const x = i % lInfo.row
+        const y = Math.floor(i / lInfo.row)
+        const index = x + (y + 12) * cRow
+        if (r>0) cRaw[index] = r
+      }
+
+      for (let i=0; i<rInfo.raw.length; i++) {
+        const r = rInfo.raw[i]
+        const x = i % rInfo.row
+        const y = Math.floor(i / rInfo.row)
+        const index = (x + 18) + (y + 12) * cRow
+        if (r>0) cRaw[index] = r
+      }
+
+      for (let i=0; i<bkInfo.raw.length; i++) {
+        const r = bkInfo.raw[i]
+        const x = i % bkInfo.row
+        const y = Math.floor(i / bkInfo.row)
+        const index = (x + 9) + (y + 21) * cRow
+        if (r>0) cRaw[index] = r
+      }
+
+      for (let i=0; i<bdInfo.raw.length; i++) {
+        const r = bdInfo.raw[i]
+        const x = i % bdInfo.row
+        const y = Math.floor(i / bdInfo.row)
+        const index = (x + 6) + (y + 9) * cRow
+        if (r>0) cRaw[index] = r
+      }
+
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      console.log(`y : ${y}, m : ${m}, d : ${d}, h : ${h}, mm : ${mm}, s : ${s}`)
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}_composite`
+
+      const cInfo = {
+        memo: memo,
+        row: cRow,
+        column: cColumn,
+        raw_num: cRawNum,
+        raw: cRaw
+      }
+
+      return cInfo
+    }
+  </script>
+</body>
+</html>
