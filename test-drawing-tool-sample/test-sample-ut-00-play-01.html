@@ -35,6 +35,7 @@
     const PLAY_BOUND = [5, 5, 100, 120] // top left right bottom
     const SPEED = 1
     const DELAY = 1000 / 60
+    let canvas
     let ctx
     let canvasW
     let canvasH
@@ -50,7 +51,7 @@
     let isPlaying = true
 
     function init() {
-      const canvas = document.getElementById('id-canvas')
+      canvas = document.getElementById('id-canvas')
       ctx = canvas.getContext('2d')
       console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
       console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
