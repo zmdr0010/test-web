@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample effect composite tool</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div style="margin: 4px">
+    <label for="id-size">size (1-500):</label>
+    <input type="number" id="id-size" name="size" min="1" max="500" value="20" />
+    <button id="id-change-btn" onclick="onClickChange()">change size</button>
+  </div>
+  <div style="margin: 4px">
+    <label for="id-row">row (1-500):</label>
+    <input type="number" id="id-row" name="size" min="1" max="500" value="30" />
+    <label for="id-column">column (1-500):</label>
+    <input type="number" id="id-column" name="size" min="1" max="500" value="30" />
+  </div>
+  <div id="id-raw-container" style="margin: 4px">
+<!--    <div id="id-item-0">-->
+<!--      <label for="id-item-0-x">x</label>-->
+<!--      <input type="number" id="id-item-0-x" value="0" />-->
+<!--      <label for="id-item-0-y">y</label>-->
+<!--      <input type="number" id="id-item-0-y" value="0" />-->
+<!--      <label for="id-item-0-raw">raw</label>-->
+<!--      <input type="text" id="id-item-0-raw" />-->
+<!--    </div>-->
+  </div>
+  <div style="margin: 4px">
+    <button id="id-add-btn" onclick="onClickAdd()">+</button>
+    <button id="id-del-btn" onclick="onClickDel()">-</button>
+    <button id="id-composite-btn" onclick="onClickComposite()">composite</button>
+    <button id="id-clear-btn" onclick="onClickClear()">clear</button>
+    <button id="id-save-btn" onclick="onClickSave()">save</button>
+  </div>
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    const START_COLOR = 200
+    const X = 20
+    const Y = 20
+
+    const compositeSampleInfo = {
+      raw: [
+        "20240124172936-ef-01-00-00/15/15/5/0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,0,0,0,0,0,0,0,1,1,1,2,2,2,3,3,0,0,0,0,0,1,1,1,1,2,2,3,3,3,4,0,0,0,0,1,1,1,2,2,2,3,3,3,4,4,0,0,0,1,1,1,2,2,3,3,3,3,4,4,4,0,0,0,1,1,2,2,3,3,3,4,4,4,4,4,0,0,1,1,2,2,3,3,3,4,4,4,4,4,4,0,1,1,2,2,3,3,3,4,4,4,4,4,4,4,1,1,1,2,2,3,3,4,4,4,4,4,4,4,4,1,1,2,2,3,3,4,4,4,4,4,4,4,4,4,1,2,2,3,3,4,4,4,4,4,4,4,4,4,4,1,2,3,3,3,4,4,4,4,4,4,4,4,4,4,1,2,3,3,4,4,4,4,4,4,4,4,4,4,4,1,2,3,4,4,4,4,4,4,4,4,4,4,4,4",
+        "20240124172936-ef-01-00-00_h_reverse/15/15/5/1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,0,0,0,0,0,0,0,0,3,3,2,2,2,1,1,1,0,0,0,0,0,0,0,4,3,3,3,2,2,1,1,1,1,0,0,0,0,0,4,4,3,3,3,2,2,2,1,1,1,0,0,0,0,4,4,4,3,3,3,3,2,2,1,1,1,0,0,0,4,4,4,4,4,3,3,3,2,2,1,1,0,0,0,4,4,4,4,4,4,3,3,3,2,2,1,1,0,0,4,4,4,4,4,4,4,3,3,3,2,2,1,1,0,4,4,4,4,4,4,4,4,3,3,2,2,1,1,1,4,4,4,4,4,4,4,4,4,3,3,2,2,1,1,4,4,4,4,4,4,4,4,4,4,3,3,2,2,1,4,4,4,4,4,4,4,4,4,4,3,3,3,2,1,4,4,4,4,4,4,4,4,4,4,4,3,3,2,1,4,4,4,4,4,4,4,4,4,4,4,4,3,2,1",
+        "20240124172936-ef-01-00-00_v_reverse/15/15/5/1,2,3,4,4,4,4,4,4,4,4,4,4,4,4,1,2,3,3,4,4,4,4,4,4,4,4,4,4,4,1,2,3,3,3,4,4,4,4,4,4,4,4,4,4,1,2,2,3,3,4,4,4,4,4,4,4,4,4,4,1,1,2,2,3,3,4,4,4,4,4,4,4,4,4,1,1,1,2,2,3,3,4,4,4,4,4,4,4,4,0,1,1,2,2,3,3,3,4,4,4,4,4,4,4,0,0,1,1,2,2,3,3,3,4,4,4,4,4,4,0,0,0,1,1,2,2,3,3,3,4,4,4,4,4,0,0,0,1,1,1,2,2,3,3,3,3,4,4,4,0,0,0,0,1,1,1,2,2,2,3,3,3,4,4,0,0,0,0,0,1,1,1,1,2,2,3,3,3,4,0,0,0,0,0,0,0,1,1,1,2,2,2,3,3,0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1",
+        "20240124172936-ef-01-00-00_v_reverse_h_reverse/15/15/5/4,4,4,4,4,4,4,4,4,4,4,4,3,2,1,4,4,4,4,4,4,4,4,4,4,4,3,3,2,1,4,4,4,4,4,4,4,4,4,4,3,3,3,2,1,4,4,4,4,4,4,4,4,4,4,3,3,2,2,1,4,4,4,4,4,4,4,4,4,3,3,2,2,1,1,4,4,4,4,4,4,4,4,3,3,2,2,1,1,1,4,4,4,4,4,4,4,3,3,3,2,2,1,1,0,4,4,4,4,4,4,3,3,3,2,2,1,1,0,0,4,4,4,4,4,3,3,3,2,2,1,1,0,0,0,4,4,4,3,3,3,3,2,2,1,1,1,0,0,0,4,4,3,3,3,2,2,2,1,1,1,0,0,0,0,4,3,3,3,2,2,1,1,1,1,0,0,0,0,0,3,3,2,2,2,1,1,1,0,0,0,0,0,0,0,2,2,2,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0"
+      ],
+      cRow: 30,
+      cColumn: 30,
+      cp: [
+        [0,0], [15,0], [0,15], [15,15]
+      ]
+    }
+
+    let cInfo
+    let ctx
+    let canvasW
+    let canvasH
+    let rawContainer
+    let size = 20
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      canvasW = window.innerWidth - 8 * 2
+      canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      rawContainer = document.getElementById('id-raw-container')
+
+      // drawRawSimple(cInfo, ctx, 10, 200, 20, 20)
+      // save(parsingInfoToString(cInfo))
+    }
+
+    function createCompositeInfo() {
+      const row = Number(document.getElementById('id-row').value)
+      const column = Number(document.getElementById('id-column').value)
+
+      const info = {
+        raw: [],
+        cRow: row,
+        cColumn: column,
+        cp: []
+      }
+
+      if (rawContainer.children.length <= 0) return info
+
+      for (let i=0; i<rawContainer.children.length; i++) {
+        const divId = `id-item-${i}`
+        const xId = `${divId}-x`
+        const yId = `${divId}-y`
+        const rawId = `${divId}-raw`
+        const inputX = document.getElementById(xId)
+        const inputY = document.getElementById(yId)
+        const inputRaw = document.getElementById(rawId)
+        info.raw.push(inputRaw.value)
+        info.cp.push([Number(inputX.value), Number(inputY.value)])
+      }
+
+      return info
+    }
+
+    function composite(info) {
+      const cRow = info.cRow
+      const cColumn = info.cColumn
+      const length = cRow * cColumn
+      const cRaw = []
+      let cRawNum = 0
+
+      for (let i=0; i<length; i++) {
+        cRaw.push(0)
+      }
+
+      for (let i=0; i<info.raw.length; i++) {
+        const r = info.raw[i]
+        const rawInfo = parsingStringToInfo(r)
+        const p = info.cp[i]
+        cRawNum = Math.max(cRawNum, rawInfo.raw_num)
+        posOnComposite(rawInfo, cRow, cRaw, p[0], p[1])
+      }
+
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      console.log(`y : ${y}, m : ${m}, d : ${d}, h : ${h}, mm : ${mm}, s : ${s}`)
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}_composite`
+
+      const cInfo = {
+        memo: memo,
+        row: cRow,
+        column: cColumn,
+        raw_num: cRawNum,
+        raw: cRaw
+      }
+
+      return cInfo
+    }
+
+    function add() {
+      const index = rawContainer.children.length
+      const div = document.createElement('div')
+      const divId = `id-item-${index}`
+      div.id = divId
+
+      const labelX = document.createElement('label')
+      labelX.innerText = 'x'
+      div.appendChild(labelX)
+
+      const inputX = document.createElement('input')
+      inputX.style = 'margin: 2px'
+      inputX.id = `${divId}-x`
+      inputX.type = 'number'
+      inputX.value = 0
+      div.appendChild(inputX)
+
+      const labelY = document.createElement('label')
+      labelY.style = 'margin: 2px'
+      labelY.innerText = 'y'
+      div.appendChild(labelY)
+
+      const inputY = document.createElement('input')
+      inputY.style = 'margin: 2px'
+      inputY.id = `${divId}-y`
+      inputY.type = 'number'
+      inputY.value = 0
+      div.appendChild(inputY)
+
+      const labelRaw = document.createElement('label')
+      labelRaw.style = 'margin: 2px'
+      labelRaw.innerText = 'raw'
+      div.appendChild(labelRaw)
+
+      const inputRaw = document.createElement('input')
+      inputRaw.style = 'margin: 2px'
+      inputRaw.id = `${divId}-raw`
+      inputRaw.type = 'text'
+      // inputRaw.value = `${divId}`
+      div.appendChild(inputRaw)
+
+      rawContainer.appendChild(div)
+    }
+
+    function del() {
+      if (rawContainer.children.length <= 0) return
+
+      rawContainer.removeChild(rawContainer.children[rawContainer.children.length-1])
+    }
+
+    function drawRawSimple(info, ctx, size, startColor, startX, startY) {
+      const list = info.raw
+      const row = info.row
+      const rate = startColor / info.raw_num
+
+      for (let i=0; i<list.length; i++) {
+        const b = list[i] - 1
+
+        if (b < 0) continue
+
+        const colorVal = startColor - b * rate
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        // console.log(`i : ${i}, x : ${x}, y : ${y}`)
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      const startX = size * info.x + info.startX
+      const startY = size * info.y + info.startY
+      ctx.fillStyle = info.color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function parsingInfoToString(info) {
+      let result = ""
+      result += `${info.memo}/${info.row}/${info.column}/${info.raw_num}/`
+
+      for (let i=0; i<info.raw.length; i++) {
+        if (i === info.raw.length-1) {
+          result += `${info.raw[i]}`
+        } else {
+          result += `${info.raw[i]},`
+        }
+      }
+
+      return result
+    }
+
+    function posOnComposite(info, cRow, cRaw, mx, my) {
+      for (let i=0; i<info.raw.length; i++) {
+        const r = info.raw[i]
+        const x = i % info.row
+        const y = Math.floor(i / info.row)
+        const index = (x + mx) + (y + my) * cRow
+        if (r>0) cRaw[index] = r
+      }
+    }
+
+    function save(rawString) {
+      console.log(`save ::: ${rawString}`)
+      const name = rawString.split('/')[0]
+      const link = document.createElement("a")
+      const file = new Blob([rawString], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function onClickChange() {
+      console.log("onClickChange")
+      const inputSize = document.getElementById('id-size')
+      const iSize = Number(inputSize.value)
+      if (iSize === size) {
+        console.log('size not changed')
+        return
+      }
+
+      size = iSize
+
+      ctx.clearRect(0, 0, canvasW, canvasH)
+      drawRawSimple(composite(createCompositeInfo()), ctx, size, START_COLOR, X, Y)
+    }
+
+    function onClickAdd() {
+      console.log("onClickAdd")
+      add()
+    }
+
+    function onClickDel() {
+      console.log("onClickDel")
+      del()
+    }
+
+    function onClickComposite() {
+      console.log("onClickComposite")
+      ctx.clearRect(0, 0, canvasW, canvasH)
+      drawRawSimple(composite(createCompositeInfo()), ctx, size, START_COLOR, X, Y)
+    }
+
+    function onClickClear() {
+      console.log("onClickClear")
+      ctx.clearRect(0, 0, canvasW, canvasH)
+    }
+
+    function onClickSave() {
+      console.log("onClickSave")
+      save(parsingInfoToString(composite(createCompositeInfo())))
+    }
+  </script>
+</body>
+</html>
