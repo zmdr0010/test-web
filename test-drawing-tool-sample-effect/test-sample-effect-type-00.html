@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test sample effect type 00</title>
+  <title>Test sample effect type 00 (center <--> edge)</title>
 
   <style>
     canvas {
@@ -97,9 +97,9 @@
 
       // drawRawSimple(targetRawInfo, ctx, size, START_COLOR, X, Y)
       drawRawSimple(effectRawType00(targetRawInfo, k, d), ctx, size, START_COLOR, X, Y)
-      drawRawSimple(effectRawType00(targetRawInfo, k, d, 1), ctx, size, START_COLOR, X+300, Y)
-      drawRawSimple(effectRawType00(targetRawInfo, k, d, 2), ctx, size, START_COLOR, X, Y+300)
-      drawRawSimple(effectRawType00(targetRawInfo, k, d, 3), ctx, size, START_COLOR, X+300, Y+300)
+      drawRawSimple(effectRawType00(targetRawInfo, k, d, 1), ctx, size, START_COLOR, X+200, Y)
+      drawRawSimple(effectRawType00(targetRawInfo, k, d, 2), ctx, size, START_COLOR, X, Y+200)
+      drawRawSimple(effectRawType00(targetRawInfo, k, d, 3), ctx, size, START_COLOR, X+200, Y+200)
 
       if (isPlaying) requestAnimationFrame(draw)
     }
