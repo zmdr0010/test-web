@@ -17,7 +17,7 @@
 <body onload="init()">
   <div style="margin: 4px">
     <label for="id-size">size (1-500):</label>
-    <input type="number" id="id-size" name="size" min="1" max="500" value="20" />
+    <input type="number" id="id-size" name="size" min="1" max="500" value="10" />
     <button id="id-change-btn" onclick="onClickChange()">change size</button>
   </div>
   <div style="margin: 4px">
@@ -70,7 +70,7 @@
     let canvasW
     let canvasH
     let rawContainer
-    let size = 20
+    let size = 10
 
     function init() {
       const canvas = document.getElementById('id-canvas')
