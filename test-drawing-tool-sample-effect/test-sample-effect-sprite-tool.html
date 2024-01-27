@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample effect sprite tool</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div style="margin: 4px">
+    <label for="id-size">size (1-500):</label>
+    <input type="number" id="id-size" name="size" min="1" max="500" value="10" />
+    <button id="id-change-btn" onclick="onClickChange()">change size</button>
+    <label for="id-kt">kt (key time (millisecond)):</label>
+    <input type="number" id="id-kt" name="kt" value="50" />
+  </div>
+  <div id="id-raw-container" style="margin: 4px">
+    <!--    <div id="id-item-0">-->
+    <!--      <label for="id-item-0-raw">raw</label>-->
+    <!--      <input type="text" id="id-item-0-raw" />-->
+    <!--    </div>-->
+  </div>
+  <div style="margin: 4px">
+    <button id="id-add-btn" onclick="onClickAdd()">+</button>
+    <button id="id-del-btn" onclick="onClickDel()">-</button>
+    <button id="id-play-btn" onclick="onClickPlay()">play</button>
+    <button id="id-clear-btn" onclick="onClickClear()">clear</button>
+  </div>
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    const START_COLOR = 200
+    const DELAY = 1000 / 60
+
+    const effectSpriteSampleInfo = {
+      raw: [
+        "20240124171250-ef-00-00/3/10/4/0,1,0,0,1,0,0,3,1,1,3,2,2,3,2,2,3,2,2,3,2,1,3,2,0,3,1,0,1,0",
+        "20240124171250-ef-00-01/3/10/4/1,0,0,1,0,0,2,1,0,2,3,1,2,3,2,2,3,2,2,3,2,1,3,2,0,3,1,0,1,0",
+        "20240124171250-ef-00-02/3/10/4/0,0,1,0,0,1,0,1,2,1,3,2,2,3,2,2,3,2,2,3,2,2,3,1,1,3,0,0,1,0",
+        "20240124171250-ef-00-03/3/10/4/1,0,1,2,1,2,2,3,2,2,3,2,2,3,2,2,3,2,1,3,1,0,3,0,0,1,0,0,0,0",
+        "20240124171250-ef-00-04/3/10/4/0,0,1,0,1,2,1,3,2,2,3,2,2,3,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-05/3/10/4/0,0,1,0,1,2,1,1,2,2,0,0,0,3,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-06/3/10/4/0,0,1,0,1,2,1,0,0,2,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-07/3/10/4/0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-08/3/10/4/0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-09/3/10/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-09/3/10/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-09/3/10/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+        "20240124171250-ef-00-09/3/10/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+      ],
+      row: 3,
+      column: 10,
+      kt: 50 // key time (millisecond)
+    }
+
+    let ctx
+    let displaySize
+    let canvasW
+    let canvasH
+    let size = 10
+    let startTimestamp = 0
+    let prevTimeStamp = 0
+    let frame = 0
+    let totalFrame = 0
+    let isPlaying = false
+    let currentKey = 0
+    let list = []
+    let x = 20
+    let y = 20
+    let rawContainer
+    let spriteInfo
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      canvasW = window.innerWidth - 8 * 2
+      canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      rawContainer = document.getElementById('id-raw-container')
+
+      // for (let i=0; i<effectSpriteSampleInfo.raw.length; i++) {
+      //   const r = effectSpriteSampleInfo.raw[i]
+      //   const info = parsingStringToInfo(r)
+      //   list.push(info)
+      // }
+      //
+      // requestAnimationFrame(draw)
+    }
+
+    function createSpriteInfo() {
+      const kt = Number(document.getElementById('id-kt').value)
+
+      const spriteInfo = {
+        raw: [],
+        kt: kt
+      }
+
+      if (rawContainer.children.length <= 0) return spriteInfo
+
+      for (let i=0; i<rawContainer.children.length; i++) {
+        const divId = `id-item-${i}`
+        const rawId = `${divId}-raw`
+        const inputRaw = document.getElementById(rawId)
+        spriteInfo.raw.push(inputRaw.value)
+      }
+
+      return spriteInfo
+    }
+
+    function draw(timestamp) {
+      frame++
+      totalFrame++
+      if (startTimestamp===0) {
+        startTimestamp = timestamp
+      }
+      const current = timestamp - prevTimeStamp
+
+      if (current >= spriteInfo.kt) {
+        prevTimeStamp = timestamp
+        currentKey++
+        if (currentKey >= spriteInfo.raw.length) currentKey = 0
+      }
+
+      // if (current > 1000) {
+      //   frame = 1
+      //   prevTimeStamp = timestamp
+      // }
+
+      // displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}, fps : ${Math.floor(current/frame)}`
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}`
+      ctx.clearRect(0, 0, canvasW, canvasH)
+
+      drawRawSimple(list[currentKey], ctx, size, START_COLOR, x, y)
+
+      if (isPlaying) requestAnimationFrame(draw)
+    }
+
+    function drawRawSimple(info, ctx, size, startColor, startX, startY) {
+      const list = info.raw
+      const row = info.row
+      const rate = startColor / info.raw_num
+
+      for (let i=0; i<list.length; i++) {
+        const b = list[i] - 1
+
+        if (b < 0) continue
+
+        const colorVal = startColor - b * rate
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        // console.log(`i : ${i}, x : ${x}, y : ${y}`)
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      const startX = size * info.x + info.startX
+      const startY = size * info.y + info.startY
+      ctx.fillStyle = info.color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function parsingInfoToString(info) {
+      let result = ""
+      result += `${info.memo}/${info.kt}/${info.column}/${info.raw_num}/`
+
+      for (let i=0; i<info.raw.length; i++) {
+        if (i === info.raw.length-1) {
+          result += `${info.raw[i]}`
+        } else {
+          result += `${info.raw[i]},`
+        }
+      }
+
+      return result
+    }
+
+    function add() {
+      const index = rawContainer.children.length
+      const div = document.createElement('div')
+      const divId = `id-item-${index}`
+      div.id = divId
+
+      const labelRaw = document.createElement('label')
+      labelRaw.style = 'margin: 2px'
+      labelRaw.innerText = 'raw'
+      div.appendChild(labelRaw)
+
+      const inputRaw = document.createElement('input')
+      inputRaw.style = 'margin: 2px'
+      inputRaw.id = `${divId}-raw`
+      inputRaw.type = 'text'
+      // inputRaw.value = `${divId}`
+      div.appendChild(inputRaw)
+
+      rawContainer.appendChild(div)
+    }
+
+    function del() {
+      if (rawContainer.children.length <= 0) return
+
+      rawContainer.removeChild(rawContainer.children[rawContainer.children.length-1])
+    }
+
+    function onClickChange() {
+      console.log("onClickChange")
+      const inputSize = document.getElementById('id-size')
+      const iSize = Number(inputSize.value)
+      if (iSize === size) {
+        console.log('size not changed')
+        return
+      }
+
+      size = iSize
+    }
+
+    function onClickAdd() {
+      console.log("onClickAdd")
+      add()
+    }
+
+    function onClickDel() {
+      console.log("onClickDel")
+      del()
+    }
+
+    function onClickPlay() {
+      console.log("onClickComposite")
+      ctx.clearRect(0, 0, canvasW, canvasH)
+      list = []
+
+      spriteInfo = createSpriteInfo()
+
+      for (let i=0; i<spriteInfo.raw.length; i++) {
+        const r = spriteInfo.raw[i]
+        const info = parsingStringToInfo(r)
+        list.push(info)
+      }
+
+      isPlaying = true
+      requestAnimationFrame(draw)
+    }
+
+    function onClickClear() {
+      console.log("onClickClear")
+      ctx.clearRect(0, 0, canvasW, canvasH)
+      isPlaying = false
+    }
+  </script>
+</body>
+</html>
