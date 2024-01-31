@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample effect slice x2 x3 02 (effect drawing)</title>
+
+  <style>
+    body {
+      -webkit-user-drag: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      position: fixed;
+      overflow: hidden;
+    }
+
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div style="margin: 4px">
+    <label for="id-size">size (1-100):</label>
+    <input type="number" id="id-size" name="size" min="1" max="500" value="12" />
+    <button id="id-change-btn" onclick="onClickChange()">change</button>
+    <input type="checkbox" id="id-guide" name="guide" />
+    <label for="id-guide">guide</label>
+    <input type="text" id="id-raw-string" name="raw-string"/>
+    <button id="id-draw-btn" onclick="onClickDraw()">draw</button>
+    <button id="id-save-btn" onclick="onClickSave()">save</button>
+  </div>
+  <div>
+    <label id="id-size-label">size : 20, startColor : 200</label>
+  </div>
+
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    const START_X = 30
+    const START_Y = 30
+    const GUIDE_COLOR = 'slateblue'
+    const T_CODE = 'sn_x2'
+    const SLICE_NUM = 2
+
+    let canvas
+    let ctx
+    let canvasW = 100
+    let canvasH = 100
+    let memo = ''
+    let row = 9
+    let column = 12
+    let rawNum = 7
+    let size = 12
+    let startColor = 200
+    let colorInterval = 40
+    let raw = []
+    let guide
+    let oInfo
+    let sInfo
+    let sInfo01 // x3
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      canvasW = window.innerWidth - 8 * 2
+      canvasH = window.innerHeight - 8 * 2 - 150
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      guide = document.getElementById('id-guide')
+
+      initColorInterval()
+      // initRaw()
+      // draw()
+
+      guide.addEventListener('change', () => {
+        draw()
+      })
+    }
+
+    function initColorInterval() {
+      colorInterval = startColor / rawNum
+    }
+
+    // function initRaw() {
+    //   const length = row * column
+    //   raw = []
+    //
+    //   for (let i=0; i<length; i++) {
+    //     raw.push(0)
+    //   }
+    // }
+
+    function sliceRaw(origin, sn) {
+      const cMemo = `${origin.memo}-sn_x${sn}`
+      const cRow = origin.row * sn
+      const cColumn = origin.column * sn
+      const cRawNum = origin.raw_num
+      const cRaw = []
+      const cLength = cRow * cColumn
+      const originIndices = []
+
+      for (let i=0; i<cLength; i++) {
+        cRaw.push(0)
+        originIndices.push(0)
+      }
+
+      for (let i=0; i<origin.raw.length; i++) {
+        const r = origin.raw[i]
+        const row = i % origin.row
+        const column = Math.floor(i/origin.row)
+        const x = row * sn
+        const y = column * sn
+
+        const length = sn * sn
+
+        for (let j=0; j<length; j++) {
+          const jr = j % sn
+          const jc = Math.floor(j/sn)
+          const ji = (x + jr) + (y + jc) * cRow
+          cRaw[ji] = r
+          originIndices[ji] = i
+        }
+      }
+
+      const sInfo = {
+        memo: cMemo,
+        row: cRow,
+        column: cColumn,
+        raw_num: cRawNum,
+        raw: cRaw,
+        originIndices: originIndices
+      }
+
+      return sInfo
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvasW, canvasH)
+
+      drawRaw(raw, row, size, START_X, START_Y, startColor, colorInterval)
+
+      const sx = START_X + row * size + 10
+      const sSize = size / SLICE_NUM
+      const sSize01 = size / (SLICE_NUM + 1)
+      const sx01 = sx + sInfo.row * sSize + 10
+      // drawRaw(sInfo.raw, sInfo.row, sSize, sx, START_Y, startColor, colorInterval)
+      // drawRaw(sInfo01.raw, sInfo01.row, sSize01, sx01, START_Y, startColor, colorInterval)
+      drawRawEffect(oInfo, sInfo, sSize, sx, START_Y, startColor, colorInterval, SLICE_NUM)
+      drawRawEffect(oInfo, sInfo01, sSize01, sx01, START_Y, startColor, colorInterval, SLICE_NUM+1)
+
+      // draw guide
+      if (!guide.checked)return
+
+      drawGuide(raw, row, size, START_X, START_Y)
+      drawGuide(sInfo.raw, sInfo.row, sSize, sx, START_Y)
+      drawGuide(sInfo01.raw, sInfo01.row, sSize01, sx01, START_Y)
+    }
+
+    function drawRaw(raw, row, size, startX, startY, startColor, colorInterval) {
+      for (let i=0; i<raw.length; i++) {
+        const r = raw[i]
+        const colorVal = startColor - r * colorInterval
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + startX
+        const sy = size * y + startY
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.fill()
+      }
+    }
+
+    function drawGuide(raw, row, size, startX, startY) {
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + startX
+        const sy = size * y + startY
+        ctx.strokeStyle = GUIDE_COLOR
+        ctx.lineWidth = 0.3
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.stroke()
+      }
+    }
+
+    function drawRawEffect(originInfo, sInfo, size, startX, startY, startColor, colorInterval, sn) {
+      const raw = sInfo.raw
+      const row = sInfo.row
+
+      for (let i=0; i<raw.length; i++) {
+        const r = raw[i]
+
+        if (r <= 0) continue
+
+        const originIndex = sInfo.originIndices[i]
+        const ox = originIndex % originInfo.row
+        const oy = Math.floor(originIndex / originInfo.row)
+        const sox = ox * sn
+        const soy = oy * sn
+
+        let colorVal = startColor - r * colorInterval
+
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + startX
+        const sy = size * y + startY
+
+        // check top, left, right, bottom empty
+        const check = checkRawBoundary(originInfo, originIndex)
+        const isEmptyTop = check[0]
+        const isEmptyLeft = check[1]
+        const isEmptyRight = check[2]
+        const isEmptyBottom = check[3]
+
+        const scale = 0.1
+        let changingScale = 0
+
+        if (isEmptyLeft) {
+          if (x === sox) changingScale = scale
+        }
+
+        if (isEmptyTop) {
+          if (y === soy) changingScale = scale
+        }
+
+        if (isEmptyRight) {
+          if (x === sox + sn - 1) changingScale = scale
+        }
+
+        if (isEmptyBottom) {
+          if (y === soy + sn - 1) changingScale = scale
+        }
+
+        colorVal += colorVal * changingScale
+
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.fill()
+      }
+    }
+
+    function checkRawBoundary(originRaw, index) {
+      const row = originRaw.row
+      const x = index % row
+      const y = Math.floor(index / row)
+      const rw = originRaw.raw[index]
+      let isEmptyTop = false
+      let isEmptyLeft = false
+      let isEmptyRight = false
+      let isEmptyBottom = false
+      const l = x - 1
+      const r = x + 1
+      const t = y - 1
+      const b = y + 1
+
+      if (l < 0) {
+        isEmptyLeft = true
+      } else {
+        const li = l + y * row
+        const rwl = originRaw.raw[li]
+        isEmptyLeft = (rw !== rwl)
+      }
+
+      if (r >= originRaw.row) {
+        isEmptyRight = true
+      } else {
+        const ri = r + y * row
+        const rwr = originRaw.raw[ri]
+        isEmptyRight = (rw !== rwr)
+      }
+
+      if (t < 0) {
+        isEmptyTop = true
+      } else {
+        const ti = x + t * row
+        const rwt = originRaw.raw[ti]
+        isEmptyTop = (rw !== rwt)
+      }
+
+      if (b >= originRaw.column) {
+        isEmptyBottom = true
+      } else {
+        const bi = x + b * row
+        const rwb = originRaw.raw[bi]
+        isEmptyBottom = (rw !== rwb)
+      }
+
+      return [isEmptyTop, isEmptyLeft, isEmptyRight, isEmptyBottom]
+    }
+
+    function changeSizeLabel() {
+      const sizeLabel = document.getElementById('id-size-label')
+      sizeLabel.innerText = `${row}x${column}, raw-num : ${rawNum}, size : ${size}, startColor : ${startColor}`
+    }
+
+    function onClickChange() {
+      console.log("click change size")
+      const inputSize = document.getElementById('id-size')
+      const cSize = Number(inputSize.value)
+
+      if (cSize === size) {
+        console.log('value not changed')
+      } else {
+        console.log('start to change')
+        size = cSize
+        changeSizeLabel()
+
+        draw()
+      }
+    }
+
+    function onClickDraw() {
+      console.log("click draw")
+      const rawString = document.getElementById('id-raw-string').value
+      const info = parsingStringToInfo(rawString)
+      oInfo = info
+      memo = info.memo
+      row = info.row
+      column = info.column
+      rawNum = info.raw_num
+      raw = info.raw
+      initColorInterval()
+      changeSizeLabel()
+
+      sInfo = sliceRaw(info, SLICE_NUM)
+      sInfo01 = sliceRaw(info, SLICE_NUM+1)
+
+      draw()
+    }
+
+    function onClickSave() {
+      console.log("click save")
+      if (!sInfo) return
+
+      save(parsingInfoToString(sInfo))
+      save(parsingInfoToString(sInfo01))
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function parsingInfoToString(info) {
+      let result = ""
+      result += `${info.memo}/${info.row}/${info.column}/${info.raw_num}/`
+
+      for (let i=0; i<info.raw.length; i++) {
+        if (i === info.raw.length-1) {
+          result += `${info.raw[i]}`
+        } else {
+          result += `${info.raw[i]},`
+        }
+      }
+
+      return result
+    }
+
+    function save(rawString) {
+      console.log(`save ::: ${rawString}`)
+      const name = rawString.split('/')[0]
+      const link = document.createElement("a")
+      const file = new Blob([rawString], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+  </script>
+</body>
+</html>
