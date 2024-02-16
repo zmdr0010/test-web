@@ -88,7 +88,7 @@
         if (isColorMode) {
           color = colorList[r]
         } else {
-          const rate = 1 - r / raw.length
+          const rate = 1 - r / colorList.length
           const colorVal = startColor * rate
           color = `rgb(${colorVal},${colorVal},${colorVal})`
         }
