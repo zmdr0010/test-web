@@ -292,14 +292,17 @@
       totalFrame++
       if (startTimestamp===0) {
         startTimestamp = timestamp
-      }
-      const current = timestamp - prevTimeStamp
-      if (current > 1000) {
-        frame = 1
         prevTimeStamp = timestamp
       }
+      const current = timestamp - prevTimeStamp
+      const fps = Math.round(frame*1000/current)
 
-      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}, fps : ${Math.floor(current/frame)}`
+      if (current > 1000) {
+        prevTimeStamp = timestamp
+        frame = 0
+      }
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}, fps : ${fps}`
       ctx.clearRect(0, 0, canvasW, canvasH)
       drawBgGuide(ctx, SIZE)
       drawRawSimple(unitInfo.unit, ctx, SIZE, unitInfo.startColor, unitInfo.x, unitInfo.y)
