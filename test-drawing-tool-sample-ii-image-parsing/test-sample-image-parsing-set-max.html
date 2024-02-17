@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test sample image parsing</title>
+  <title>Test sample image parsing set max</title>
 
   <style>
     div {
@@ -13,7 +13,7 @@
 </head>
 <body onload="init()">
   <div>
-    <label for="id-img-upload">Choose image to upload (PNG, JPG) (image size max 400)</label>
+    <label for="id-img-upload">Choose image to upload (PNG, JPG)</label>
 <!--    <input id="id-img-upload" type="file" name="img-upload" accept=".jpg, .jpeg, .png" multiple/>-->
     <input id="id-img-upload" type="file" name="img-upload" accept=".jpg, .jpeg, .png" />
   </div>
@@ -26,6 +26,10 @@
   <div>
     <input onchange="onChangedColorMode()" type="checkbox" id="id-color-mode" name="color-mode" />
     <label for="id-color-mode">color mode</label>
+  </div>
+  <div>
+    <label for="id-set-max">max:</label>
+    <input type="number" id="id-set-max" name="set-max" value="400" />
   </div>
   <div>
     <button onclick="onClickSave()">save</button>
@@ -52,7 +56,6 @@
       "image/x-icon"
     ]
     const SIZE = 2
-    const MAX = 400
     const RBX_CANVAS_SCALE = 4
     let originCanvas
     let originCtx
@@ -67,6 +70,7 @@
     let memo = ''
     let rawInfo
     let isColorMode = false
+    let max = 400
 
     function init() {
       console.log('init')
@@ -125,6 +129,8 @@
 
     function onClickParsing() {
       console.log('onClickParsing')
+      const maxInput = document.getElementById('id-set-max')
+      max = Number(maxInput.value)
       parsingImg()
     }
 
@@ -159,14 +165,14 @@
 
           imgW = img.width
           imgH = img.height
-          if (imgW > MAX) {
-            const scale = MAX / imgW
-            imgW = MAX
+          if (imgW > max) {
+            const scale = max / imgW
+            imgW = max
             imgH = imgH * scale
           }
-          if (imgH > MAX) {
-            const scale = MAX / imgH
-            imgH = MAX
+          if (imgH > max) {
+            const scale = max / imgH
+            imgH = max
             imgW = imgW * scale
           }
 
