@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample movement raw tool</title>
+</head>
+<body onload="init()">
+  <div style="margin: 16px">
+    <label for="id-row">row (1-100):</label>
+    <input type="number" id="id-row" name="row" min="1" max="100" value="3" size="5" />
+    <label for="id-column">column (1-100):</label>
+    <input type="number" id="id-column" name="column" min="1" max="100" value="3" size="5" />
+    <button onclick="onClickChange()">change</button>
+    <button onclick="onClickSave()">save</button>
+  </div>
+  <div style="margin: 8px" id="id-container">
+    <div id="id-c-0">
+      <input type="number" id="id-i-0" min="0" value="0" size="3" />
+      <input type="number" id="id-i-1" min="0" value="0" size="3" />
+      <input type="number" id="id-i-2" min="0" value="0" size="3" />
+    </div>
+    <div id="id-c-1">
+      <input type="number" id="id-i-3" min="0" value="0" size="3" />
+      <input type="number" id="id-i-4" min="0" value="0" size="3" />
+      <input type="number" id="id-i-5" min="0" value="0" size="3" />
+    </div>
+    <div id="id-c-2">
+      <input type="number" id="id-i-6" min="0" value="0" size="3" />
+      <input type="number" id="id-i-7" min="0" value="0" size="3" />
+      <input type="number" id="id-i-8" min="0" value="0" size="3" />
+    </div>
+  </div>
+
+  <script>
+    const ID_COLUMN = 'id-c-'
+    const ID_ITEM = 'id-i-'
+    let row = 3
+    let column = 3
+    let inputIdList = ['id-i-0','id-i-1','id-i-2','id-i-3','id-i-4','id-i-5','id-i-6','id-i-7','id-i-8']
+    let container
+
+    function init() {
+      console.log('init')
+      container = document.getElementById('id-container')
+    }
+
+    function clearContainer() {
+      while (container.hasChildNodes()) {
+        container.removeChild(container.firstChild)
+      }
+      inputIdList = []
+    }
+
+    function drawColumn() {
+      for (let i=0; i<column; i++) {
+        const id = `${ID_COLUMN}${i}`
+        const div = document.createElement('div')
+        div.id = id
+        drawItem(div)
+        container.appendChild(div)
+      }
+    }
+
+    function drawItem(parent) {
+      for (let i=0; i<row; i++) {
+        const id = `${ID_ITEM}${inputIdList.length}`
+        const input = document.createElement('input')
+        input.id = id
+        input.type = 'number'
+        input.value = 0
+        input.min = 0
+        input.size = 3
+        parent.appendChild(input)
+        inputIdList.push(id)
+      }
+    }
+
+    function changeRowColumn() {
+      const rowInput = document.getElementById('id-row')
+      const columnInput = document.getElementById('id-column')
+      const rv = Number(rowInput.value)
+      const cv = Number(columnInput.value)
+      row = rv
+      column = cv
+    }
+
+    function checkRowColumn() {
+      const rowInput = document.getElementById('id-row')
+      const columnInput = document.getElementById('id-column')
+      const rv = Number(rowInput.value)
+      const cv = Number(columnInput.value)
+      return !(row === rv && column === cv)
+    }
+
+    function getRawString() {
+      let maxV = 0
+      let raw = ''
+      for (let i=0; i<inputIdList.length; i++) {
+        const id = inputIdList[i]
+        const input = document.getElementById(id)
+        const v = Number(input.value)
+        maxV = Math.max(maxV, v)
+        raw += `${v},`
+      }
+      console.log(raw)
+      console.log('----------------')
+      raw = raw.slice(0, raw.length-1)
+      console.log(raw)
+
+      // memo/row/column/raw
+
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}_movement_raw`
+
+      return `${memo}/${row}/${column}/${maxV}/${raw}`
+    }
+
+    function save() {
+      const rawString = getRawString()
+      const name = rawString.split('/')[0]
+      saveString(rawString, name)
+    }
+
+    function saveString(str, name) {
+      const link = document.createElement("a")
+      const file = new Blob([str], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function onClickChange() {
+      console.log('onClickChange')
+      const isChanged = checkRowColumn()
+      if (!isChanged) {
+        console.log('not changed')
+        return
+      }
+      changeRowColumn()
+      clearContainer()
+      drawColumn()
+    }
+
+    function onClickSave() {
+      console.log('onClickSave')
+      save()
+    }
+  </script>
+</body>
+</html>
