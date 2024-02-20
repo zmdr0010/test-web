@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample movement raw per frame bullet</title>
+
+  <style>
+    body {
+      -webkit-user-drag: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      position: fixed;
+      overflow: hidden;
+    }
+
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div style="margin: 8px">
+    <button onclick="onClickShoot()">shoot</button>
+  </div>
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    const sample = [
+      "20240119153113_f/9/12/7/0,0,0,1,1,1,0,0,0,0,0,0,1,2,1,0,0,0,0,0,1,1,2,1,1,0,0,4,0,1,2,2,2,1,0,4,4,1,1,2,3,2,1,1,4,4,4,4,2,3,2,4,4,4,4,0,4,4,4,4,4,0,4,0,0,1,4,5,4,1,0,0,0,0,1,2,5,2,1,0,0,0,0,3,5,6,5,3,0,0,0,0,3,6,6,6,3,0,0,0,0,6,6,6,6,6,0,0",
+      "20240119152833_f/9/12/7/0,0,1,1,1,1,1,0,0,0,0,1,2,2,2,1,0,0,0,0,1,2,2,2,1,0,0,0,0,1,2,2,2,1,0,0,0,0,1,3,2,3,1,0,0,0,0,1,3,3,3,1,0,0,0,1,4,3,3,3,4,1,0,0,2,4,4,4,4,4,2,0,1,3,4,4,5,4,4,3,1,1,3,4,5,5,5,4,3,1,1,2,5,5,6,5,5,2,1,1,2,5,6,6,6,5,2,1",
+      "20240119152518_f/9/12/7/0,2,2,5,5,5,2,2,0,0,2,1,1,5,1,1,2,0,2,2,1,2,5,2,1,2,2,1,2,2,5,5,5,2,2,1,1,1,4,2,5,2,4,1,1,0,0,4,2,6,2,4,0,0,0,0,4,6,6,6,4,0,0,0,0,4,4,6,4,4,0,0,0,0,1,3,6,3,1,0,0,1,6,6,6,6,6,6,6,1,1,1,6,4,4,4,6,1,1,1,3,3,3,4,3,3,3,1",
+      "20240119152131_f/9/12/7/0,0,0,1,1,1,0,0,0,0,0,2,5,4,5,2,0,0,0,0,5,5,4,5,5,0,0,0,0,5,4,4,4,5,0,0,0,0,5,4,4,4,5,0,0,0,3,5,4,5,4,5,3,0,0,3,5,5,5,5,5,3,0,0,3,3,5,6,5,3,3,0,0,3,6,6,6,6,6,3,0,0,2,2,6,6,6,2,2,0,0,2,2,1,6,1,2,2,0,0,2,2,2,1,2,2,2,0",
+      "20240119151651_f/9/12/5/0,0,0,1,1,1,0,0,0,0,0,0,1,4,1,0,0,0,0,0,0,3,4,3,0,0,0,0,0,2,3,4,3,2,0,0,0,0,2,4,4,4,2,0,0,0,2,2,4,4,4,2,2,0,0,2,2,4,4,4,2,2,0,3,2,2,4,4,4,2,2,3,3,2,3,3,4,3,3,2,3,3,3,3,1,4,1,3,3,3,3,3,3,1,4,1,3,3,3,3,3,2,1,1,1,2,3,3",
+      "20240119155318_l/9/12/7/0,0,0,0,0,0,1,4,4,0,0,0,0,1,1,1,4,6,0,0,0,0,1,3,3,4,6,0,0,0,1,1,6,6,6,6,1,1,1,1,3,3,6,6,6,2,3,3,3,3,4,5,5,6,2,2,2,3,3,3,5,5,5,2,2,2,2,2,2,3,4,5,0,0,0,2,2,2,2,3,4,0,0,0,0,0,2,2,3,4,0,0,0,0,0,0,2,2,4,0,0,0,0,0,0,2,2,4",
+      "20240119155121_l/9/12/7/0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,3,3,3,2,2,2,3,3,3,3,3,6,1,3,3,3,3,3,4,6,6,1,1,3,3,4,4,6,6,6,1,1,1,3,5,5,6,6,6,0,1,1,1,3,4,5,6,6,0,0,1,1,3,4,4,5,6,0,0,0,1,3,1,4,5,6,0,0,0,1,1,1,5,5,6,0,0,0,0,1,1,5,5,6,0,0,0,0,0,1,5,5,5",
+      "20240119154558_l/9/12/7/0,0,0,0,2,2,4,4,5,0,0,0,2,2,2,4,4,5,0,0,1,2,4,4,4,5,5,0,1,1,2,4,4,5,5,5,1,1,3,2,4,5,5,6,6,1,1,3,2,4,5,6,6,6,1,3,3,3,5,5,6,6,6,1,1,3,3,5,5,6,5,6,0,1,1,1,3,2,6,5,6,0,0,0,1,1,2,4,4,5,0,0,0,0,1,1,2,4,5,0,0,0,0,0,1,3,3,5",
+      "20240119154214_l/9/12/7/0,0,0,0,0,1,1,5,1,0,0,0,2,2,1,5,5,1,0,0,4,3,2,2,5,5,6,0,4,4,3,2,5,5,6,6,4,4,3,3,5,5,6,6,6,4,3,3,2,2,5,6,6,6,4,4,3,2,2,5,5,6,6,4,4,3,3,2,2,5,6,6,4,4,3,3,2,2,5,5,6,4,4,4,3,3,2,5,5,6,0,0,4,4,2,2,1,5,6,0,0,0,2,2,1,1,5,1",
+      "2024011915498_l/9/12/7/0,0,0,0,0,0,1,5,5,0,0,0,0,0,1,1,5,5,0,0,0,0,0,1,4,5,5,0,0,0,0,1,1,4,5,6,0,0,0,0,1,1,4,5,6,0,0,0,1,1,2,5,5,6,0,0,1,1,2,2,5,5,6,0,1,1,2,2,3,5,5,6,0,1,2,2,3,3,5,6,6,1,1,2,2,3,6,5,6,6,1,2,2,3,6,6,6,6,6,1,2,2,3,6,6,6,6,6",
+      "20240119155318_l_h_reverse/9/12/7/4,4,1,0,0,0,0,0,0,6,4,1,1,1,0,0,0,0,6,4,3,3,1,0,0,0,0,6,6,6,6,1,1,0,0,0,6,6,6,3,3,1,1,1,1,6,5,5,4,3,3,3,3,2,5,5,5,3,3,3,2,2,2,5,4,3,2,2,2,2,2,2,4,3,2,2,2,2,0,0,0,4,3,2,2,0,0,0,0,0,4,2,2,0,0,0,0,0,0,4,2,2,0,0,0,0,0,0",
+      "20240119155121_l_h_reverse/9/12/7/2,2,2,2,2,0,0,0,0,3,3,3,2,2,2,2,2,2,6,3,3,3,3,3,2,2,2,6,6,4,3,3,3,3,3,1,6,6,6,4,4,3,3,1,1,6,6,6,5,5,3,1,1,1,6,6,5,4,3,1,1,1,0,6,5,4,4,3,1,1,0,0,6,5,4,1,3,1,0,0,0,6,5,5,1,1,1,0,0,0,6,5,5,1,1,0,0,0,0,5,5,5,1,0,0,0,0,0",
+      "20240119154558_l_h_reverse/9/12/7/5,4,4,2,2,0,0,0,0,5,4,4,2,2,2,0,0,0,5,5,4,4,4,2,1,0,0,5,5,5,4,4,2,1,1,0,6,6,5,5,4,2,3,1,1,6,6,6,5,4,2,3,1,1,6,6,6,5,5,3,3,3,1,6,5,6,5,5,3,3,1,1,6,5,6,2,3,1,1,1,0,5,4,4,2,1,1,0,0,0,5,4,2,1,1,0,0,0,0,5,3,3,1,0,0,0,0,0",
+      "20240119154214_l_h_reverse/9/12/7/1,5,1,1,0,0,0,0,0,1,5,5,1,2,2,0,0,0,6,5,5,2,2,3,4,0,0,6,6,5,5,2,3,4,4,0,6,6,6,5,5,3,3,4,4,6,6,6,5,2,2,3,3,4,6,6,5,5,2,2,3,4,4,6,6,5,2,2,3,3,4,4,6,5,5,2,2,3,3,4,4,6,5,5,2,3,3,4,4,4,6,5,1,2,2,4,4,0,0,1,5,1,1,2,2,0,0,0",
+      "2024011915498_l_h_reverse/9/12/7/5,5,1,0,0,0,0,0,0,5,5,1,1,0,0,0,0,0,5,5,4,1,0,0,0,0,0,6,5,4,1,1,0,0,0,0,6,5,4,1,1,0,0,0,0,6,5,5,2,1,1,0,0,0,6,5,5,2,2,1,1,0,0,6,5,5,3,2,2,1,1,0,6,6,5,3,3,2,2,1,0,6,6,5,6,3,2,2,1,1,6,6,6,6,6,3,2,2,1,6,6,6,6,6,3,2,2,1",
+      "20240119162153_bk/9/9/7/1,1,3,6,3,6,3,1,1,1,3,3,6,6,6,3,3,1,1,3,3,6,6,6,3,3,1,1,3,3,3,6,3,3,3,1,2,2,3,4,6,4,3,2,2,2,2,2,4,6,4,2,2,2,2,4,4,4,5,4,4,4,2,2,4,4,5,5,5,4,4,2,2,2,4,4,5,4,4,2,2",
+      "20240119162015_bk/9/9/7/0,0,0,5,6,5,0,0,0,0,0,1,4,5,4,1,0,0,0,1,1,4,4,4,1,1,0,1,2,2,4,3,4,2,2,1,2,2,2,4,3,4,2,2,2,1,2,3,3,3,3,3,2,1,0,1,2,3,3,3,2,1,0,0,0,1,2,3,2,1,0,0,0,0,0,1,2,1,0,0,0",
+      "20240119161616_bk/9/9/7/0,0,1,3,3,3,1,0,0,0,0,1,3,3,3,1,0,0,0,1,1,3,4,3,1,1,0,1,1,2,5,4,5,2,1,1,1,2,2,5,5,5,2,2,1,2,2,2,5,6,5,2,2,2,0,2,2,5,5,5,2,2,0,0,0,0,5,4,5,0,0,0,0,0,0,4,4,4,0,0,0",
+      "20240119161425_bk/9/9/7/4,4,4,6,6,6,4,4,4,4,1,3,6,6,6,3,1,4,4,1,2,6,5,6,2,1,4,0,1,2,6,5,6,2,1,0,0,1,2,2,5,2,2,1,0,0,0,1,2,5,2,1,0,0,0,0,0,1,2,1,0,0,0,0,0,0,1,2,1,0,0,0,0,0,0,0,1,0,0,0,0",
+      "2024011916187_bk/9/9/7/0,0,1,1,1,1,1,0,0,0,1,1,1,3,1,1,1,0,0,1,3,3,6,3,3,1,0,0,1,3,3,6,3,3,1,0,0,0,2,3,3,3,2,0,0,0,0,2,2,3,2,2,0,0,0,1,1,2,4,2,1,1,0,1,1,2,4,4,4,2,1,1,1,1,2,4,5,4,2,1,1",
+      "20240119161037_bd/15/15/7/1,1,1,3,3,1,1,1,1,1,3,3,1,1,1,1,3,3,3,3,1,1,4,1,1,3,3,3,3,1,1,1,3,3,3,1,4,4,4,1,3,3,3,1,1,0,1,1,3,3,3,4,4,4,3,3,3,1,1,0,0,0,1,2,3,2,4,4,4,2,3,2,1,0,0,0,0,1,2,2,2,4,4,4,2,2,2,1,0,0,0,0,1,2,2,6,4,4,4,6,2,2,1,0,0,0,0,0,2,2,6,4,4,4,6,2,2,0,0,0,0,0,0,2,2,6,5,4,5,6,2,2,0,0,0,0,0,0,2,2,6,5,4,5,6,2,2,0,0,0,0,0,0,2,2,6,5,5,5,6,2,2,0,0,0,0,0,0,2,2,6,6,5,6,6,2,2,0,0,0,0,0,0,2,2,6,6,6,6,6,2,2,0,0,0,0,0,0,2,6,6,4,5,4,6,6,2,0,0,0,0,0,0,2,6,4,4,5,4,4,6,2,0,0,0",
+      "20240119155525_bd/15/15/7/0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,2,1,3,3,3,1,2,1,1,0,0,0,1,1,2,2,2,3,3,3,2,2,2,1,1,0,1,1,2,2,2,2,3,3,3,2,2,2,2,1,1,1,1,2,2,2,4,3,3,3,4,2,2,2,1,1,1,1,2,2,4,4,3,3,3,4,4,2,2,1,1,1,1,2,2,4,4,5,3,5,4,4,2,2,1,1,1,1,2,4,4,4,5,5,5,4,4,4,2,1,1,1,1,2,4,4,5,5,6,5,5,4,4,2,1,1,1,1,2,2,4,5,6,6,6,5,4,2,2,1,1,1,1,2,2,2,5,6,6,6,5,2,2,2,1,1,1,1,2,2,2,5,6,6,6,5,2,2,2,1,1,1,1,2,2,2,5,6,6,6,5,2,2,2,1,1,0,1,1,2,2,5,6,3,6,5,2,2,1,1,0,0,0,1,1,2,5,6,3,6,5,2,1,1,0,0",
+      "2024011916611_bd/15/15/7/0,0,0,2,3,3,3,4,3,3,3,2,0,0,0,0,0,0,2,2,2,3,4,3,2,2,2,0,0,0,0,0,0,1,1,2,5,4,5,2,1,1,0,0,0,0,1,1,1,1,2,5,4,5,2,1,1,1,1,0,0,1,2,2,2,2,5,4,5,2,2,2,2,1,0,1,1,2,3,3,3,5,5,5,3,3,3,2,1,1,2,2,2,3,3,3,4,5,4,3,3,3,2,2,2,2,2,2,2,2,3,5,5,5,3,2,2,2,2,2,2,1,1,1,2,2,5,6,5,2,2,1,1,1,2,1,1,1,1,2,2,5,6,5,2,2,1,1,1,1,0,1,1,1,2,6,6,6,6,6,2,1,1,1,0,0,1,1,1,2,3,6,6,6,3,2,1,1,1,0,0,0,0,1,2,3,3,6,3,3,2,1,0,0,0,0,0,0,1,2,2,3,6,3,2,2,1,0,0,0,0,0,0,1,2,2,2,3,2,2,2,1,0,0,0",
+      "2024011916320_bd/15/15/7/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,4,1,1,1,4,1,1,1,0,0,0,1,1,3,1,4,4,1,4,4,1,3,1,1,0,0,1,1,3,3,3,4,4,4,3,3,3,1,1,0,0,1,1,3,3,3,4,4,4,3,3,3,1,1,0,0,1,2,3,3,3,5,4,5,3,3,3,2,1,0,0,1,2,3,5,5,6,5,6,5,5,3,2,1,0,0,1,2,3,5,6,6,6,6,6,5,3,2,1,0,0,1,2,3,3,3,4,6,4,3,3,3,2,1,0,0,1,2,3,3,2,4,6,4,2,3,3,2,1,0,0,1,2,3,3,2,4,6,4,2,3,3,2,1,0,0,1,1,3,3,1,4,4,4,1,3,3,1,1,0,0,1,1,3,1,1,1,4,1,1,1,3,1,1,0,0,0,1,1,1,1,1,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+      "2024011915595_bd/15/15/7/0,0,0,1,2,2,2,4,2,2,2,1,0,0,0,0,0,1,2,2,3,3,4,3,3,2,2,1,0,0,0,1,2,2,3,3,3,4,3,3,3,2,2,1,0,1,2,2,3,3,3,4,4,4,3,3,3,2,2,1,1,2,3,3,3,4,4,5,4,4,3,3,3,2,1,1,2,3,3,3,4,4,5,4,4,3,3,3,2,1,2,2,3,3,3,4,4,5,4,4,3,3,3,2,2,2,3,3,3,3,6,4,5,4,6,3,3,3,3,2,2,3,3,3,6,6,4,6,4,6,6,3,3,3,2,2,3,3,6,6,6,6,6,6,6,6,6,3,3,2,2,2,3,3,3,6,6,5,6,6,3,3,3,2,2,1,2,2,2,3,2,4,5,4,2,3,2,2,2,1,1,1,2,2,2,4,4,5,4,4,2,2,2,1,1,1,1,1,2,2,4,4,5,4,4,2,2,1,1,1,1,1,1,2,2,4,4,5,4,4,2,2,1,1,1",
+      "20240122143329-mis-00-00/1/5/5/4,3,2,1,1",
+      "20240122143329-mis-00-01/2/5/5/4,4,3,3,2,2,1,1,1,1",
+      "20240122143329-mis-00-02/3/5/5/4,4,4,3,3,3,2,2,2,1,1,1,1,1,1",
+      "20240122143329-mis-00-03/4/5/5/4,4,4,4,3,3,3,3,2,2,2,2,1,1,1,1,1,1,1,1",
+      "20240122143329-mis-00-04/5/5/5/4,4,4,4,4,3,3,3,3,3,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1"
+    ]
+    const movementRawStringList = [
+      "20240217162832_movement_raw/3/3/3/0,3,0,0,2,0,0,1,0",
+      "20240217163042_movement_raw/3/3/3/0,3,0,2,0,0,0,1,0",
+      "2024021716317_movement_raw/3/3/3/0,3,0,0,0,2,0,1,0",
+      "20240217164025_movement_raw/1/5/5/5,4,3,2,1",
+      "20240217171348_movement_raw/4/4/6/0,0,0,6,0,0,4,5,0,3,0,0,1,2,0,0"
+    ]
+    const movementRawStringList01 = [
+      "20240219115245_movement_raw/1/5/5/5,4,3,2,1",
+      "20240219115337_movement_raw/4/4/4/4,0,0,0,0,3,0,0,0,0,2,0,0,0,0,1",
+      "20240219115413_movement_raw/3/5/3/3,0,0,0,0,0,0,2,0,0,0,0,0,0,1",
+      "20240219115450_movement_raw/3/5/3/0,0,3,0,0,0,0,2,0,0,0,0,1,0,0",
+      "20240219115536_movement_raw/4/4/4/0,0,0,4,0,0,3,0,0,2,0,0,1,0,0,0"
+    ]
+    // target : movementRawStringList01
+    const bulletMovementInfoRawList = [
+      "bullet-movement-set-0/2,0,1,0,5",
+      "bullet-movement-set-1/1,0,1,0,1",
+      "bullet-movement-set-2/1,1",
+      "bullet-movement-set-3/2,2,0,1,0,5,5",
+      "bullet-movement-set-4/3,0,1,0,4",
+      "bullet-movement-set-5/2,0,2,0,1,0,5,0,5",
+      "bullet-movement-set-6/2,3,0,1,0,4,5",
+      "bullet-movement-set-7/2,2,1,1,1,5,5",
+      "bullet-movement-set-8/3,3,1,1,1,4,4",
+      "bullet-movement-set-9/3,0,3,0,1,0,4,0,4",
+      "bullet-movement-set-10/3,2,1,5,4",
+      "bullet-movement-set-11/3,2,1,1,5,4",
+      "bullet-movement-set-12/3,2,1,1,1,5,4",
+      "bullet-movement-set-13/2,0,1,1,0,5",
+      "bullet-movement-set-14/2,3,1,4,5",
+      "bullet-movement-set-15/2,3,1,1,4,5",
+      "bullet-movement-set-16/2,3,1,1,1,4,5",
+    ]
+
+    const GUIDE_COLOR = 'rgba(100,200,100,100)'
+    const START_COLOR = 200
+    const SIZE = 5
+    const IS_ON_BOUND = true
+    const PLAY_BOUND = [5, 5, 80, 120] // top left right bottom
+    const SPEED = 0.5
+    const DELAY = 1000 / 60
+    let canvas
+    let ctx
+    let canvasW
+    let canvasH
+    let displaySize
+    let isMouseDown = false
+    let unitInfo
+    let prevX = 0
+    let prevY = 0
+    let startTimestamp = 0
+    let prevTimeStamp = 0
+    let frame = 0
+    let totalFrame = 0
+    let isPlaying = true
+    let moveInfo = {
+      fps: 30,
+      d: 50,
+      currentMove: 0,
+      moveCount: 0,
+      list: [
+        { // start 10, 10
+          // goal: [70,60], // absolute pos
+          md: [60, 50], // move dir = start + goal
+          // d: 50 // duration frame
+        },
+        {
+          // sx, sy : 70, 60
+          // goal: [70,90],
+          md: [0, 30], // move dir = sx,sy + goal
+          // d: 70
+        },
+        {
+          // sx, sy : 70, 90
+          // goal: [10,70],
+          md: [-60, -20], // move dir = sx,sy + goal
+          // d: 40
+        },
+        {
+          // sx, sy : 10, 70
+          // goal: [10,10],
+          md: [0, -60], // move dir = sx,sy + goal
+          // d: 30
+        }
+      ]
+    }
+    // let currentMove = 0
+    // let moveCount = 0
+    let bulletInfoList = [
+      {
+        memo: "bullet-0",
+        sampleTarget: "20240122143329-mis-00-02",
+        sampleTargetIndex: 27,
+        fps: 30,
+        d: 20, // duration
+        rs: 10, // row size
+        cs: 10, // column size
+        mvtTarget: "bullet-movement-set-0", // movement target memo
+        mvtTargetIndex: 0,
+        mvtSetInfo: {}
+      }
+    ]
+    let bulletMvtInfoList = []
+    let shootBulletList = []
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      canvasW = window.innerWidth - 8 * 2
+      canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, row : ${canvasW / SIZE}, column : ${canvasH / SIZE}`
+
+      // drawBgGuide(ctx, SIZE)
+
+      const sampleIndex = sample.length-1
+      console.log(`sampleIndex : ${sampleIndex}`)
+      // const unit = reverseVertical(parsingStringToInfo(sample[sampleIndex]))
+      const unit = parsingStringToInfo(sample[sampleIndex])
+      const size = SIZE
+      // const sx = 10
+      // const sy = 10
+      // drawRawSimple(unit, ctx, size, START_COLOR, sx, sy)
+
+      const sx = 40
+      const sy = 90
+
+      unitInfo = {
+        unit: unit,
+        startColor: START_COLOR,
+        sx: sx,
+        sy: sy,
+        x: sx,
+        y: sy,
+        speed: SPEED
+      }
+
+      initBulletInfoList()
+
+      drawPlayBound(ctx, SIZE)
+
+      // drawPerFrame(50 * 4)
+      // drawPerFrame(50 * 4 * 2, 60)
+      // drawPerFrame(50 * 4 / 2, 15)
+
+      // requestAnimationFrame(draw)
+
+
+      // parsingMovementRawString(str, fps, d, rs, cs)
+      // moveInfo = parsingMovementRawString(movementRawStringList[2], 30, 20, 10, 10)
+      // drawPerFrame(1)
+      moveInfo =
+        {
+          fps: 30,
+          d: 20,
+          currentMove: 0,
+          moveCount: 0,
+          list: [{md: [0, 0]}]
+        }
+      requestAnimationFrame(draw)
+
+
+
+      // drawRawSimple(unit, ctx, size, START_COLOR, sx, sy)
+
+    }
+
+    function initBulletInfoList() {
+      console.log('initBulletInfoList')
+      initBulletMvtInfoList()
+      shootBulletList = []
+      bulletInfoList = []
+      const length = 17
+      for (let i=0; i<length; i++) {
+        const info = {
+          memo: `bullet-${i}`,
+          sampleTarget: "20240122143329-mis-00-02",
+          sampleTargetIndex: 27,
+          fps: 30,
+          d: 20,
+          rs: 10,
+          cs: 10,
+          mvtTarget: `bullet-movement-set-${i}`,
+          mvtTargetIndex: i,
+          mvtSetInfo: {list: []}
+        }
+
+        const mvtSetRawInfo = parsingBulletMvtRawString(bulletMovementInfoRawList[info.mvtTargetIndex])
+        console.log(mvtSetRawInfo)
+        const idxList = mvtSetRawInfo.idxList
+        // const center = idxList.length * 0.5
+
+        for (let j=0; j<idxList.length; j++) {
+          const idx = idxList[j] - 1
+          if (idx < 0) continue
+          // const mvtInfo = parsingMovementRawString(movementRawStringList01[idx], info.fps, info.d, info.rs, info.cs)
+          // start x
+          const sx = 0
+          // const sx = j - center
+          info.mvtSetInfo.list.push({sx: sx, idx: idx})
+        }
+
+        bulletInfoList.push(info)
+      }
+
+      console.log(bulletInfoList)
+    }
+
+    function initBulletMvtInfoList() {
+      console.log('initBulletMvtInfoList')
+      bulletMvtInfoList = []
+      for (const str of movementRawStringList01) {
+        bulletMvtInfoList.push(parsingMovementRawString(str))
+      }
+      console.log('------------ bulletMvtInfoList')
+      console.log(bulletMvtInfoList)
+    }
+
+    function reverseVertical(origin) {
+      const info = {
+        memo: `${origin.memo}_v_reverse`,
+        row: origin.row,
+        column: origin.column,
+        raw_num: origin.raw_num,
+        raw: []
+      }
+
+      const length = origin.raw.length
+      const row = origin.row
+      const column = origin.column
+
+      for (let i=0; i<length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const index = x + ((column-1) - y) * row
+        const r = origin.raw[index]
+        info.raw.push(r)
+      }
+
+      return info
+    }
+
+    function drawBgGuide(ctx, size) {
+      const w = PLAY_BOUND[2] - PLAY_BOUND[1]
+      const h = PLAY_BOUND[3] - PLAY_BOUND[0]
+      const length = w * h
+      for (let i=0; i<length; i++) {
+        const x = i % w
+        const y = Math.floor(i / w)
+        const sx = size * (x + PLAY_BOUND[1])
+        const sy = size * (y + PLAY_BOUND[0])
+        ctx.strokeStyle = GUIDE_COLOR
+        ctx.lineWidth = 0.3
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.stroke()
+      }
+    }
+
+    function drawPlayBound(ctx, size) {
+      const w = PLAY_BOUND[2] - PLAY_BOUND[1]
+      const h = PLAY_BOUND[3] - PLAY_BOUND[0]
+      ctx.strokeStyle = GUIDE_COLOR
+      ctx.lineWidth = 0.3
+      ctx.beginPath()
+      ctx.rect(PLAY_BOUND[1] * size, PLAY_BOUND[0] * size, w * size, h * size)
+      ctx.stroke()
+    }
+
+    function drawRawSimple(info, ctx, size, startColor, startX, startY) {
+      const list = info.raw
+      const row = info.row
+      const rate = startColor / info.raw_num
+
+      for (let i=0; i<list.length; i++) {
+        const b = list[i] - 1
+
+        if (b < 0) continue
+
+        const colorVal = startColor - b * rate
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const x = i % row
+        const y = Math.floor(i / row)
+        // console.log(`i : ${i}, x : ${x}, y : ${y}`)
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+
+      if (!IS_ON_BOUND) return
+
+      const w = info.row * size
+      const h = info.column * size
+      const bsx = startX * size
+      const bsy = startY * size
+      ctx.strokeStyle = 'red'
+      ctx.beginPath()
+      ctx.rect(bsx, bsy, w, h)
+      ctx.stroke()
+
+      const cx = bsx + Math.floor(info.row * 0.5) * size
+      const cy = bsy + Math.floor(info.column * 0.5) * size
+      ctx.fillStyle = 'red'
+      ctx.beginPath()
+      ctx.rect(cx, cy, size, size)
+      ctx.fill()
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      // const startX = size * info.x + info.startX
+      // const startY = size * info.y + info.startY
+      const startX = size * (info.x + info.startX)
+      const startY = size * (info.y + info.startY)
+      // console.log(`draw raw rect ::: startX : ${startX}, startY : ${startY}, size : ${size}`)
+      ctx.fillStyle = info.color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    // rs : row size, cs : column size
+    function parsingMovementRawString(str, fps=30, d=20, rs=10, cs=10) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      // console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      // const raw = []
+      // for (const key in rawStrList) {
+      //   const r = Number(rawStrList[key])
+      //   raw.push(r)
+      // }
+
+      const mList = []
+      for (let i=0; i<rawNum; i++) {
+        mList.push({ md: [0, 0] })
+      }
+
+      const firstIndex = rawStrList.indexOf('1')
+      console.log(`firstIndex : ${firstIndex}`)
+      const fr = firstIndex % row
+      const fc = Math.floor(firstIndex/row)
+      console.log(`first row : ${fr}, column : ${fc}`)
+
+      for (let i=0; i<rawStrList.length; i++) {
+        const rw = Number(rawStrList[i]) - 1
+        if (rw < 0) continue
+
+        const r = i % row
+        const c = Math.floor(i/row)
+        const mr = r - fr
+        const mc = c - fc
+        console.log(`row : ${r}, column : ${c} ::: move row : ${mr}, column : ${mc}`)
+        const mInfo = mList[rw]
+        mInfo.md[0] = mr * rs
+        mInfo.md[1] = mc * cs
+      }
+
+      return {
+        fps: fps,
+        d: d,
+        currentMove: 0,
+        moveCount: 0,
+        list: mList
+      }
+    }
+
+    function parsingBulletMvtRawString(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const idxStrList = list[1].split(',')
+      const idxList = []
+      for (const i of idxStrList) {
+        idxList.push(Number(i))
+      }
+      return {
+        memo: memo,
+        idxList: idxList
+      }
+    }
+
+    function move(info, mx, my) {
+      // ctx.clearRect(0, 0, canvasW, canvasH)
+      // drawBgGuide(ctx, SIZE)
+
+      let x = mx + info.sx
+      let y = my + info.sy
+
+      const dw = Math.floor(unitInfo.unit.row * 0.5)
+      const dh = Math.floor(unitInfo.unit.column * 0.5)
+      const bLeft = PLAY_BOUND[1] - dw
+      const bRight = PLAY_BOUND[2] - dw
+      const bTop = PLAY_BOUND[0] - dh
+      const bBottom = PLAY_BOUND[3] - dh
+      if (x <= bLeft) x = bLeft
+      if (x >= bRight) x = bRight
+      if (y <= bTop) y = bTop
+      if (y >= bBottom) y = bBottom
+
+      info.x = x
+      info.y = y
+      // drawRawSimple(info.unit, ctx, SIZE, info.startColor, x, y)
+    }
+
+    function moveByVector(info, vector) {
+      let x = info.x + vector[0] * info.speed
+      let y = info.y + vector[1] * info.speed
+
+      // const dw = Math.floor(unitInfo.unit.row * 0.5)
+      // const dh = Math.floor(unitInfo.unit.column * 0.5)
+      // const bLeft = PLAY_BOUND[1] - dw
+      // const bRight = PLAY_BOUND[2] - dw
+      // const bTop = PLAY_BOUND[0] - dh
+      // const bBottom = PLAY_BOUND[3] - dh
+      // if (x <= bLeft) x = bLeft
+      // if (x >= bRight) x = bRight
+      // if (y <= bTop) y = bTop
+      // if (y >= bBottom) y = bBottom
+
+      info.x = x
+      info.y = y
+    }
+
+    // target : bullet Info index
+    function shoot(target, sx, sy) {
+      const originBulletInfo = bulletInfoList[target]
+
+      const bulletInfo = {
+        memo: originBulletInfo.memo,
+        sampleTarget: originBulletInfo.sampleTarget,
+        sampleTargetIndex: originBulletInfo.sampleTargetIndex,
+        fps: originBulletInfo.fps,
+        d: originBulletInfo.d,
+        rs: originBulletInfo.rs,
+        cs: originBulletInfo.cs,
+        mvtTarget: originBulletInfo.mvtTarget,
+        mvtTargetIndex: originBulletInfo.mvtTargetIndex,
+        mvtSetInfo: {list: []}
+      }
+
+      const mvtSetInfoList = originBulletInfo.mvtSetInfo.list
+
+      // {sx: sx, idx: idx}
+      for (const originSetInfo of mvtSetInfoList) {
+        const setInfo = { sx: originSetInfo.sx, idx: originSetInfo.idx }
+        bulletInfo.mvtSetInfo.list.push(setInfo)
+        // {
+        //   fps: fps,
+        //     d: d,
+        //   currentMove: 0,
+        //   moveCount: 0,
+        //   list: mList // [ { md: [0, 0] } ]
+        // }
+        const originBMvtInfo = bulletMvtInfoList[setInfo.idx]
+        const bMvtInfo = { fps: originBMvtInfo.fps, d: originBMvtInfo.d, currentMove: 0, moveCount: 0, list: []}
+        let isFirst = true
+        let fsx = 0
+        let fsy = 0
+        for (const mInfo of originBMvtInfo.list) {
+          const mdx = mInfo.md[0] + setInfo.sx
+          const mdy = mInfo.md[1]
+          console.log(`setInfo.sx : ${setInfo.sx}, mInfo.md[0] : ${mInfo.md[0]}, mInfo.md[1] : ${mInfo.md[1]}`)
+          bMvtInfo.list.push({ md: [mdx, mdy] })
+          if (isFirst) {
+            fsx = mdx
+            fsy = mdy
+            isFirst = false
+          }
+        }
+
+        const bullet = {
+          unit: parsingStringToInfo(sample[bulletInfo.sampleTargetIndex]),
+          startColor: START_COLOR,
+          sx: sx + fsx,
+          sy: sy + fsy,
+          x: sx + fsx,
+          y: sy + fsy,
+          speed: SPEED
+        }
+        setInfo.bullet = bullet
+        setInfo.mvtInfo = bMvtInfo
+      }
+
+
+      shootBulletList.push({target: bulletInfo, currentMove: 1, moveCount: 0})
+    }
+
+    function draw(timestamp) {
+      frame++
+      totalFrame++
+      if (startTimestamp===0) {
+        startTimestamp = timestamp
+        prevTimeStamp = timestamp
+      }
+      const current = timestamp - prevTimeStamp
+      const fps = Math.round(frame*1000/current)
+
+      if (current > 1000) {
+        prevTimeStamp = timestamp
+        frame = 0
+      }
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}, timestamp : ${Math.floor(timestamp)} start : ${Math.floor(startTimestamp)}, current : ${Math.floor(current)}, total frame : ${totalFrame}, fps : ${fps}`
+      ctx.clearRect(0, 0, canvasW, canvasH)
+      // drawBgGuide(ctx, SIZE)
+      drawPlayBound(ctx, SIZE)
+
+      const fpsScale = fps / moveInfo.fps
+      const d = Math.floor(moveInfo.d * fpsScale)
+      drawFrame(d, moveInfo, unitInfo)
+
+      drawShootBullet(fps)
+
+      if (isPlaying) requestAnimationFrame(draw)
+    }
+
+    function drawPerFrame(frame, fps=30) {
+      const fpsScale = fps / moveInfo.fps
+      const d = Math.floor(moveInfo.d * fpsScale)
+      for (let i=0; i<frame; i++) {
+        drawFrame(d, moveInfo, unitInfo)
+      }
+    }
+
+    function drawShootPerFrame(shootNum, frame, fps=30) {
+      for(let i=0; i<shootNum; i++) {
+        shoot(0, unitInfo.x, unitInfo.y)
+      }
+
+      for (let i=0; i<frame; i++) {
+        drawShootBullet(fps)
+      }
+    }
+
+    function drawFrame(d, moveInfo, unitInfo) {
+      const list = moveInfo.list
+      let moveCount = moveInfo.moveCount
+      let currentMove = moveInfo.currentMove
+      let currentM = list[currentMove]
+      moveCount++
+      if (moveCount > d) {
+        moveCount = 0
+        currentMove++
+        if (currentMove >= list.length) currentMove = 0
+        unitInfo.sx += currentM.md[0]
+        unitInfo.sy += currentM.md[1]
+        currentM = list[currentMove]
+      }
+
+      const dx = currentM.md[0]
+      const dy = currentM.md[1]
+      const rate = moveCount / d
+      unitInfo.x = dx * rate + unitInfo.sx
+      unitInfo.y = dy * rate + unitInfo.sy
+
+      moveInfo.moveCount = moveCount
+      moveInfo.currentMove = currentMove
+
+      drawRawSimple(unitInfo.unit, ctx, SIZE, unitInfo.startColor, unitInfo.x, unitInfo.y)
+    }
+
+    function drawShootBullet(fps=30) {
+      let removeList = []
+      // {target: bulletInfo, currentMove: 0, moveCount: 0}
+      for (const shootInfo of shootBulletList) {
+        const bulletInfo = shootInfo.target
+        const fpsScale = fps / bulletInfo.fps
+        const d = Math.floor(bulletInfo.d * fpsScale)
+        // console.log(`bulletInfo.fps : ${bulletInfo.fps}, fpsScale : ${fpsScale}, bulletInfo.d : ${bulletInfo.d}, d : ${d}`)
+        let isChangedMove = false
+        let moveCount = shootInfo.moveCount
+        let currentMove = shootInfo.currentMove
+        moveCount++
+        if (moveCount > d) {
+          moveCount = 0
+          currentMove++
+          isChangedMove = true
+        }
+        shootInfo.moveCount = moveCount
+        shootInfo.currentMove = currentMove
+
+        // {sx: sx, idx: idx}
+        const mvtSetInfoList = bulletInfo.mvtSetInfo.list
+        let hasMvt = false
+        for (const setInfo of mvtSetInfoList) {
+          const bMvtInfo = setInfo.mvtInfo
+          if (currentMove >= bMvtInfo.list.length) {
+            continue
+          }
+
+          const bullet = setInfo.bullet
+
+          if (isChangedMove) {
+            const prevM = bMvtInfo.list[currentMove-1]
+            bullet.sx += prevM.md[0]
+            bullet.sy += prevM.md[1]
+          }
+
+          hasMvt = true
+
+          const currentM = bMvtInfo.list[currentMove]
+          const dx = currentM.md[0]
+          const dy = currentM.md[1]
+          // console.log(`dx : ${dx}, dy : ${dy}`)
+          const rate = moveCount / d
+          // console.log(`rate : ${rate}`)
+
+          bullet.x = dx * rate + bullet.sx
+          bullet.y = dy * rate + bullet.sy
+          // console.log(`bullet x : ${bullet.x}, y : ${bullet.y}`)
+
+          drawRawSimple(bullet.unit, ctx, SIZE, bullet.startColor, bullet.x, bullet.y)
+        }
+
+        if (!hasMvt) { // remove
+          removeList.push(shootInfo)
+        }
+      }
+
+      while (removeList.length > 0) {
+        const last = removeList.pop()
+        shootBulletList.splice(shootBulletList.indexOf(last), 1)
+      }
+    }
+
+    function checkOffset(offsetX, offsetY) {
+      const x = Math.floor(offsetX / SIZE)
+      const y = Math.floor(offsetY / SIZE)
+      // console.log(` x : ${x}, y : ${y}`)
+      return [x, y]
+    }
+
+    function onClickShoot() {
+      console.log('onClickShoot')
+      shoot(0, unitInfo.x, unitInfo.y)
+      // drawShootPerFrame(10, 80)
+    }
+  </script>
+</body>
+</html>
