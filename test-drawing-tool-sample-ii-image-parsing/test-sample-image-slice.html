@@ -27,6 +27,9 @@
     <button onclick="onClickSave()">save</button>
   </div>
   <div style="margin:8px">
+    <label id="id-point-info-label">mouse down:[0,0], move:[0,0], touch:[0,0]</label>
+  </div>
+  <div style="margin:8px">
     <button onclick="onClickAdd()">+</button>
     <button onclick="onClickRemove()">-</button>
     <button onclick="onClickSliceInfoDraw()">draw</button>
@@ -96,6 +99,12 @@
     ]
     let originImg
     let hasOriginImg = false
+    let mouseDownX = 0
+    let mouseDownY = 0
+    let mouseMoveX = 0
+    let mouseMoveY = 0
+    let touchX = 0
+    let touchY = 0
 
     function init() {
       console.log('init')
@@ -106,6 +115,10 @@
       // originCanvas.style.backgroundColor = 'rgb(23 14 15 / 1)'
       // originCanvas.style.backgroundColor = 'rgb(23 14 15 / 0.2)'
       imgSizeLabel = document.getElementById('id-img-size-label')
+
+      addEventListener('mousedown', onMouseDown)
+      addEventListener('mousemove', onMouseMove)
+      addEventListener('touchstart', onTouchStart)
     }
 
     function clear(ctx, w, h) {
@@ -332,6 +345,11 @@
       link.click()
     }
 
+    function writePosInfo() {
+      const label = document.getElementById('id-point-info-label')
+      label.innerText = `mouse down:[${mouseDownX},${mouseDownY}], move:[${mouseMoveX},${mouseMoveY}], touch:[${touchX},${touchY}]`
+    }
+
     function onClickSave() {
       console.log('onClickSave')
 
@@ -375,6 +393,30 @@
       drawOriginImg()
       updateSliceInfo()
       drawSliceInfo(originCtx)
+    }
+
+    function onMouseDown(evt) {
+      console.log('onMouseDown')
+      mouseDownX = evt.offsetX
+      mouseDownY = evt.offsetY
+      writePosInfo()
+    }
+
+    function onMouseMove(evt) {
+      // console.log('onMouseMove')
+      mouseMoveX = evt.offsetX
+      mouseMoveY = evt.offsetY
+      writePosInfo()
+    }
+
+    function onTouchStart(evt) {
+      console.log('onTouchStart')
+      const tc = evt.touches[0]
+      const offsetX = tc.clientX
+      const offsetY = tc.clientY - originCanvas.offsetTop
+      touchX = offsetX
+      touchY = offsetY
+      writePosInfo()
     }
   </script>
 </body>
