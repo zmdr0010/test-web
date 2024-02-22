@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample image parsing no max eee</title>
+
+  <style>
+    div {
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div>
+    <label for="id-img-upload">Choose image to upload (PNG, JPG)</label>
+<!--    <input id="id-img-upload" type="file" name="img-upload" accept=".jpg, .jpeg, .png" multiple/>-->
+    <input id="id-img-upload" type="file" name="img-upload" accept=".jpg, .jpeg, .png" />
+  </div>
+  <div>
+    <label for="id-avr-input">avr (min: 0 ~ max: 255) : </label>
+    <input id="id-avr-input" type="number" value="120" min="0" max="255" />
+    <button onclick="onClickParsing()">parsing</button>
+  </div>
+  <div>
+    <label id="id-img-size-label">img w : 100, h : 100</label>
+  </div>
+  <div>
+    <input onchange="onChangedColorMode()" type="checkbox" id="id-color-mode" name="color-mode" />
+    <label for="id-color-mode">color mode</label>
+  </div>
+  <div>
+    <button onclick="onClickSave()">save</button>
+  </div>
+  <div>
+    <canvas style="background-color: chocolate" id="id-origin-canvas"></canvas>
+  </div>
+  <div>
+    <canvas style="background-color: beige" id="id-rbx-canvas"></canvas>
+  </div>
+
+  <script>
+    // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+    const FILE_TYPES = [
+      "image/apng",
+      "image/bmp",
+      "image/gif",
+      "image/jpeg",
+      "image/pjpeg",
+      "image/png",
+      "image/svg+xml",
+      "image/tiff",
+      "image/webp",
+      "image/x-icon"
+    ]
+    const SIZE = 2
+    // const MAX = 400
+    const RBX_CANVAS_SCALE = 4
+    let originCanvas
+    let originCtx
+    let rbxCanvas
+    let rbxCtx
+    let imgW = 100
+    let imgH = 100
+    let imgSizeLabel
+    let colorList = []
+    let raw = []
+    let imgName = 'img-name'
+    let memo = ''
+    let rawInfo
+    let isColorMode = false
+    let avrValue = 120
+
+    function init() {
+      console.log('init')
+      originCanvas = document.getElementById('id-origin-canvas')
+      originCtx = originCanvas.getContext('2d')
+      rbxCanvas = document.getElementById('id-rbx-canvas')
+      rbxCtx = rbxCanvas.getContext('2d')
+      originCanvas.width = imgW
+      originCanvas.height = imgH
+      rbxCanvas.width = imgW * RBX_CANVAS_SCALE
+      rbxCanvas.height = imgH * RBX_CANVAS_SCALE
+      // originCanvas.style.backgroundColor = 'rgb(23 14 15 / 1)'
+      // originCanvas.style.backgroundColor = 'rgb(23 14 15 / 0.2)'
+      imgSizeLabel = document.getElementById('id-img-size-label')
+    }
+
+    function clear(ctx, w, h) {
+      ctx.clearRect(0, 0, w, h)
+    }
+
+    function drawRaw(ctx, raw, row, size, startX, startY, startColor) {
+      for (let i=0; i<raw.length; i++) {
+        const r = raw[i]
+        let color
+        if (isColorMode) {
+          color = colorList[r]
+        } else {
+          const rate = 1 - r / colorList.length
+          const colorVal = startColor * rate
+          color = `rgb(${colorVal},${colorVal},${colorVal})`
+        }
+        const x = i % row
+        const y = Math.floor(i / row)
+        const sx = size * x + startX
+        const sy = size * y + startY
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.rect(sx, sy, size, size)
+        ctx.fill()
+      }
+    }
+
+    function onClickSave() {
+      console.log('onClickSave')
+      save(parsingInfoToString(rawInfo))
+      saveColorList(colorList, memo)
+    }
+
+    function onChangedColorMode() {
+      console.log('onChangedColorMode')
+      const colorMode = document.getElementById('id-color-mode')
+      isColorMode = colorMode.checked
+      clear(rbxCtx, imgW * RBX_CANVAS_SCALE, imgH * RBX_CANVAS_SCALE)
+      drawRaw(rbxCtx, rawInfo.raw, rawInfo.row, SIZE, 30, 30, 200)
+    }
+
+    function onClickParsing() {
+      console.log('onClickParsing')
+      const input = document.getElementById('id-avr-input')
+      avrValue = Number(input.value)
+      parsingImg()
+    }
+
+    function parsingImg() {
+      console.log('parsingImg')
+      colorList = []
+      raw = []
+      const input = document.getElementById('id-img-upload')
+      // console.log(input.files) // FileList [ File ]
+      // console.log(input.file) // undefined
+      const files = input.files
+      if (files.length === 0) {
+        console.log('no files')
+        return
+      }
+
+      for (const file of files) {
+        if (!validFileType(file)) {
+          console.log(`${file.name} : not image file`)
+          continue
+        }
+
+        const img = document.createElement('img')
+        img.src = URL.createObjectURL(file)
+        img.alt = img.title = file.name
+        imgName = file.name
+        img.addEventListener('load', () => {
+          console.log(`natural w : ${img.naturalWidth}, h : ${img.naturalHeight}`)
+          console.log(`w : ${img.width}, h : ${img.height}`)
+          // originCanvas.width = img.width
+          // originCanvas.height = img.height
+
+          imgW = img.width
+          imgH = img.height
+          // if (imgW > MAX) {
+          //   const scale = MAX / imgW
+          //   imgW = MAX
+          //   imgH = imgH * scale
+          // }
+          // if (imgH > MAX) {
+          //   const scale = MAX / imgH
+          //   imgH = MAX
+          //   imgW = imgW * scale
+          // }
+
+          const ow = imgW
+          const oh = imgH
+          // imgW = Math.floor(imgW)
+          // imgH = Math.floor(imgH)
+
+          originCanvas.width = imgW
+          originCanvas.height = imgH
+          rbxCanvas.width = imgW * RBX_CANVAS_SCALE
+          rbxCanvas.height = imgH * RBX_CANVAS_SCALE
+
+          memo = `${imgName}_${imgW}x${imgH}`
+          imgSizeLabel.innerText = `img w : ${imgW}, h : ${imgH} (w : ${ow}, h : ${oh})`
+
+          // originCtx.drawImage(img, 0, 0)
+          originCtx.drawImage(img, 0, 0, imgW, imgH)
+          img.style.display = 'none'
+
+          parsingImgData(originCtx, imgW, imgH)
+
+          clear(rbxCtx, imgW * RBX_CANVAS_SCALE, imgH * RBX_CANVAS_SCALE)
+          drawRaw(rbxCtx, rawInfo.raw, rawInfo.row, SIZE, 30, 30, 200)
+        })
+      }
+    }
+
+    function parsingImgData(ctx, w, h) {
+      for (let i=0; i<h; i++) {
+        for (let j=0; j<w; j++) {
+          const pixel = ctx.getImageData(j, i, 1, 1)
+          const data = pixel.data
+          // data ::: 0 : r, 1 : g, 2 : b, 3 : alpha
+          // data value ::: 0 ~ 255
+          // const color = `rgb(${data[0]} ${data[1]} ${data[2]} / ${data[3] / 255})` // ex) 'rgb(23 14 15 / 1)'
+          // const color = `rgb(${data[0]},${data[1]},${data[2]})`
+
+          let r = data[0]
+          let g = data[1]
+          let b = data[2]
+          let avr = (r + g + b) / 3
+
+          let color = 'rgb(255,255,255)'
+          // let color = 'brown'
+
+          if (avr < avrValue) {
+            color = `rgb(${r},${g},${b})`
+            // color = `rgb(${avrValue},${avrValue},${avrValue})`
+            // color = `rgb(${avr},${avr},${avr})`
+            // color = `rgb(${r},0,0)`
+            // color = `rgb(0,${g},0)`
+            // color = `rgb(0,0,${b})`
+          }
+
+          console.log(color)
+          const index = checkColor(colorList, color)
+          raw.push(index)
+        }
+      }
+
+      console.log(colorList)
+      console.log(raw)
+      rawInfo = createInfo(memo, imgW, imgH, colorList.length, raw)
+    }
+
+    function checkColor(colorList, color) {
+      const index = colorList.indexOf(color)
+      if (index < 0) {
+        colorList.push(color)
+        return colorList.length - 1
+      }
+      return index
+    }
+
+    function validFileType(file) {
+      return FILE_TYPES.includes(file.type)
+    }
+
+    function createInfo(memo, row, column, rawNum, raw) {
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function parsingInfoToString(info) {
+      let result = ""
+      result += `${info.memo}/${info.row}/${info.column}/${info.raw_num}/`
+
+      for (let i=0; i<info.raw.length; i++) {
+        if (i === info.raw.length-1) {
+          result += `${info.raw[i]}`
+        } else {
+          result += `${info.raw[i]},`
+        }
+      }
+
+      return result
+    }
+
+    function save(rawString) {
+      console.log(`save ::: ${rawString}`)
+      const name = rawString.split('/')[0]
+      saveString(rawString, name)
+    }
+
+    function saveColorList(colorList, memo) {
+      let str = ''
+      for (const color of colorList) {
+        str += `${color},`
+      }
+      str = str.slice(0, str.length-1)
+      console.log(str)
+
+      const name = `${memo}-color-list`
+      saveString(str, name)
+    }
+
+    function saveString(str, name) {
+      const link = document.createElement("a")
+      const file = new Blob([str], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+  </script>
+</body>
+</html>
