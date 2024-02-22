@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test sample image slice guide save raw info</title>
+
+  <style>
+    div {
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div>
+    <label for="id-img-upload">Choose image to upload (PNG, JPG)</label>
+<!--    <input id="id-img-upload" type="file" name="img-upload" accept=".jpg, .jpeg, .png" multiple/>-->
+    <input id="id-img-upload" type="file" name="img-upload" accept=".jpg, .jpeg, .png" />
+  </div>
+  <div style="margin:8px">
+    <button onclick="onClickParsing()">parsing</button>
+  </div>
+  <div>
+    <label id="id-img-size-label">img w : 100, h : 100</label>
+  </div>
+  <div style="margin:8px">
+    <button onclick="onClickSave()">save</button>
+  </div>
+  <div style="margin:8px">
+    <label id="id-point-info-label">mouse down:[0,0], move:[0,0], touch:[0,0]</label>
+  </div>
+  <div style="margin:8px">
+    <button onclick="onClickAdd()">+</button>
+    <button onclick="onClickRemove()">-</button>
+    <button onclick="onClickSliceInfoDraw()">draw</button>
+  </div>
+  <div style="margin:8px" id="id-slice-info-container">
+<!--    <div id="id-slice-info-i-0">-->
+<!--      <label id="id-slice-info-label-x-0">x</label>-->
+<!--      <input id="id-slice-info-input-x-0" type="number" value="2"/>-->
+<!--      <label id="id-slice-info-label-y-0">y</label>-->
+<!--      <input id="id-slice-info-input-y-0" type="number" value="2"/>-->
+<!--      <label id="id-slice-info-label-w-0">w</label>-->
+<!--      <input id="id-slice-info-input-w-0" type="number" value="30" min="4"/>-->
+<!--      <label id="id-slice-info-label-h-0">h</label>-->
+<!--      <input id="id-slice-info-input-h-0" type="number" value="30" min="4"/>-->
+<!--    </div>-->
+  </div>
+  <div>
+    <canvas style="background-color: chocolate" id="id-origin-canvas"></canvas>
+  </div>
+
+  <script>
+    // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+    const FILE_TYPES = [
+      "image/apng",
+      "image/bmp",
+      "image/gif",
+      "image/jpeg",
+      "image/pjpeg",
+      "image/png",
+      "image/svg+xml",
+      "image/tiff",
+      "image/webp",
+      "image/x-icon"
+    ]
+    const SIZE = 2
+    const MAX = 400
+    const START_X = 2
+    const START_Y = 2
+    const START_W = 30
+    const START_H = 30
+    const MIN_W = 4
+    const MIN_H = 4
+    const ID_SLICE_INFO_I = 'id-slice-info-i-'
+    const ID_SLICE_INFO_LABEL_X = 'id-slice-info-label-x-'
+    const ID_SLICE_INFO_INPUT_X = 'id-slice-info-input-x-'
+    const ID_SLICE_INFO_LABEL_Y = 'id-slice-info-label-Y-'
+    const ID_SLICE_INFO_INPUT_Y = 'id-slice-info-input-Y-'
+    const ID_SLICE_INFO_LABEL_W = 'id-slice-info-label-w-'
+    const ID_SLICE_INFO_INPUT_W = 'id-slice-info-input-w-'
+    const ID_SLICE_INFO_LABEL_H = 'id-slice-info-label-h-'
+    const ID_SLICE_INFO_INPUT_H = 'id-slice-info-input-h-'
+    const SLICE_INFO_P_COLOR = 'red'
+    const SLICE_INFO_LINE_COLOR = 'red'
+    const SLICE_INFO_P_SIZE = 5
+    const SLICE_INFO_LINE_SIZE = 1
+    const GUIDE_COLOR = 'limegreen'
+    const GUIDE_LINE_SIZE = 0.5
+    const GUIDE_INTERVAL = 50
+    const GUIDE_COLOR_1 = 'green'
+    const GUIDE_LINE_SIZE_1 = 1
+    const GUIDE_INTERVAL_1 = 100
+
+
+    let originCanvas
+    let originCtx
+    let imgW = 100
+    let imgH = 100
+    let imgSizeLabel
+    let imgName = 'img-name'
+    let memo = ''
+    let sliceInfoList = [
+      // {
+      //   id: 0, x: 2, y: 2, w: 30, h: 30
+      // }
+    ]
+    let originImg
+    let hasOriginImg = false
+    let isOnGuide = true
+    let mouseDownX = 0
+    let mouseDownY = 0
+    let mouseMoveX = 0
+    let mouseMoveY = 0
+    let touchX = 0
+    let touchY = 0
+
+    function init() {
+      console.log('init')
+      originCanvas = document.getElementById('id-origin-canvas')
+      originCtx = originCanvas.getContext('2d')
+      originCanvas.width = imgW
+      originCanvas.height = imgH
+      // originCanvas.style.backgroundColor = 'rgb(23 14 15 / 1)'
+      // originCanvas.style.backgroundColor = 'rgb(23 14 15 / 0.2)'
+      imgSizeLabel = document.getElementById('id-img-size-label')
+
+      addEventListener('mousedown', onMouseDown)
+      addEventListener('mousemove', onMouseMove)
+      addEventListener('touchstart', onTouchStart)
+    }
+
+    function clear(ctx, w, h) {
+      console.log(`clear ${w}x${h}`)
+      ctx.clearRect(0, 0, w, h)
+    }
+
+    function parsingImg() {
+      console.log('parsingImg')
+      const input = document.getElementById('id-img-upload')
+      // console.log(input.files) // FileList [ File ]
+      // console.log(input.file) // undefined
+      const files = input.files
+      if (files.length === 0) {
+        console.log('no files')
+        return
+      }
+
+      for (const file of files) {
+        if (!validFileType(file)) {
+          console.log(`${file.name} : not image file`)
+          continue
+        }
+
+        if (!originImg) {
+          console.log('create originImg')
+          originImg = document.createElement('img')
+          originImg.style.display = 'none'
+          originImg.addEventListener('load', () => {
+            console.log(`natural w : ${originImg.naturalWidth}, h : ${originImg.naturalHeight}`)
+            console.log(`w : ${originImg.width}, h : ${originImg.height}`)
+            // originCanvas.width = img.width
+            // originCanvas.height = img.height
+
+            imgW = originImg.width
+            imgH = originImg.height
+
+            originCanvas.width = imgW
+            originCanvas.height = imgH
+
+            memo = `${imgName}_${imgW}x${imgH}`
+            imgSizeLabel.innerText = `img w : ${imgW}, h : ${imgH}`
+
+            // originCtx.drawImage(originImg, 0, 0)
+            // originCtx.drawImage(img, 0, 0, imgW, imgH)
+            // img.style.display = 'none'
+
+            drawOriginImg()
+
+            hasOriginImg = true
+          })
+        }
+
+        originImg.src = URL.createObjectURL(file)
+        originImg.alt = originImg.title = file.name
+        imgName = file.name
+      }
+    }
+
+    function validFileType(file) {
+      return FILE_TYPES.includes(file.type)
+    }
+
+    function updateSliceInfo() {
+      console.log('updateSliceInfo')
+      for (const info of sliceInfoList) {
+        const inputX = document.getElementById(`${ID_SLICE_INFO_INPUT_X}${info.id}`)
+        const inputY = document.getElementById(`${ID_SLICE_INFO_INPUT_Y}${info.id}`)
+        const inputW = document.getElementById(`${ID_SLICE_INFO_INPUT_W}${info.id}`)
+        const inputH = document.getElementById(`${ID_SLICE_INFO_INPUT_H}${info.id}`)
+        info.x = Number(inputX.value)
+        info.y = Number(inputY.value)
+        info.w = Number(inputW.value)
+        info.h = Number(inputH.value)
+      }
+    }
+
+    function drawOriginImg() {
+      console.log('drawOriginImg')
+      originCtx.drawImage(originImg, 0, 0)
+    }
+
+    function drawSliceInfo(ctx) {
+      console.log('drawSliceInfo')
+
+      for (const info of sliceInfoList) {
+        ctx.strokeStyle = SLICE_INFO_LINE_COLOR
+        ctx.lineWidth = SLICE_INFO_LINE_SIZE
+        ctx.beginPath()
+        ctx.rect(info.x, info.y, info.w, info.h)
+        ctx.stroke()
+
+        const size = SLICE_INFO_P_SIZE
+        const ds = size * 0.5
+        const l = info.x - ds
+        const r = info.x + info.w - ds
+        const t = info.y - ds
+        const b = info.y + info.h - ds
+        const color = SLICE_INFO_P_COLOR
+
+        ctx.fillStyle = color
+
+        ctx.beginPath()
+        ctx.rect(l, t, size, size)
+        ctx.rect(r, t, size, size)
+        ctx.rect(l, b, size, size)
+        ctx.rect(r, b, size, size)
+        ctx.fill()
+      }
+    }
+
+    function drawGuide(ctx, w, h, interval=GUIDE_INTERVAL, size=GUIDE_LINE_SIZE, color=GUIDE_COLOR) {
+      console.log('drawGuide')
+
+      const row = Math.floor(w / interval)
+      const column = Math.floor(h / interval)
+
+      for (let i=1; i<=row; i++) {
+        const sx = i * interval
+        const dx = sx
+        const sy = 0
+        const dy = h
+        drawGuideLine(ctx, sx, sy, dx, dy, size, color)
+      }
+
+      for (let i=1; i<=column; i++) {
+        const sx = 0
+        const dx = w
+        const sy = i * interval
+        const dy = sy
+        drawGuideLine(ctx, sx, sy, dx, dy, size, color)
+      }
+    }
+
+    function drawGuideLine(ctx, sx, sy, dx, dy, size=GUIDE_LINE_SIZE, color=GUIDE_COLOR) {
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      ctx.lineTo(dx, dy)
+      ctx.lineWidth = size
+      ctx.strokeStyle = color
+      ctx.stroke()
+    }
+
+    function addSliceInfo() {
+      const id = sliceInfoList.length
+      const info = {
+        id: id, x: START_X, y: START_Y, w: START_W, h: START_H
+      }
+
+      sliceInfoList.push(info)
+
+      const div = document.createElement('div')
+      div.id = `${ID_SLICE_INFO_I}${id}`
+
+      const labelX = document.createElement('label')
+      labelX.id = `${ID_SLICE_INFO_LABEL_X}${id}`
+      labelX.innerText = 'x'
+
+      const labelY = document.createElement('label')
+      labelY.id = `${ID_SLICE_INFO_LABEL_Y}${id}`
+      labelY.innerText = 'y'
+
+      const labelW = document.createElement('label')
+      labelW.id = `${ID_SLICE_INFO_LABEL_W}${id}`
+      labelW.innerText = 'w'
+
+      const labelH = document.createElement('label')
+      labelH.id = `${ID_SLICE_INFO_LABEL_H}${id}`
+      labelH.innerText = 'h'
+
+      const inputX = document.createElement('input')
+      inputX.id = `${ID_SLICE_INFO_INPUT_X}${id}`
+      inputX.type = 'number'
+      inputX.value = info.x
+
+      const inputY = document.createElement('input')
+      inputY.id = `${ID_SLICE_INFO_INPUT_Y}${id}`
+      inputY.type = 'number'
+      inputY.value = info.y
+
+      const inputW = document.createElement('input')
+      inputW.id = `${ID_SLICE_INFO_INPUT_W}${id}`
+      inputW.type = 'number'
+      inputW.value = info.w
+      inputW.min = MIN_W
+
+      const inputH = document.createElement('input')
+      inputH.id = `${ID_SLICE_INFO_INPUT_H}${id}`
+      inputH.type = 'number'
+      inputH.value = info.h
+      inputH.min = MIN_H
+
+      const margin = '4px'
+      inputX.style.marginLeft = margin
+      labelY.style.marginLeft = margin
+      inputY.style.marginLeft = margin
+      labelW.style.marginLeft = margin
+      inputW.style.marginLeft = margin
+      labelH.style.marginLeft = margin
+      inputH.style.marginLeft = margin
+
+      div.appendChild(labelX)
+      div.appendChild(inputX)
+      div.appendChild(labelY)
+      div.appendChild(inputY)
+      div.appendChild(labelW)
+      div.appendChild(inputW)
+      div.appendChild(labelH)
+      div.appendChild(inputH)
+
+      const container = document.getElementById('id-slice-info-container')
+      container.appendChild(div)
+    }
+
+    function removeSliceInfo() {
+      const lastIndex = sliceInfoList.length - 1
+      if (lastIndex < 0) {
+        console.log('no sliceInfo')
+        return
+      }
+
+      sliceInfoList.pop()
+
+      const div = document.getElementById(`${ID_SLICE_INFO_I}${lastIndex}`)
+      const container = document.getElementById('id-slice-info-container')
+      container.removeChild(div)
+    }
+
+    function saveSliceInfo() {
+
+      // for (const info of sliceInfoList) {
+        // const canvas = document.createElement('canvas')
+        // const ctx = canvas.getContext('2d')
+        // canvas.width = info.w
+        // canvas.height = info.h
+        // ctx.drawImage(originImg, info.x, info.y, info.w, info.h, 0, 0, info.w, info.h)
+        //
+        // const name = `${imgName}_slice_${info.x}_${info.y}_${info.w}x${info.h}`
+        // saveCanvas(canvas, name)
+      // }
+
+      const name = `${generateId()}_slice_raw_info`
+      const length = sliceInfoList.length
+
+      let rawStr = ''
+      for (const info of sliceInfoList) {
+        const str = `${info.x},${info.y},${info.w},${info.h}`
+        rawStr += `/${str}`
+      }
+
+      // name / target (img name) / info length / raw info (ex. 0,0,10,10/10,10,20,30/30,10,40,40 ...)
+      // index 3 raw info start
+      const result = `${name}/${imgName}/${length}${rawStr}`
+      saveString(result, name)
+    }
+
+    function saveCanvas(canvas, name, type='png') {
+      console.log(`save ::: ${name}`)
+      const link = document.createElement('a')
+
+      if (type === 'jpg') {
+        // jpg
+        link.setAttribute('download', `${name}.jpg`)
+        link.setAttribute('href', canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream'))
+      } else {
+        // png
+        link.setAttribute('download', `${name}.png`)
+        link.setAttribute('href', canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
+      }
+
+      link.click()
+    }
+
+    function writePosInfo() {
+      const label = document.getElementById('id-point-info-label')
+      label.innerText = `mouse down:[${mouseDownX},${mouseDownY}], move:[${mouseMoveX},${mouseMoveY}], touch:[${touchX},${touchY}]`
+    }
+
+    function saveString(str, name) {
+      const link = document.createElement("a")
+      const file = new Blob([str], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function generateId() {
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      console.log(`y : ${y}, m : ${m}, d : ${d}, h : ${h}, mm : ${mm}, s : ${s}`)
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      return `${y}${mstr}${d}${h}${mm}${s}`
+    }
+
+    function onClickSave() {
+      console.log('onClickSave')
+
+      if (sliceInfoList.length <= 0) {
+        console.log('no sliceInfo')
+        return
+      }
+
+      saveSliceInfo()
+    }
+
+    function onClickParsing() {
+      console.log('onClickParsing')
+      parsingImg()
+    }
+
+    function onClickAdd() {
+      console.log('onClickAdd')
+      addSliceInfo()
+    }
+
+    function onClickRemove() {
+      console.log('onClickRemove')
+      removeSliceInfo()
+    }
+
+    function onClickSliceInfoDraw() {
+      console.log('onClickSliceInfoDraw')
+
+      if (sliceInfoList.length <= 0) {
+        console.log('no slice info')
+        return
+      }
+
+      if (!hasOriginImg) {
+        console.log('no origin img')
+        return
+      }
+
+      clear(originCtx, imgW, imgH)
+      drawOriginImg()
+      if (isOnGuide) {
+        drawGuide(originCtx, imgW, imgH)
+        drawGuide(originCtx, imgW, imgH, GUIDE_INTERVAL_1, GUIDE_LINE_SIZE_1, GUIDE_COLOR_1)
+      }
+      updateSliceInfo()
+      drawSliceInfo(originCtx)
+    }
+
+    function onMouseDown(evt) {
+      console.log('onMouseDown')
+      mouseDownX = evt.offsetX
+      mouseDownY = evt.offsetY
+      writePosInfo()
+    }
+
+    function onMouseMove(evt) {
+      // console.log('onMouseMove')
+      mouseMoveX = evt.offsetX
+      mouseMoveY = evt.offsetY
+      writePosInfo()
+    }
+
+    function onTouchStart(evt) {
+      console.log('onTouchStart')
+      const tc = evt.touches[0]
+      const offsetX = tc.clientX - originCanvas.offsetLeft
+      const offsetY = tc.clientY - originCanvas.offsetTop
+      touchX = Math.floor(offsetX)
+      touchY = Math.floor(offsetY)
+      writePosInfo()
+    }
+  </script>
+</body>
+</html>
