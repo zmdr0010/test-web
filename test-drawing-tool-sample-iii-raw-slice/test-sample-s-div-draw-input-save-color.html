@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test sample s div draw input save color</title>
+</head>
+<body style="background-color: black" onload="init()">
+  <div style="margin: 8px">
+    <label style="color: aliceblue" for="id-raw-input">raw :</label>
+    <input type="text" id="id-raw-input" name="raw"/>
+    <button id="id-draw-btn" onclick="onClickDraw()">draw</button>
+    <label style="color: aliceblue" for="id-color-input">color :</label>
+    <input type="text" id="id-color-input" name="color" value="blue"/>
+    <button id="id-change-color-btn" onclick="onClickChangeColor()">change color</button>
+    <button onclick="onClickSave()">save</button>
+  </div>
+  <div style="background-color: white; display: inline-block" id="id-container">
+    <div style="background-color: aliceblue; display: flex; width: 34px">
+      <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+      <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px;"></div>
+      <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px;"></div>
+    </div>
+    <div style="background-color: aliceblue; display: flex; width: 34px; margin-top: 2px">
+      <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+      <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px"></div>
+      <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px"></div>
+    </div>
+  </div>
+
+  <script>
+    const sample = []
+
+    let drwRaw = []
+    let isDrawing = false
+    let prevId = -1
+    let isRemoving = false
+    let state = 0
+    let row
+    let column
+    let bgColor = 'white'
+    let drwColor = 'blue'
+
+    function init() {
+      console.log('init')
+
+      const container = document.getElementById('id-container')
+      // container.addEventListener('mouseout', (evt) => {
+      //   console.log('mouse out')
+      // })
+      container.addEventListener('dblclick', (evt) => {
+        console.log('double click')
+        state++
+        if (state > 1)state = 0
+        if (state === 0) document.body.style.backgroundColor = 'black'
+        if (state === 1) document.body.style.backgroundColor = 'gray'
+      })
+    }
+
+    function initContainer() {
+      const container = document.getElementById('id-container')
+      container.innerHTML = ''
+      drwRaw = []
+      return container
+    }
+
+    function drawDiv(rawInfo, size) {
+      const container = initContainer()
+      const r = rawInfo.row
+      const c = rawInfo.column
+      console.log(`row : ${r}, column : ${c}`)
+
+      for (let i=0; i<c; i++) {
+        const cDiv = document.createElement('div')
+        cDiv.id = `id-c-${i}`
+        cDiv.style.display = 'flex'
+        cDiv.style.width = `${r * size}px`
+
+        for (let j=0; j<r; j++) {
+          const rDiv = document.createElement('div')
+          const id = i * r + j
+          // console.log(id)
+          rDiv.id = `id-r-${id}`
+          rDiv.style.width = `${size}px`
+          rDiv.style.height = `${size}px`
+
+          const rw = rawInfo.raw[id]
+
+          if (rw < 1) {
+            rDiv.style.backgroundColor = bgColor
+          } else {
+            rDiv.style.backgroundColor = drwColor
+          }
+
+          drwRaw.push(rw)
+
+          rDiv.addEventListener('click', (evt) => {
+            console.log(`click ::: id : ${id}`)
+            const drwRw = drwRaw[id]
+            console.log(drwRw)
+            if (drwRw < 1) {
+              drwRaw[id] = 1
+              rDiv.style.backgroundColor = drwColor
+            } else {
+              drwRaw[id] = 0
+              rDiv.style.backgroundColor = bgColor
+            }
+          })
+
+          rDiv.addEventListener('mousemove', (evt) => {
+            console.log(`mouse move ::: id : ${id}`)
+            if (prevId === id) return
+
+            if (isDrawing) {
+              // const drwRw = drwRaw[id]
+              // console.log(drwRw)
+              // if (drwRw < 1) {
+              //   drwRaw[id] = 1
+              //   rDiv.style.backgroundColor = 'blue'
+              // } else {
+              //   drwRaw[id] = 0
+              //   rDiv.style.backgroundColor = 'white'
+              // }
+              drwRaw[id] = 1
+              rDiv.style.backgroundColor = drwColor
+            }
+
+            if (isRemoving) {
+              drwRaw[id] = 0
+              rDiv.style.backgroundColor = bgColor
+            }
+
+            prevId = id
+          })
+          rDiv.addEventListener('mousedown', (evt) => {
+            console.log(`mouse down ::: id : ${id}`)
+            // isDrawing = true
+            if (state === 0) {
+              isDrawing = true
+            }
+            if (state === 1) {
+              isRemoving = true
+            }
+          })
+          rDiv.addEventListener('mouseup', (evt) => {
+            console.log(`mouse up ::: id : ${id}`)
+            isDrawing = false
+            isRemoving = false
+          })
+
+          cDiv.appendChild(rDiv)
+        }
+
+        container.appendChild(cDiv)
+      }
+
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function reverseHorizontalRaw(raw, row) {
+      const result = []
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const index = ((row-1) - x) + (y * row)
+        const r = raw[index]
+        result.push(r)
+      }
+      return result
+    }
+
+    function reverseVerticalRaw(raw, row, column) {
+      const result = []
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const index = x + ((column-1) - y) * row
+        const r = raw[index]
+        result.push(r)
+      }
+      return result
+    }
+
+    function getRawString(raw, r, c) {
+      // memo/row/column/raw
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}_div_draw`
+
+      return `${memo}/${r}/${c}/${1}/${raw}`
+    }
+
+    function save(raw, r, c) {
+      const rawString = getRawString(raw, r, c)
+      const name = rawString.split('/')[0]
+      saveString(rawString, name)
+    }
+
+    function saveString(str, name) {
+      const link = document.createElement("a")
+      const file = new Blob([str], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function onClickDraw() {
+      console.log('onClickDraw')
+      const input = document.getElementById('id-raw-input')
+      const rawStr = input.value
+      const rawInfo = parsingStringToInfo(rawStr)
+      row = rawInfo.row
+      column = rawInfo.column
+      drawDiv(rawInfo, 10)
+    }
+
+    function onClickChangeColor() {
+      console.log('onClickChangeColor')
+      const input = document.getElementById('id-color-input')
+      drwColor = input.value
+      onClickDraw()
+    }
+
+    function onClickSave() {
+      console.log('onClickSave')
+      if(drwRaw.length < 1) {
+        console.log('no drwRaw')
+        return
+      }
+
+      save(drwRaw, row, column)
+    }
+  </script>
+</body>
+</html>
