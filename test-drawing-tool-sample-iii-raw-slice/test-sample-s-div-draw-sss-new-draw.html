@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test sample s div draw sss new draw</title>
+</head>
+<body style="background-color: black" onload="init()">
+  <div style="margin: 8px">
+    <label style="color: aliceblue" for="id-input-row">row :</label>
+    <input type="number" id="id-input-row" value="30"/>
+    <label style="color: aliceblue" for="id-input-column">column :</label>
+    <input type="number" id="id-input-column" value="30"/>
+    <button onclick="onClickNew()">new</button>
+  </div>
+  <div style="margin: 8px">
+    <label style="color: aliceblue" for="id-raw-input">raw :</label>
+    <input type="text" id="id-raw-input" name="raw"/>
+    <button id="id-draw-btn" onclick="onClickDraw()">draw</button>
+    <label style="color: aliceblue" for="id-color-input">color :</label>
+    <input type="text" id="id-color-input" name="color" value="blue"/>
+    <button id="id-change-color-btn" onclick="onClickChangeColor()">change color</button>
+    <button onclick="onClickSave()">save</button>
+  </div>
+  <div style="margin: 6px">
+    <input type="checkbox" id="id-check-origin" onclick="onClickOriginCheck()" checked />
+    <label style="color: aliceblue" for="id-check-origin">origin</label>
+    <input type="checkbox" id="id-check-guide" onclick="onClickGuideCheck()" checked />
+    <label style="color: aliceblue" for="id-check-guide">guide</label>
+  </div>
+  <div>
+    <button onclick="onClickAddLayer()">+</button>
+    <button onclick="onClickAddLayerCopyOrigin()">+(copy origin)</button>
+    <button onclick="onClickRemoveLayer()">-</button>
+    <input type="number" id="id-input-copy-layer-index" value="0" min="0" />
+    <button onclick="onClickAddLayerCopyLayer()">+(copy layer)</button>
+  </div>
+  <div style="margin: 6px" id="id-layer-check-container">
+    <input style="accent-color: rgb(249,65,68)" type="checkbox" id="id-layer-check-0" onclick="onClickLayerCheck()" checked />
+    <label style="color: aliceblue" for="id-layer-check-0" id="id-label-layer-check-0">0</label>
+    <input style="accent-color: rgb(67,170,139)" type="checkbox" id="id-layer-check-1" onclick="onClickLayerCheck()" checked />
+    <label style="color: aliceblue" for="id-layer-check-1" id="id-label-layer-check-1">1</label>
+    <input style="accent-color: rgb(94,96,206)" type="checkbox" id="id-layer-check-2" onclick="onClickLayerCheck()" checked />
+    <label style="color: aliceblue" for="id-layer-check-2" id="id-label-layer-check-2">2</label>
+    <input style="accent-color: rgb(249,132,74)" type="checkbox" id="id-layer-check-3" onclick="onClickLayerCheck()" checked />
+    <label style="color: aliceblue" for="id-layer-check-3" id="id-label-layer-check-3">3</label>
+  </div>
+  <div style="background-color: white; display: inline-block" id="id-container">
+    <div style="background-color: aliceblue; display: flex; width: 34px">
+      <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+      <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px;"></div>
+      <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px;"></div>
+    </div>
+    <div style="background-color: aliceblue; display: flex; width: 34px; margin-top: 2px">
+      <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+      <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px"></div>
+      <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px"></div>
+    </div>
+  </div>
+  <div style="background-color: rgba(0,0,0,0); position: absolute; width: 100px; height: 100px; top: 300px; left: 10px" id="id-layer-container">
+    <div style="background-color: white; display: inline-block; position: absolute" id="id-layer-0">
+      <div style="background-color: aliceblue; display: flex; width: 34px">
+        <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+        <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px;"></div>
+        <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px;"></div>
+      </div>
+      <div style="background-color: aliceblue; display: flex; width: 34px; margin-top: 2px">
+        <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+        <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px"></div>
+        <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px"></div>
+      </div>
+    </div>
+    <div style="background-color: white; display: inline-block; position: absolute" id="id-layer-1">
+      <div style="background-color: aliceblue; display: flex; width: 34px">
+        <div style="background-color: cadetblue; width: 10px; height: 10px"></div>
+        <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px;"></div>
+        <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px;"></div>
+      </div>
+      <div style="background-color: aliceblue; display: flex; width: 34px; margin-top: 2px">
+        <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+        <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px"></div>
+        <div style="background-color: chocolate; width: 10px; height: 10px; margin-left: 2px"></div>
+      </div>
+    </div>
+    <div style="background-color: white; display: inline-block; position: absolute" id="id-layer-2">
+      <div style="background-color: aliceblue; display: flex; width: 34px">
+        <div style="background-color: blueviolet; width: 10px; height: 10px"></div>
+        <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px;"></div>
+        <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px;"></div>
+      </div>
+      <div style="background-color: aliceblue; display: flex; width: 34px; margin-top: 2px">
+        <div style="background-color: blueviolet; width: 10px; height: 10px"></div>
+        <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px"></div>
+        <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px"></div>
+      </div>
+    </div>
+    <div style="background-color: white; display: inline-block; position: absolute" id="id-layer-3">
+      <div style="background-color: aliceblue; display: flex; width: 34px">
+        <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+        <div style="background-color: chocolate; width: 10px; height: 10px; margin-left: 2px;"></div>
+        <div style="background-color: chocolate; width: 10px; height: 10px; margin-left: 2px;"></div>
+      </div>
+      <div style="background-color: aliceblue; display: flex; width: 34px; margin-top: 2px">
+        <div style="background-color: chocolate; width: 10px; height: 10px"></div>
+        <div style="background-color: chocolate; width: 10px; height: 10px; margin-left: 2px"></div>
+        <div style="background-color: chocolate; width: 10px; height: 10px; margin-left: 2px"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const colorList = [
+      'rgb(88,47,14)',
+      'rgb(127,79,36)',
+      'rgb(147,102,57)',
+      'rgb(166,138,100)',
+      'rgb(182,173,144)',
+      'rgb(194,197,170)',
+      'rgb(164,172,134)',
+      'rgb(101,109,74)',
+      'rgb(65,72,51)',
+      'rgb(51,61,29)',
+      'rgb(0,8,20)', // 10
+      'rgb(0,29,61)',
+      'rgb(0,53,102)',
+      'rgb(255,195,0)',
+      'rgb(255,214,10)',
+      'rgb(255,153,200)', // 15
+      'rgb(252,246,189)',
+      'rgb(208,244,222)',
+      'rgb(169,222,249)',
+      'rgb(228,193,249)',
+      'rgb(0,21,36)', // 20
+      'rgb(21,97,109)',
+      'rgb(255,236,209)',
+      'rgb(255,125,0)',
+      'rgb(120,41,15)',
+      'rgb(43,45,66)', // 25
+      'rgb(141,153,174)',
+      'rgb(237,242,244)',
+      'rgb(239,35,60)',
+      'rgb(217,4,41)',
+      'rgb(255,89,94)', // 30
+      'rgb(255,202,58)',
+      'rgb(138,201,38)',
+      'rgb(25,130,196)',
+      'rgb(106,76,147)',
+      'rgb(231,236,239)', // 35
+      'rgb(39,76,119)',
+      'rgb(96,150,186)',
+      'rgb(163,206,241)',
+      'rgb(139,140,137)',
+      'rgb(249,65,68)', // 40
+      'rgb(243,114,44)',
+      'rgb(248,150,30)',
+      'rgb(249,132,74)',
+      'rgb(249,199,79)',
+      'rgb(144,190,109)',
+      'rgb(67,170,139)',
+      'rgb(77,144,142)',
+      'rgb(87,117,144)',
+      'rgb(39,125,161)',
+      'rgb(116,0,184)', // 50
+      'rgb(105,48,195)',
+      'rgb(94,96,206)',
+      'rgb(83,144,217)',
+      'rgb(78,168,222)',
+      'rgb(86,207,225)',
+      'rgb(100,223,223)',
+      'rgb(114,239,221)',
+      'rgb(128,255,219)',
+      'rgb(34,34,59)', // 59
+      'rgb(74,78,105)',
+      'rgb(154,140,152)',
+      'rgb(201,173,167)',
+      'rgb(242,233,228)',
+      'rgb(95,15,64)', // 64
+      'rgb(154,3,30)',
+      'rgb(251,139,36)',
+      'rgb(227,100,20)',
+      'rgb(15,76,92)'
+    ]
+    let startColor = 40
+
+    const sample = []
+
+    let size = 10
+
+    let drwRaw = []
+    let isDrawing = false
+    let prevId = -1
+    let isRemoving = false
+    let state = 0
+    let row = 30
+    let column = 30
+    let bgColor = 'white'
+    let drwColor = 'blue'
+    let layerContainerInfo = {
+      bgColor: `rgba(0,0,0,0)`,
+      list: [
+        {
+          id: 'id-layer-0',
+          // bgColor: 'white',
+          drwColor: 'rgb(249,65,68)',
+          isCopy: true,
+          drwRaw: [],
+          checked: true
+        },
+        {
+          id: 'id-layer-1',
+          drwColor: 'rgb(67,170,139)',
+          isCopy: true,
+          drwRaw: [],
+          checked: true
+        },
+        {
+          id: 'id-layer-2',
+          drwColor: 'rgb(94,96,206)',
+          isCopy: true,
+          drwRaw: [],
+          checked: true
+        },
+        {
+          id: 'id-layer-3',
+          drwColor: 'rgb(249,132,74)',
+          isCopy: true,
+          drwRaw: [],
+          checked: true
+        }
+      ]
+    }
+    let drawingLayer = 3
+    let isOnGuide = true
+
+    function init() {
+      console.log('init')
+
+      const container = document.getElementById('id-container')
+      // container.addEventListener('mouseout', (evt) => {
+      //   console.log('mouse out')
+      // })
+      container.addEventListener('dblclick', (evt) => {
+        console.log('double click')
+        state++
+        if (state > 1)state = 0
+        if (state === 0) document.body.style.backgroundColor = 'black'
+        if (state === 1) document.body.style.backgroundColor = 'gray'
+      })
+
+      console.log(`container left : ${container.style.left}, top : ${container.style.top}, w : ${container.width}, h : ${container.height}`)
+      console.log(`container getBoundingClientRect : ${container.getBoundingClientRect()}`)
+      console.log(container.getBoundingClientRect())
+    }
+
+    function initContainer() {
+      const container = document.getElementById('id-container')
+      container.innerHTML = ''
+      drwRaw = []
+      return container
+    }
+
+    function initLayerContainer() {
+      const container = document.getElementById('id-container')
+      const layerContainer = document.getElementById('id-layer-container')
+      layerContainer.innerHTML = ''
+
+      const boundRect = container.getBoundingClientRect()
+      layerContainer.style.left = boundRect.left + 'px'
+      layerContainer.style.top = boundRect.top + 'px'
+      layerContainer.style.width = boundRect.width + 'px'
+      layerContainer.style.height = boundRect.height + 'px'
+
+      drawingLayer = -1
+
+      return layerContainer
+    }
+
+    function updateLayerChecked() {
+      drawingLayer = -1
+
+      for (let i=0; i<layerContainerInfo.list.length; i++) {
+        const checkId = `id-layer-check-${i}`
+        const check = document.getElementById(checkId)
+        const info = layerContainerInfo.list[i]
+        info.checked = check.checked
+        // if (info.checked) drawingLayer = i
+
+        const layerDiv = document.getElementById(info.id)
+        // layerDiv.style.display = (info.checked) ? 'inline-block' : 'none'
+
+        if (info.checked) {
+          layerDiv.style.display = 'inline-block'
+          drawingLayer = i
+        } else {
+          layerDiv.style.display = 'none'
+        }
+      }
+    }
+
+    function updateGuideChecked() {
+      const check = document.getElementById('id-check-guide')
+      isOnGuide = check.checked
+      console.log(`isOnGuide : ${isOnGuide}`)
+
+      for (const info of layerContainerInfo.list) {
+        for (let i=0; i<info.drwRaw.length; i++) {
+          const id = `${info.id}-r-${i}`
+          const rDiv = document.getElementById(id)
+
+          if (isOnGuide) {
+            rDiv.style.borderStyle = 'solid'
+            rDiv.style.borderWidth = '1px'
+          } else {
+            rDiv.style.borderStyle = 'none'
+          }
+        }
+      }
+
+      for (let i=0; i<drwRaw.length; i++) {
+        const id = `id-container-r-${i}`
+        const rDiv = document.getElementById(id)
+        console.log(rDiv)
+
+        if (isOnGuide) {
+          rDiv.style.borderStyle = 'solid'
+          rDiv.style.borderWidth = '1px'
+        } else {
+          rDiv.style.borderStyle = 'none'
+        }
+      }
+    }
+
+    function drawDiv(rawInfo, size) {
+      const container = initContainer()
+      const r = rawInfo.row
+      const c = rawInfo.column
+      const copyRaw = rawInfo.raw
+      console.log(`row : ${r}, column : ${c}`)
+      drwRaw = drawRbxDiv(container, r, c, copyRaw, bgColor, drwColor, size)
+
+      drawLayers(layerContainerInfo, r, c, rawInfo.raw, size)
+    }
+
+    function drawLayers(layerContainerInfo, r, c, copyRaw, size) {
+      const container = initLayerContainer()
+      const bgColor = layerContainerInfo.bgColor
+
+      for (let i=0; i<layerContainerInfo.list.length; i++) {
+        const info = layerContainerInfo.list[i]
+        if (info.checked) drawingLayer = i
+
+        let cRaw = []
+        if (info.isCopy) cRaw = copyRaw
+
+        const layerDiv = createLayerDiv(info, bgColor)
+
+        container.appendChild(layerDiv)
+        info.drwRaw = drawRbxDiv(layerDiv, r, c, cRaw, bgColor, info.drwColor, size)
+      }
+    }
+
+    function createLayerDiv(info, bgColor) {
+      const layerDiv = document.createElement('div')
+      layerDiv.id = info.id
+      // style="background-color: white; display: inline-block; position: absolute"
+      layerDiv.style.backgroundColor = bgColor
+      layerDiv.style.display = 'inline-block'
+      layerDiv.style.position = 'absolute'
+
+      if (!info.checked) layerDiv.style.display = 'none'
+
+      return layerDiv
+    }
+
+    function drawRbxDiv(container, r, c, copyRaw, bgColor, drwColor, size) {
+      console.log(`row : ${r}, column : ${c}`)
+      let drwRaw = []
+
+      for (let i=0; i<c; i++) {
+        const cDiv = document.createElement('div')
+        cDiv.id = `${container.id}-c-${i}`
+        cDiv.style.display = 'flex'
+        cDiv.style.width = `${r * size}px`
+        cDiv.style.backgroundColor = bgColor
+
+        for (let j=0; j<r; j++) {
+          const rDiv = document.createElement('div')
+          const id = i * r + j
+          // console.log(id)
+          rDiv.id = `${container.id}-r-${id}`
+          rDiv.style.width = `${size}px`
+          rDiv.style.height = `${size}px`
+
+          if (isOnGuide) {
+            rDiv.style.borderStyle = 'solid'
+            rDiv.style.borderWidth = '1px'
+          }
+
+          let rw = 0
+          if (copyRaw.length > 0) rw = copyRaw[id]
+
+          if (rw < 1) {
+            rDiv.style.backgroundColor = bgColor
+          } else {
+            rDiv.style.backgroundColor = drwColor
+          }
+
+          drwRaw.push(rw)
+
+          rDiv.addEventListener('click', (evt) => {
+            console.log(`click ::: id : ${id}`)
+            const drwRw = drwRaw[id]
+            console.log(drwRw)
+            if (drwRw < 1) {
+              drwRaw[id] = 1
+              rDiv.style.backgroundColor = drwColor
+            } else {
+              drwRaw[id] = 0
+              rDiv.style.backgroundColor = bgColor
+            }
+          })
+
+          rDiv.addEventListener('mousemove', (evt) => {
+            console.log(`mouse move ::: id : ${id}`)
+            if (prevId === id) return
+
+            if (isDrawing) {
+              drwRaw[id] = 1
+              rDiv.style.backgroundColor = drwColor
+            }
+
+            if (isRemoving) {
+              drwRaw[id] = 0
+              rDiv.style.backgroundColor = bgColor
+            }
+
+            prevId = id
+          })
+          rDiv.addEventListener('mousedown', (evt) => {
+            console.log(`mouse down ::: id : ${id}`)
+            if (state === 0) {
+              isDrawing = true
+            }
+            if (state === 1) {
+              isRemoving = true
+            }
+          })
+          rDiv.addEventListener('mouseup', (evt) => {
+            console.log(`mouse up ::: id : ${id}`)
+            isDrawing = false
+            isRemoving = false
+          })
+
+          cDiv.appendChild(rDiv)
+        }
+
+        container.appendChild(cDiv)
+      }
+
+      // console.log(container.getBoundingClientRect())
+      return drwRaw
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function reverseHorizontalRaw(raw, row) {
+      const result = []
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const index = ((row-1) - x) + (y * row)
+        const r = raw[index]
+        result.push(r)
+      }
+      return result
+    }
+
+    function reverseVerticalRaw(raw, row, column) {
+      const result = []
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const index = x + ((column-1) - y) * row
+        const r = raw[index]
+        result.push(r)
+      }
+      return result
+    }
+
+    function getRawString(raw, r, c, layer='') {
+      // memo/row/column/raw
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      let memo = `${y}${mstr}${d}${h}${mm}${s}_div_draw`
+      if (layer.length > 0) memo += `_${layer}`
+
+      return `${memo}/${r}/${c}/${1}/${raw}`
+    }
+
+    function save(raw, r, c, layer='') {
+      const rawString = getRawString(raw, r, c, layer)
+      const name = rawString.split('/')[0]
+      saveString(rawString, name)
+    }
+
+    function saveString(str, name) {
+      const link = document.createElement("a")
+      const file = new Blob([str], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function addLayer(copyRaw=[]) {
+      const index = layerContainerInfo.list.length
+      let colorIndex = startColor + index
+      if (colorIndex >= colorList.length) colorIndex = 0
+      const info = {
+        id: `id-layer-${index}`,
+        drwColor: colorList[colorIndex],
+        isCopy: (copyRaw.length > 0),
+        drwRaw: [],
+        checked: true
+      }
+      layerContainerInfo.list.push(info)
+
+      // style="accent-color: rgb(249,65,68)" type="checkbox" id="id-layer-check-0" onclick="onClickLayerCheck()" checked
+      const layerCheckContainer = document.getElementById('id-layer-check-container')
+      const check = document.createElement('input')
+      check.id = `id-layer-check-${index}`
+      check.type = 'checkbox'
+      check.onclick = onClickLayerCheck
+      check.checked = true
+      check.style.accentColor = info.drwColor
+      layerCheckContainer.appendChild(check)
+      // <label style="color: aliceblue" for="id-layer-check-0" id="id-label-layer-check-0">0</label>
+      const label = document.createElement('label')
+      label.id = `id-label-layer-check-${index}`
+      label.for = check.id
+      label.innerText = index
+      label.style.color = 'aliceblue'
+      layerCheckContainer.appendChild(label)
+
+      const layerContainer = document.getElementById('id-layer-container')
+      drawingLayer = index
+      const layerDiv = createLayerDiv(info, layerContainerInfo.bgColor)
+      layerContainer.appendChild(layerDiv)
+      info.drwRaw = drawRbxDiv(layerDiv, row, column, copyRaw, layerContainerInfo.bgColor, info.drwColor, size)
+    }
+
+    function onClickNew() {
+      console.log('onClickNew')
+      const inputR = document.getElementById('id-input-row')
+      const inputC = document.getElementById('id-input-column')
+      const rawInfo = { row: Number(inputR.value), column: Number(inputC.value), raw: []}
+      drawDiv(rawInfo, size)
+    }
+
+    function onClickDraw() {
+      console.log('onClickDraw')
+      const input = document.getElementById('id-raw-input')
+      const rawStr = input.value
+      const rawInfo = parsingStringToInfo(rawStr)
+      row = rawInfo.row
+      column = rawInfo.column
+      drawDiv(rawInfo, size)
+    }
+
+    function onClickChangeColor() {
+      console.log('onClickChangeColor')
+      const input = document.getElementById('id-color-input')
+      drwColor = input.value
+      onClickDraw()
+    }
+
+    function onClickLayerCheck() {
+      console.log('onClickLayerCheck')
+      updateLayerChecked()
+    }
+
+    function onClickOriginCheck() {
+      console.log('onClickOriginCheck')
+      const checkOrigin = document.getElementById('id-check-origin')
+      const container = document.getElementById('id-container')
+      const layerContainer = document.getElementById('id-layer-container')
+      // container.style.display = (checkOrigin.checked) ? 'inline-block' : 'none'
+      if (checkOrigin.checked) {
+        container.style.display = 'inline-block'
+        layerContainer.style.backgroundColor = 'rgba(0,0,0,0)'
+      } else {
+        container.style.display = 'none'
+        layerContainer.style.backgroundColor = 'white'
+      }
+    }
+
+    function onClickGuideCheck() {
+      console.log('onClickGuideCheck')
+      updateGuideChecked()
+    }
+
+    function onClickAddLayer() {
+      console.log('onClickAddLayer')
+      addLayer()
+    }
+
+    function onClickAddLayerCopyOrigin() {
+      console.log('onClickAddLayerCopyOrigin')
+      addLayer(drwRaw)
+    }
+
+    function onClickAddLayerCopyLayer() {
+      console.log('onClickAddLayerCopyLayer')
+      const input = document.getElementById('id-input-copy-layer-index')
+      let index = Number(input.value)
+      if (index >= layerContainerInfo.list.length) index = layerContainerInfo.list.length - 1
+      const info = layerContainerInfo.list[index]
+      addLayer(info.drwRaw)
+    }
+
+    function onClickRemoveLayer() {
+      console.log('onClickRemoveLayer')
+      const layerCheckContainer = document.getElementById('id-layer-check-container')
+      const layerContainer = document.getElementById('id-layer-container')
+      const lastIndex = layerContainerInfo.list.length - 1
+      const lastInfo = layerContainerInfo.list.pop()
+
+      const lastCheck = document.getElementById(`id-layer-check-${lastIndex}`)
+      const lastCheckLabel = document.getElementById(`id-label-layer-check-${lastIndex}`)
+      const lastLayer = document.getElementById(lastInfo.id)
+      layerCheckContainer.removeChild(lastCheck)
+      layerCheckContainer.removeChild(lastCheckLabel)
+      layerContainer.removeChild(lastLayer)
+    }
+
+    function onClickSave() {
+      console.log('onClickSave')
+      // if(drwRaw.length < 1) {
+      //   console.log('no drwRaw')
+      //   return
+      // }
+      //
+      // save(drwRaw, row, column)
+
+      for (const info of layerContainerInfo.list) {
+        save(info.drwRaw, row, column, info.id)
+      }
+    }
+  </script>
+</body>
+</html>
