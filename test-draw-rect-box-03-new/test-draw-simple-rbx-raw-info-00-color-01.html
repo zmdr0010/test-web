@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test draw simple rbx raw info 00 color 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="simple-rbx-raw-info-00.js"></script>
+  <script type="application/javascript" src="simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="simple-rbx-raw-info-01-big.js"></script>
+  <script>
+    const colorList = [
+      'rgb(88,47,14)',
+      'rgb(127,79,36)',
+      'rgb(147,102,57)',
+      'rgb(166,138,100)',
+      'rgb(182,173,144)',
+      'rgb(194,197,170)',
+      'rgb(164,172,134)',
+      'rgb(101,109,74)',
+      'rgb(65,72,51)',
+      'rgb(51,61,29)',
+      'rgb(0,8,20)', // 10
+      'rgb(0,29,61)',
+      'rgb(0,53,102)',
+      'rgb(255,195,0)',
+      'rgb(255,214,10)',
+      'rgb(255,153,200)', // 15
+      'rgb(252,246,189)',
+      'rgb(208,244,222)',
+      'rgb(169,222,249)',
+      'rgb(228,193,249)',
+      'rgb(0,21,36)', // 20
+      'rgb(21,97,109)',
+      'rgb(255,236,209)',
+      'rgb(255,125,0)',
+      'rgb(120,41,15)',
+      'rgb(43,45,66)', // 25
+      'rgb(141,153,174)',
+      'rgb(237,242,244)',
+      'rgb(239,35,60)',
+      'rgb(217,4,41)',
+      'rgb(255,89,94)', // 30
+      'rgb(255,202,58)',
+      'rgb(138,201,38)',
+      'rgb(25,130,196)',
+      'rgb(106,76,147)',
+      'rgb(231,236,239)', // 35
+      'rgb(39,76,119)',
+      'rgb(96,150,186)',
+      'rgb(163,206,241)',
+      'rgb(139,140,137)',
+      'rgb(249,65,68)', // 40
+      'rgb(243,114,44)',
+      'rgb(248,150,30)',
+      'rgb(249,132,74)',
+      'rgb(249,199,79)',
+      'rgb(144,190,109)',
+      'rgb(67,170,139)',
+      'rgb(77,144,142)',
+      'rgb(87,117,144)',
+      'rgb(39,125,161)',
+      'rgb(116,0,184)', // 50
+      'rgb(105,48,195)',
+      'rgb(94,96,206)',
+      'rgb(83,144,217)',
+      'rgb(78,168,222)',
+      'rgb(86,207,225)',
+      'rgb(100,223,223)',
+      'rgb(114,239,221)',
+      'rgb(128,255,219)',
+      'rgb(34,34,59)', // 59
+      'rgb(74,78,105)',
+      'rgb(154,140,152)',
+      'rgb(201,173,167)',
+      'rgb(242,233,228)',
+      'rgb(95,15,64)', // 64
+      'rgb(154,3,30)',
+      'rgb(251,139,36)',
+      'rgb(227,100,20)',
+      'rgb(15,76,92)'
+    ]
+    let colorStart = 0
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      // front
+      // drawRawSimple(simpleRbxRawInfo00.list[0], ctx, 20, 200, 10, 10)
+      // drawRawSimple(simpleRbxRawInfo00.list[1], ctx, 20, 100, 500, 10)
+      // drawRawSimple(simpleRbxRawInfo00.list[2], ctx, 20, 155, 60, 300)
+      // drawRawSimple(simpleRbxRawInfo00.list[3], ctx, 20, 155, 500, 300)
+
+      const info = parsingStringToInfo(simpleRbxRawString00)
+      // drawRawSimple(info, ctx, 20, 200, 10, 10)
+
+      // drawRawSimple(simpleRbxRawInfo01.list[0], ctx, 20, 200, 500, 10)
+
+      const simpleInfoList = []
+      for (const key in simpleRbxRawStringList) {
+        const str = simpleRbxRawStringList[key]
+        const inf = parsingStringToInfo(str)
+        simpleInfoList.push(inf)
+      }
+
+      // drawRawSimple(simpleInfoList[0], ctx, 20, 200, 500, 10)
+
+      const simpleInfoList01 = []
+
+      for (const key in simpleRbxRawStringList01) {
+        const str = simpleRbxRawStringList01[key]
+        const inf = parsingStringToInfo(str)
+        simpleInfoList01.push(inf)
+      }
+
+
+      const startColor = 200
+      const size = 10
+      let div = 9
+      let startMarginX = 40
+      let startMarginY = 40
+      let marginX = 160
+      let marginY = 200
+      let count = 0
+
+      const lastX = div * marginX + startMarginX
+      let lastY = Math.floor((simpleInfoList.length-1) / div)
+      let lastSy = lastY * marginY + startMarginY
+      console.log(`lastY : ${lastY}, lastSy : ${lastSy}, canvasH : ${canvasH}`)
+
+      if (lastX > canvasW) {
+        console.log("------------ canvas resize width")
+        canvasW = lastX
+        canvas.width = canvasW
+        displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+      }
+
+      if (lastSy > canvasH) {
+        console.log("------------ canvas resize")
+        canvasH = lastSy + 300
+        canvas.height = canvasH
+        displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+      }
+
+      const bDiv = 5
+      const bStartMarginY = lastSy + 200
+      const bMarginX = 300
+      const bMarginY = 350
+
+      const bLastY = Math.floor((simpleInfoList01.length-1) / bDiv)
+      const blastSy = bLastY * bMarginY + bStartMarginY
+      console.log(`big :::: lastY : ${bLastY}, lastSy : ${blastSy}, canvasH : ${canvasH}`)
+      if (blastSy > canvasH) {
+        console.log("------------ big :::: canvas resize")
+        canvasH = blastSy + 300
+        canvas.height = canvasH
+        displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+      }
+
+      for (const key in simpleInfoList) {
+        const inf = simpleInfoList[key]
+        const x = count % div
+        const y = Math.floor(count / div)
+        const sx = x * marginX + startMarginX
+        const sy = y * marginY + startMarginY
+        drawRawSimple(inf, ctx, size, startColor, sx, sy)
+        console.log(`sy : ${sy}`)
+        count++
+      }
+
+
+      for (let i=0; i<simpleInfoList01.length; i++) {
+        const inf = simpleInfoList01[i]
+        const x = i % bDiv
+        const y = Math.floor(i / bDiv)
+        const sx = x * bMarginX + startMarginX
+        const sy = y * bMarginY + bStartMarginY
+        drawRawSimple(inf, ctx, size, startColor, sx, sy)
+      }
+    }
+
+    function drawRawSimple(info, ctx, size, startColor, startX, startY) {
+      const list = info.raw
+      const row = info.row
+      const rate = startColor / info.raw_num
+
+      for (let i=0; i<list.length; i++) {
+        const b = list[i] - 1
+
+        if (b < 0) continue
+
+        const colorVal = startColor - b * rate
+        // const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        const color = b
+        const x = i % row
+        const y = Math.floor(i / row)
+        // console.log(`i : ${i}, x : ${x}, y : ${y}`)
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      const startX = size * info.x + info.startX
+      const startY = size * info.y + info.startY
+      // ctx.fillStyle = info.color
+
+      let colorI = info.color + colorStart
+      if (colorI >= colorList.length) colorI = 0
+      ctx.fillStyle = colorList[colorI]
+
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+  </script>
+</body>
+</html>
