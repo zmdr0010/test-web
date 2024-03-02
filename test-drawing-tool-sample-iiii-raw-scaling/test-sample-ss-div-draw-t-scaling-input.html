@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test sample ss div draw t scaling input</title>
+</head>
+<body style="background-color: black" onload="init()">
+  <div style="margin: 8px">
+    <label style="color: aliceblue" for="id-raw-input">raw :</label>
+    <input type="text" id="id-raw-input" name="raw"/>
+    <button id="id-draw-btn" onclick="onClickDraw()">draw</button>
+    <button onclick="onClickSave()">save</button>
+  </div>
+  <div style="margin: 8px" id="id-select-color-container">
+    <input type="radio" id="id-c-00" name="select-color" value="0">
+    <label style="color: aliceblue" for="id-c-00">0</label>
+    <input type="radio" id="id-c-01" name="select-color" value="1" checked>
+    <label style="color: aliceblue" for="id-c-01">1</label>
+    <input type="radio" id="id-c-02" name="select-color" value="2">
+    <label style="color: aliceblue" for="id-c-02">2</label>
+  </div>
+  <div style="background-color: white; display: inline-block" id="id-container">
+<!--    <div style="background-color: aliceblue; display: flex; width: 34px">-->
+<!--      <div style="background-color: chocolate; width: 10px; height: 10px"></div>-->
+<!--      <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px;"></div>-->
+<!--      <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px;"></div>-->
+<!--    </div>-->
+<!--    <div style="background-color: aliceblue; display: flex; width: 34px; margin-top: 2px">-->
+<!--      <div style="background-color: chocolate; width: 10px; height: 10px"></div>-->
+<!--      <div style="background-color: cadetblue; width: 10px; height: 10px; margin-left: 2px"></div>-->
+<!--      <div style="background-color: blueviolet; width: 10px; height: 10px; margin-left: 2px"></div>-->
+<!--    </div>-->
+  </div>
+
+  <script>
+    const colorList = [
+      'rgb(88,47,14)',
+      'rgb(127,79,36)',
+      'rgb(147,102,57)',
+      'rgb(166,138,100)',
+      'rgb(182,173,144)',
+      'rgb(194,197,170)',
+      'rgb(164,172,134)',
+      'rgb(101,109,74)',
+      'rgb(65,72,51)',
+      'rgb(51,61,29)',
+      'rgb(0,8,20)', // 10
+      'rgb(0,29,61)',
+      'rgb(0,53,102)',
+      'rgb(255,195,0)',
+      'rgb(255,214,10)',
+      'rgb(255,153,200)', // 15
+      'rgb(252,246,189)',
+      'rgb(208,244,222)',
+      'rgb(169,222,249)',
+      'rgb(228,193,249)',
+      'rgb(0,21,36)', // 20
+      'rgb(21,97,109)',
+      'rgb(255,236,209)',
+      'rgb(255,125,0)',
+      'rgb(120,41,15)',
+      'rgb(43,45,66)', // 25
+      'rgb(141,153,174)',
+      'rgb(237,242,244)',
+      'rgb(239,35,60)',
+      'rgb(217,4,41)',
+      'rgb(255,89,94)', // 30
+      'rgb(255,202,58)',
+      'rgb(138,201,38)',
+      'rgb(25,130,196)',
+      'rgb(106,76,147)',
+      'rgb(231,236,239)', // 35
+      'rgb(39,76,119)',
+      'rgb(96,150,186)',
+      'rgb(163,206,241)',
+      'rgb(139,140,137)',
+      'rgb(249,65,68)', // 40
+      'rgb(243,114,44)',
+      'rgb(248,150,30)',
+      'rgb(249,132,74)',
+      'rgb(249,199,79)',
+      'rgb(144,190,109)',
+      'rgb(67,170,139)',
+      'rgb(77,144,142)',
+      'rgb(87,117,144)',
+      'rgb(39,125,161)',
+      'rgb(116,0,184)', // 50
+      'rgb(105,48,195)',
+      'rgb(94,96,206)',
+      'rgb(83,144,217)',
+      'rgb(78,168,222)',
+      'rgb(86,207,225)',
+      'rgb(100,223,223)',
+      'rgb(114,239,221)',
+      'rgb(128,255,219)',
+      'rgb(34,34,59)', // 59
+      'rgb(74,78,105)',
+      'rgb(154,140,152)',
+      'rgb(201,173,167)',
+      'rgb(242,233,228)',
+      'rgb(95,15,64)', // 64
+      'rgb(154,3,30)',
+      'rgb(251,139,36)',
+      'rgb(227,100,20)',
+      'rgb(15,76,92)'
+    ]
+    let startColor = 0
+
+    let drwRaw = []
+    let isDrawing = false
+    let prevId = -1
+    let isRemoving = false
+    let state = 0
+    let pressCount = 0
+    let isOnPress = false
+    let selectedRw = 1
+    let row = 10
+    let column = 10
+    let rawNum = 1
+
+    function init() {
+      console.log('init')
+
+      const container = document.getElementById('id-container')
+      // container.addEventListener('mouseout', (evt) => {
+      //   console.log('mouse out')
+      // })
+      container.addEventListener('dblclick', (evt) => {
+        console.log('double click')
+        state++
+        if (state > 1)state = 0
+        if (state === 0) document.body.style.backgroundColor = 'black'
+        if (state === 1) document.body.style.backgroundColor = 'gray'
+      })
+    }
+
+    function initContainer() {
+      const container = document.getElementById('id-container')
+      container.innerHTML = ''
+      drwRaw = []
+      return container
+    }
+
+    function initSelectColor(container, rawNum) {
+      container.innerHTML = ''
+      selectedRw = 1
+
+      for (let i=0; i<rawNum; i++) {
+        const input = document.createElement('input')
+        input.setAttribute('type', 'radio')
+        input.name = "select-color"
+        input.id = `id-c-${i}`
+        input.checked = (i === 1)
+        input.value = `${i}`
+        input.onchange = (evt) => {
+          selectedRw = Number(evt.target.value)
+          console.log(`radio change : target.value : ${evt.target.value}, selected rw : ${selectedRw}`)
+        }
+
+        const label = document.createElement('label')
+        label.innerText = `${i}`
+        label.style.color = 'white'
+
+        container.appendChild(input)
+        container.appendChild(label)
+      }
+    }
+
+    function pressTimeOut() {
+      pressCount++
+      console.log(`pressCount : ${pressCount}`)
+      if (isOnPress) setTimeout(pressTimeOut, 100)
+    }
+
+    function drawDiv(container, rawInfo, size) {
+      const r = rawInfo.row
+      const c = rawInfo.column
+      console.log(`row : ${r}, column : ${c}`)
+
+      for (let i=0; i<c; i++) {
+        const cDiv = document.createElement('div')
+        cDiv.id = `id-c-${i}`
+        cDiv.style.display = 'flex'
+        cDiv.style.width = `${r * size}px`
+
+        for (let j=0; j<r; j++) {
+          const rDiv = document.createElement('div')
+          const id = i * r + j
+          // console.log(id)
+          rDiv.id = `id-r-${id}`
+          rDiv.style.width = `${size}px`
+          rDiv.style.height = `${size}px`
+
+          const rw = rawInfo.raw[id]
+
+          if (rw < 1) {
+            rDiv.style.backgroundColor = 'white'
+          } else {
+            let colorIndex = rw + startColor
+            if (colorIndex >= colorList.length) colorIndex = 0
+            rDiv.style.backgroundColor = colorList[colorIndex]
+          }
+
+          drwRaw.push(rw)
+
+          rDiv.addEventListener('click', (evt) => {
+            console.log(`click ::: id : ${id}`)
+
+            console.log(`click pressCount : ${pressCount}`)
+            if (pressCount >= 10) {
+              console.log(`drawFill ::: rw : ${rw}`)
+              const prevDrw = drwRaw[id]
+              // const cRw = (prevDrw === 0) ? selectedRw : 0
+              const cRw = selectedRw
+              if (prevDrw === cRw) return
+              let colorI = selectedRw + startColor
+              if (colorI >= colorList.length) colorI = 0
+              drawFill(drwRaw, r, id, 'id', 'white', colorList[colorI], prevDrw, cRw)
+              return
+            }
+
+            const drwRw = drwRaw[id]
+            console.log(drwRw)
+            // if (drwRw < 1) {
+              drwRaw[id] = selectedRw
+              let colorI = selectedRw + startColor
+              if (colorI >= colorList.length) colorI = 0
+              // rDiv.style.backgroundColor = colorList[colorI]
+            rDiv.style.backgroundColor = (selectedRw === 0) ? 'white' : colorList[colorI]
+            // } else {
+            //   drwRaw[id] = 0
+            //   rDiv.style.backgroundColor = 'white'
+            // }
+          })
+
+          rDiv.addEventListener('mousemove', (evt) => {
+            console.log(`mouse move ::: id : ${id}`)
+            if (prevId === id) return
+
+            if (isDrawing) {
+              drwRaw[id] = selectedRw
+              let colorI = selectedRw + startColor
+              if (colorI >= colorList.length) colorI = 1
+              rDiv.style.backgroundColor = colorList[colorI]
+            }
+
+            if (isRemoving) {
+              drwRaw[id] = 0
+              rDiv.style.backgroundColor = 'white'
+            }
+
+            isOnPress = false
+            pressCount = 0
+
+            prevId = id
+          })
+          rDiv.addEventListener('mousedown', (evt) => {
+            console.log(`mouse down ::: id : ${id}`)
+            // isDrawing = true
+            if (state === 0) {
+              isDrawing = true
+            }
+            if (state === 1) {
+              isRemoving = true
+            }
+
+            isOnPress = true
+            pressCount = 0
+            pressTimeOut()
+          })
+          rDiv.addEventListener('mouseup', (evt) => {
+            console.log(`mouse up ::: id : ${id}`)
+            isDrawing = false
+            isRemoving = false
+            isOnPress = false
+          })
+
+          cDiv.appendChild(rDiv)
+        }
+
+        container.appendChild(cDiv)
+      }
+
+    }
+
+    function drawFill(drwRaw, row, id, containerId, bgColor, drwColor, prevRw, cRw) {
+      checkFill(drwRaw, id, cRw)
+
+      checkFillLRTB(drwRaw, row, id, prevRw, cRw)
+
+      for (let i=0; i<drwRaw.length; i++) {
+        const rw = drwRaw[i]
+        const divId = `${containerId}-r-${i}`
+        const div = document.getElementById(divId)
+        if (rw === 0) {
+          div.style.backgroundColor = bgColor
+        } else {
+          // div.style.backgroundColor = drwColor
+          let colorI = rw + startColor
+          if (colorI >= colorList.length) colorI = 0
+          div.style.backgroundColor = colorList[colorI]
+        }
+      }
+    }
+
+    function checkFillLRTB(drwRaw, row, id, prevRw, cRw) {
+      let result = true
+      let oid = id
+
+      while (result) {
+        const cL = checkFillLR(drwRaw, row, oid, -1, prevRw, cRw)
+        const cR = checkFillLR(drwRaw, row, oid, 1, prevRw, cRw)
+        const cT = checkFillTB(drwRaw, oid, -row, prevRw, cRw)
+        const cB = checkFillTB(drwRaw, oid, row, prevRw, cRw)
+
+        if (!cL[0] && !cR[0] && !cT[0] && !cB[0]) {
+          result = false
+        } else {
+          if (cL[0]) {
+            result = checkFillLRTB(drwRaw, row, cL[1], prevRw, cRw)
+          }
+          if (cR[0]) {
+            result = checkFillLRTB(drwRaw, row, cR[1], prevRw, cRw)
+          }
+          if (cT[0]) {
+            result = checkFillLRTB(drwRaw, row, cT[1], prevRw, cRw)
+          }
+          if (cB[0]) {
+            result = checkFillLRTB(drwRaw, row, cB[1], prevRw, cRw)
+          }
+        }
+      }
+    }
+
+    function checkFillLR(drwRaw, row, id, add, prevRw, cRw) {
+      let result = true
+
+      const prevC = Math.floor(id / row)
+      const i = id + add
+      const c = Math.floor(i / row)
+
+      if (c !== prevC) {
+        result = false
+      } else {
+        const rw = drwRaw[i]
+        if (rw !== prevRw) {
+          result = false
+        } else {
+          checkFill(drwRaw, i, cRw)
+        }
+      }
+
+      return [result, i]
+    }
+
+    function checkFillTB(drwRaw, id, add, prevRw, cRw) {
+      let result = true
+
+      const i = id + add
+
+      if (i < 0 || i >= drwRaw.length) {
+        result = false
+      } else {
+        const rw = drwRaw[i]
+        if (rw !== prevRw) {
+          result = false
+        } else {
+          checkFill(drwRaw, i, cRw)
+        }
+      }
+
+      return [result, i]
+    }
+
+    function checkFill(drwRaw, id, cRw) {
+      const drw = drwRaw[id]
+      if (drw !== cRw) {
+        drwRaw[id] = cRw
+        return true
+      } else {
+        return false
+      }
+    }
+
+    function parsingStringToInfo(str) {
+      const list = str.split('/')
+      console.log(list)
+      const memo = list[0]
+      const row = Number(list[1])
+      const column = Number(list[2])
+      const rawNum = Number(list[3])
+      const rawStrList = list[4].split(',')
+      console.log(`memo : ${memo}, row : ${row}, column : ${column}, raw_num : ${rawNum}`)
+      const raw = []
+
+      for (const key in rawStrList) {
+        const r = Number(rawStrList[key])
+        raw.push(r)
+      }
+
+      const info = {
+        memo: memo,
+        row: row,
+        column: column,
+        raw_num: rawNum,
+        raw: raw
+      }
+
+      return info
+    }
+
+    function reverseHorizontalRaw(raw, row) {
+      const result = []
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const index = ((row-1) - x) + (y * row)
+        const r = raw[index]
+        result.push(r)
+      }
+      return result
+    }
+
+    function reverseVerticalRaw(raw, row, column) {
+      const result = []
+      for (let i=0; i<raw.length; i++) {
+        const x = i % row
+        const y = Math.floor(i / row)
+        const index = x + ((column-1) - y) * row
+        const r = raw[index]
+        result.push(r)
+      }
+      return result
+    }
+
+    function getRawString(raw, r, c, rawNum) {
+      // memo/row/column/raw
+      const current = new Date()
+      const y = current.getFullYear()
+      const m = current.getMonth() + 1
+      const d = current.getDate()
+      const h = current.getHours()
+      const mm = current.getMinutes()
+      const s = current.getSeconds()
+      const mstr = (m < 10)? `0${m}`:`${m}`
+      const memo = `${y}${mstr}${d}${h}${mm}${s}_div_draw`
+
+      return `${memo}/${r}/${c}/${rawNum}/${raw}`
+    }
+
+    function save(raw, r, c, rawNum) {
+      const rawString = getRawString(raw, r, c, rawNum)
+      const name = rawString.split('/')[0]
+      saveString(rawString, name)
+    }
+
+    function saveString(str, name) {
+      const link = document.createElement("a")
+      const file = new Blob([str], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.txt`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+
+    function onClickDraw() {
+      console.log('onClickDraw')
+      const input = document.getElementById('id-raw-input')
+      const rawStr = input.value
+      const rawInfo = parsingStringToInfo(rawStr)
+      row = rawInfo.row
+      column = rawInfo.column
+      rawNum = rawInfo.raw_num
+      initSelectColor(document.getElementById('id-select-color-container'), rawInfo.raw_num)
+      drawDiv(initContainer(), rawInfo, 10)
+    }
+
+    function onClickSave() {
+      console.log('onClickSave')
+      if(drwRaw.length < 1) {
+        console.log('no drwRaw')
+        return
+      }
+
+      save(drwRaw, row, column, rawNum)
+    }
+  </script>
+</body>
+</html>
