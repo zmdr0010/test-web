@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <title>Test sample unit sub part simple by rc move</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-drawing-tool-sample/rbx-raw-string-sample-ut-00.js"></script>
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-draw-rect-box-03-new/simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="color-palettes-sample.js"></script>
+  <script type="application/javascript" src="drw-raw-lib.js"></script>
+  <script type="application/javascript" src="movement-raw-string-sample.js"></script>
+  <script>
+    let size = 4
+    let unitInfo
+
+    function init() {
+      console.log('init')
+      console.log(rbxRawStringSampleUt00)
+
+      console.log(simpleRbxRawString00)
+      console.log(simpleRbxRawStringList)
+
+      console.log(colorPalettesSampleList)
+
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      // const rawInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.f[2]])
+      // const startColor = 30
+      // drawRawInfo(ctx, rawInfo, 50, 50, size, colorPalettesSampleList.slice(startColor, startColor + rawInfo.rawNum))
+
+      // unit : 27 x 30
+      // f (9,0)
+      // l (0,12)
+      // r (18,12)
+      // bk (9,21)
+      // bd (6,9)
+
+      const drwResInfo = {
+        list: [
+          // {
+          //   type: 'raw',
+          //   target: 'rbxRawStringSampleUt00.raw',
+          //   targetType: 'list',
+          //   obj: rbxRawStringSampleUt00.raw
+          // },
+          // {
+          //   type: 'color',
+          //   target: 'colorPalettesSampleList',
+          //   targetType: 'list',
+          //   obj: colorPalettesSampleList
+          // }
+        ]
+      }
+
+      drwResInfo.list['rbxRawStringSampleUt00.raw'] = []
+      for (const rw of rbxRawStringSampleUt00.raw) {
+        drwResInfo.list['rbxRawStringSampleUt00.raw'].push(rw)
+      }
+
+      drwResInfo.list['colorPalettesSampleList'] = []
+      for (const color of colorPalettesSampleList) {
+        drwResInfo.list['colorPalettesSampleList'].push(color)
+      }
+
+      const drwObjLinkInfo = {
+        uCode: `${generateSimpleUCode()}_drwObjLinkInfo-sample`,
+        uCodeType: 'string',
+        memo: 'drwObj-sample',
+        r: 0, // row
+        c: 0, // column
+        rs: 27, // row size
+        cs: 30, // column size
+        rawLink: { target: '', index: 0 }, // uCodeType : index / string
+        colorLink:{
+          target: '',
+          list: [] // index list by rawNum
+        },
+        child: [
+          {
+            memo: 'f', // front
+            r: 9,
+            c: 0,
+            rs: 9,
+            cs: 12,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 0 },
+            colorLink: {
+              target: 'colorPalettesSampleList',
+              list: [43, 44, 45, 46, 47, 48]
+            },
+            child: []
+          },
+          {
+            memo: 'l', // left
+            r: 0,
+            c: 12,
+            rs: 9,
+            cs: 12,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 5 },
+            colorLink: {
+              target: 'colorPalettesSampleList',
+              list: [14, 15, 16, 17, 18, 19]
+            },
+            child: []
+          },
+          {
+            memo: 'r', // right
+            r: 18,
+            c: 12,
+            rs: 9,
+            cs: 12,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 10 },
+            colorLink: {
+              target: 'colorPalettesSampleList',
+              list: [14, 15, 16, 17, 18, 19]
+            },
+            child: []
+          },
+          {
+            memo: 'bk', // back
+            r: 9,
+            c: 21,
+            rs: 9,
+            cs: 9,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 15 },
+            colorLink: {
+              target: 'colorPalettesSampleList',
+              list: [24, 25, 26, 27, 28, 29]
+            },
+            child: []
+          },
+          {
+            memo: 'bd', // body
+            r: 6,
+            c: 9,
+            rs: 15,
+            cs: 15,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 20 },
+            colorLink: {
+              target: 'colorPalettesSampleList',
+              list: [34, 35, 36, 37, 38, 39]
+            },
+            child: []
+          }
+        ]
+      }
+
+      // test null
+      // let test = null
+      // console.log(`test 000 : ${test}`) // print log
+      // if (test) {
+      //   console.log(`test 001 : ${test}`) // not print
+      // }
+      // test = { test: 'test' }
+      // console.log(`test 002 : ${test}`) // print log
+      // if (test) {
+      //   console.log(`test 003 : ${test}`) // print log
+      // }
+
+      const drwObjInfo = parsingDrwObjInfoByLinkInfo(drwObjLinkInfo, drwResInfo)
+      console.log(drwObjInfo)
+
+      // const objR = 10
+      // const objC = 10
+      // drawDrwObjInfo(ctx, drwObjInfo, objR, objC, size)
+      //
+      // let dR = 24
+      // let dC = 10
+      // let mR = dR
+      // let mC = dC
+      // drawDrwObjInfo(ctx, drwObjInfo, objR + mR, objC + mC, size)
+      //
+      // const num = 10
+      // for (let i=0; i<num; i++) {
+      //   mR += dR
+      //   mC += dC
+      //   drawDrwObjInfo(ctx, drwObjInfo, objR + mR, objC + mC, size)
+      // }
+      unitInfo = {
+        drwObj: drwObjInfo,
+        posInfo: {
+          r: 0,
+          c: 0,
+          // moveInfo: { // has moveInfo -> moving
+          //   sr: 0,
+          //   sc: 0,
+          //   fps: 30,
+          //   d: 30,
+          //   currentMove: 0,
+          //   moveCount: 0,
+          //   list: [
+          //     {
+          //       md: [0, 0]
+          //     },
+          //     {
+          //       md: [0, 0]
+          //     },
+          //     {
+          //       md: [0, 0]
+          //     }
+          //   ]
+          // }
+        },
+        moveInfo: null
+      }
+
+      drawUnit(ctx, unitInfo, size)
+
+      moveUnit(unitInfo, 16, 20)
+      drawUnit(ctx, unitInfo, size)
+
+      const moveInfo = parsingMovementRawString(movementRawStringList[movementRawStringList.length-2], 30, 30, 40, 20)
+      console.log(moveInfo)
+      // unitInfo.moveInfo = moveInfo
+      setUnitMoveInfo(unitInfo, moveInfo)
+
+      moveUnit(unitInfo, 80, 90)
+      for (let i=0; i<60 * 3; i++) {
+        if (!unitInfo.moveInfo) {
+          console.log(`end i : ${i}`)
+          return
+        }
+        moveByFrame(unitInfo, 60)
+
+        const di = i % 30
+        if (di === 1) drawUnit(ctx, unitInfo, size)
+      }
+
+    }
+
+  </script>
+</body>
+</html>

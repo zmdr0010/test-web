@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <title>Test sample unit sub part</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-drawing-tool-sample/rbx-raw-string-sample-ut-00.js"></script>
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-draw-rect-box-03-new/simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="color-palettes-sample.js"></script>
+  <script type="application/javascript" src="drw-raw-lib.js"></script>
+  <script>
+    let size = 4
+
+    function init() {
+      console.log('init')
+      console.log(rbxRawStringSampleUt00)
+
+      console.log(simpleRbxRawString00)
+      console.log(simpleRbxRawStringList)
+
+      console.log(colorPalettesSampleList)
+
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      // const rawInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.f[2]])
+      // const startColor = 30
+      // drawRawInfo(ctx, rawInfo, 50, 50, size, colorPalettesSampleList.slice(startColor, startColor + rawInfo.rawNum))
+
+      // unit : 27 x 30
+      // f (9,0)
+      // l (0,12)
+      // r (18,12)
+      // bk (9,21)
+      // bd (6,9)
+
+      const fRwInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.f[0]])
+      const lRwInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.lr[0][0]])
+      const rRwInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.lr[0][1]])
+      const bkRwInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bk[0]])
+      const bdRwInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.bd[0]])
+      const fColorStart = 43
+      const lrColorStart = 14
+      const bkColorStart = 24
+      const bdColorStart = 34
+      const fColor = colorPalettesSampleList.slice(fColorStart, fColorStart + fRwInfo.rawNum)
+      const lrColor = colorPalettesSampleList.slice(lrColorStart, lrColorStart + lRwInfo.rawNum)
+      const bkColor = colorPalettesSampleList.slice(bkColorStart, bkColorStart + bkRwInfo.rawNum)
+      const bdColor = colorPalettesSampleList.slice(bdColorStart, bdColorStart + bdRwInfo.rawNum)
+      const fP = [9,0]
+      const lP = [0,12]
+      const rP = [18,12]
+      const bkP = [9,21]
+      const bdP = [6,9]
+
+      const unitX = 50
+      const unitY = 50
+      const fSx = fP[0] * size + unitX
+      const fSy = fP[1] * size + unitY
+      const lSx = lP[0] * size + unitX
+      const lSy = lP[1] * size + unitY
+      const rSx = rP[0] * size + unitX
+      const rSy = rP[1] * size + unitY
+      const bkSx = bkP[0] * size + unitX
+      const bkSy = bkP[1] * size + unitY
+      const bdSx = bdP[0] * size + unitX
+      const bdSy = bdP[1] * size + unitY
+
+      drawRawInfo(ctx, fRwInfo, fSx, fSy, size, fColor)
+      drawRawInfo(ctx, lRwInfo, lSx, lSy, size, lrColor)
+      drawRawInfo(ctx, rRwInfo, rSx, rSy, size, lrColor)
+      drawRawInfo(ctx, bkRwInfo, bkSx, bkSy, size, bkColor)
+      drawRawInfo(ctx, bdRwInfo, bdSx, bdSy, size, bdColor)
+
+      const drwResInfo = {
+        list: [
+          {
+            type: 'raw',
+            target: 'rbxRawStringSampleUt00.raw',
+            targetType: 'list',
+            obj: rbxRawStringSampleUt00.raw
+          },
+          {
+            type: 'color',
+            target: 'colorPalettesSampleList',
+            targetType: 'list',
+            obj: colorPalettesSampleList
+          }
+        ]
+      }
+
+      const drwObjLinkInfo = {
+        uCode: `${generateSimpleUCode()}_drwObjLinkInfo-sample`,
+        uCodeType: 'string',
+        memo: 'drwObjLinkInfo-sample',
+        r: 0, // row
+        c: 0, // column
+        rs: 27, // row size
+        cs: 30, // column size
+        rawLink: { target: '', uCode: '', uCodeType: 'index' }, // uCodeType : index / string
+        colorLinkList: [{ target: '', uCode: '', uCodeType: 'index' }], // by rawNum
+        child: [
+          {
+            memo: 'f', // front
+            r: 9,
+            c: 0,
+            rs: 9,
+            cs: 12,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', targetType: 'list', uCode: '0', uCodeType: 'index' },
+            colorLinkList: [
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '43', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '44', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '45', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '46', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '47', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '48', uCodeType: 'index' }
+            ],
+            child: []
+          },
+          {
+            memo: 'l', // left
+            r: 0,
+            c: 12,
+            rs: 9,
+            cs: 12,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', targetType: 'list', uCode: '5', uCodeType: 'index' },
+            colorLinkList: [
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '14', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '15', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '16', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '17', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '18', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '19', uCodeType: 'index' }
+            ],
+            child: []
+          },
+          {
+            memo: 'r', // right
+            r: 18,
+            c: 12,
+            rs: 9,
+            cs: 12,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', targetType: 'list', uCode: '10', uCodeType: 'index' },
+            colorLinkList: [
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '14', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '15', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '16', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '17', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '18', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '19', uCodeType: 'index' }
+            ],
+            child: []
+          },
+          {
+            memo: 'bk', // back
+            r: 9,
+            c: 21,
+            rs: 9,
+            cs: 9,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', targetType: 'list', uCode: '15', uCodeType: 'index' },
+            colorLinkList: [
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '24', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '25', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '26', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '27', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '28', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '29', uCodeType: 'index' }
+            ],
+            child: []
+          },
+          {
+            memo: 'bd', // body
+            r: 6,
+            c: 9,
+            rs: 15,
+            cs: 15,
+            rawLink: { target: 'rbxRawStringSampleUt00.raw', targetType: 'list', uCode: '20', uCodeType: 'index' },
+            colorLinkList: [
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '34', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '35', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '36', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '37', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '38', uCodeType: 'index' },
+              { target: 'colorPalettesSampleList', targetType: 'list', uCode: '39', uCodeType: 'index' }
+            ],
+            child: []
+          }
+        ]
+      }
+
+      // test null
+      // let test = null
+      // console.log(`test 000 : ${test}`) // print log
+      // if (test) {
+      //   console.log(`test 001 : ${test}`) // not print
+      // }
+      // test = { test: 'test' }
+      // console.log(`test 002 : ${test}`) // print log
+      // if (test) {
+      //   console.log(`test 003 : ${test}`) // print log
+      // }
+
+      const drwObjInfo = parsingDrwObjInfoByLinkInfo(drwObjLinkInfo, drwResInfo, `${generateSimpleUCode()}_drwObjInfo`)
+      console.log(drwObjInfo)
+
+      const objX = 200
+      const objY = 100
+      drawDrwObjInfo(ctx, drwObjInfo, objX, objY, size)
+
+      let dX = 90
+      let dY = 30
+      let mX = dX
+      let mY = dY
+      drawDrwObjInfo(ctx, drwObjInfo, objX + mX, objY + mY, size)
+
+      const num = 10
+      for (let i=0; i<num; i++) {
+        mX += dX
+        mY += dY
+        drawDrwObjInfo(ctx, drwObjInfo, objX + mX, objY + mY, size)
+      }
+    }
+
+    function drawDrwObjInfo(ctx, objInfo, sx, sy, size) {
+      if (objInfo.rawInfo) {
+        const oSx = objInfo.r * size + sx
+        const oSy = objInfo.c * size + sy
+        drawRawInfo(ctx, objInfo.rawInfo, oSx, oSy, size, objInfo.colorList)
+      }
+      if (objInfo.child) {
+        for (const child of objInfo.child) {
+          drawDrwObjInfo(ctx, child, sx, sy, size)
+        }
+      }
+    }
+
+    function getDrwResObj(resInfo, target) {
+      const info = resInfo.list.find((info) => info.target === target)
+      return info.obj
+    }
+
+    function parsingDrwObjInfoByLinkInfo(linkInfo, resInfo, uCode, uCodeType='string') {
+      const memo = linkInfo.memo
+      const r = linkInfo.r
+      const c = linkInfo.c
+      const rs = linkInfo.rs
+      const cs = linkInfo.cs
+      let rawInfo = null
+      const colorList = []
+      const child = []
+      if (linkInfo.rawLink.target && linkInfo.rawLink.target.length > 0) {
+        if (linkInfo.rawLink.targetType === 'list') {
+          const list = getDrwResObj(resInfo, linkInfo.rawLink.target)
+          rawInfo = parsingRawStringToRawInfo(list[Number(linkInfo.rawLink.uCode)])
+        }
+      }
+      if (rawInfo && linkInfo.colorLinkList.length > 0) {
+        const first = linkInfo.colorLinkList[0]
+        if (first.targetType === 'list') {
+          const list = getDrwResObj(resInfo, first.target)
+          for (const info of linkInfo.colorLinkList) {
+            colorList.push(list[Number(info.uCode)])
+          }
+        }
+      }
+
+      for (const chd of linkInfo.child) {
+        child.push(parsingDrwObjInfoByLinkInfo(chd, resInfo, `${uCode}_${chd.memo}`, uCodeType))
+      }
+
+      return {
+        uCode: uCode,
+        uCodeType: uCodeType,
+        memo: memo,
+        r: r,
+        c: c,
+        rs: rs,
+        cs: cs,
+        rawInfo: rawInfo,
+        colorList: colorList,
+        child: child
+      }
+    }
+  </script>
+</body>
+</html>
