@@ -260,3 +260,63 @@ function parsingDrwObjInfoByLinkInfo(linkInfo, resInfo) {
     child: child
   }
 }
+
+function reverseVerticalRawInfo(origin) {
+  const info = {
+    memo: `${origin.memo}_v_reverse`,
+    row: origin.row,
+    column: origin.column,
+    rawNum: origin.rawNum,
+    raw: []
+  }
+
+  const length = origin.raw.length
+  const row = origin.row
+  const column = origin.column
+
+  for (let i=0; i<length; i++) {
+    const x = i % row
+    const y = Math.floor(i / row)
+    const index = x + ((column-1) - y) * row
+    const r = origin.raw[index]
+    info.raw.push(r)
+  }
+
+  return info
+}
+
+function divideRawLayer(raw, rawNum, row, column) {
+  const length = row * column
+  const result = []
+  for (let i=0; i<rawNum; i++) {
+    const list = []
+    for (let j=0; j<length; j++) {
+      list.push(0)
+    }
+    result.push(list)
+  }
+
+  for (let i=0; i<raw.length; i++) {
+    const r = raw[i]
+    for (let j=0; j<=r; j++) {
+      result[j][i] = j
+    }
+  }
+
+  return result
+}
+
+function compRawLayer(length, layerList) {
+  const compLayerRaw = []
+  for (let i=0; i<length; i++) {
+    compLayerRaw.push(0)
+  }
+
+  for (const layer of layerList) {
+    for (let i=0; i<layer.length; i++) {
+      const rw = layer[i]
+      compLayerRaw[i] = Math.max(rw, compLayerRaw[i])
+    }
+  }
+  return compLayerRaw
+}

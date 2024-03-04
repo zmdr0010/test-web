@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <title>Test sample w raw layer e 06 bottom add</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: grey;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-drawing-tool-sample/rbx-raw-string-sample-ut-00.js"></script>
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-draw-rect-box-03-new/simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="color-palettes-sample.js"></script>
+  <script type="application/javascript" src="drw-raw-lib.js"></script>
+<!--  <script type="application/javascript" src="movement-raw-string-sample.js"></script>-->
+<!--  <script type="application/javascript" src="info-sample.js"></script>-->
+<!--  <script type="application/javascript" src="hit-lib.js"></script>-->
+  <script type="application/javascript" src="drw-raw-edit-lib.js"></script>
+  <script>
+    let size = 6
+    let startColor = 30
+
+    function init() {
+      console.log('init')
+      console.log(rbxRawStringSampleUt00)
+
+      console.log(simpleRbxRawString00)
+      console.log(simpleRbxRawStringList)
+
+      console.log(colorPalettesSampleList)
+      console.log(colorPalettesSampleList1)
+
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      const rawInfo = parsingRawStringToRawInfo(rbxRawStringSampleUt00.raw[rbxRawStringSampleUt00.f[0]])
+      // const startColor = 0
+      const row = rawInfo.row
+      const column = rawInfo.column
+      const rawNum = rawInfo.rawNum
+      const sr = 6
+      const sc = 6
+
+      drawRawInfoByRC(ctx, rawInfo, sr, sc, size, colorPalettesSampleList1.slice(startColor, startColor + rawNum))
+
+      const testNum = 10
+      const layerListList = []
+      for (let i=0; i<testNum; i++) {
+        layerListList.push(divideRawLayer(rawInfo.raw, rawInfo.rawNum, row, column))
+      }
+
+      // const layerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, row, column)
+      const layerList = layerListList[0]
+      const margin = 4
+      // const str = sr + row + margin
+      // const stc = sc
+      // let r = str
+      // for (const layer of layerList) {
+      //   const info = {
+      //     row: row,
+      //     column: column,
+      //     rawNum: rawNum,
+      //     raw: layer
+      //   }
+      //   drawRawInfoByRC(ctx, info, r, stc, size, colorPalettesSampleList1)
+      //   r += row + margin
+      // }
+      //
+      // const compLayer = compRawLayer(rawInfo.raw.length, layerList)
+      // r += row + margin
+      // const info = {
+      //   row: row,
+      //   column: column,
+      //   rawNum: rawNum,
+      //   raw: compLayer
+      // }
+      // drawRawInfoByRC(ctx, info, r, stc, size, colorPalettesSampleList1)
+
+      const length = rawInfo.raw.length
+      drawTest(ctx, layerList, length, row, column, rawNum, margin, sr, sc)
+
+      let c = sc
+
+      let layerI = 1
+      for (const layer of layerListList[layerI]) {
+        rawEditBottomAdd(layer, row, column)
+      }
+      c += column + margin
+      drawTest(ctx, layerListList[layerI], length, row, column, rawNum, margin, sr, c, 10)
+
+
+      layerI = 2
+      for (const layer of layerListList[layerI]) {
+        rawEditBottomAdd(layer, row, column, 2)
+      }
+      c += column + margin
+      drawTest(ctx, layerListList[layerI], length, row, column, rawNum, margin, sr, c, 30)
+
+      layerI = 3
+      for (const layer of layerListList[layerI]) {
+        rawEditBottomAdd(layer, row, column, 2, [0,1,2,3])
+      }
+      c += column + margin
+      drawTest(ctx, layerListList[layerI], length, row, column, rawNum, margin, sr, c, 50)
+
+      layerI = 4
+      for (const layer of layerListList[layerI]) {
+        rawEditBottomAdd(layer, row, column, 2, [0,1,2,3], true)
+      }
+      c += column + margin
+      drawTest(ctx, layerListList[layerI], length, row, column, rawNum, margin, sr, c, 70)
+
+      layerI = 5
+      for (const layer of layerListList[layerI]) {
+        rawEditBottomAddTarget(layer, row, column, [4], 3)
+      }
+      c += column + margin
+      drawTest(ctx, layerListList[layerI], length, row, column, rawNum, margin, sr, c, 80)
+
+      layerI = 6
+      for (const layer of layerListList[layerI]) {
+        rawEditBottomAddTarget(layer, row, column, [4], 1, [], true)
+      }
+      c += column + margin
+      drawTest(ctx, layerListList[layerI], length, row, column, rawNum, margin, sr, c, 90)
+    }
+
+    function drawTest(ctx, layerList, length, row, column, rawNum, margin, sr, sc, addColor=0) {
+      const str = sr + row + margin
+      const stc = sc
+      let r = str
+      for (const layer of layerList) {
+        const info = {
+          row: row,
+          column: column,
+          rawNum: rawNum,
+          raw: layer
+        }
+        drawRawInfoByRC(ctx, info, r, stc, size, colorPalettesSampleList1.slice(startColor + addColor, startColor + addColor + rawNum))
+        r += row + margin
+      }
+
+      const compLayer = compRawLayer(length, layerList)
+      r += row + margin
+      const info = {
+        row: row,
+        column: column,
+        rawNum: rawNum,
+        raw: compLayer
+      }
+      drawRawInfoByRC(ctx, info, r, stc, size, colorPalettesSampleList1.slice(startColor + addColor, startColor + addColor + rawNum))
+    }
+
+    // left add / subtract - num - target column
+    // right add / subtract - num - target column
+    // top add / subtract - num - target row
+    // bottom add / subtract - num - target row
+
+    // // rv - reverse targetR (except targetR)
+    // function rawEditBottomAdd(raw, row, column, add=1, targetR=[], rv=false) {
+    //   for (let i=0; i<row; i++) {
+    //     if (targetR.length > 0) {
+    //       const tri = targetR.indexOf(i)
+    //       if (rv) {
+    //         if (tri >= 0) continue
+    //       } else {
+    //         if (tri < 0) continue
+    //       }
+    //     }
+    //
+    //     let first = -1
+    //     for (let j=column-1; j>=0; j--) {
+    //       const index = j * row + i
+    //       const rw = raw[index]
+    //       if (first < 0 && rw > 0) {
+    //         first = index
+    //         let cc = j
+    //         for (let ii=0; ii<add; ii++) {
+    //           cc += 1
+    //           if (cc >= column) continue
+    //           const cIndex = cc * row + i
+    //           raw[cIndex] = rw
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    //
+    // // rvr - reverse targetR (except targetR), rvc - reverse targetC (except targetC)
+    // function rawEditBottomAddTarget(raw, row, column, targetC, add=1, targetR=[], rvc=false, rvr=false) {
+    //   for (let i=0; i<row; i++) {
+    //     if (targetR.length > 0) {
+    //       const tri = targetR.indexOf(i)
+    //       if (rvr) {
+    //         if (tri >= 0) continue
+    //       } else {
+    //         if (tri < 0) continue
+    //       }
+    //     }
+    //     for (let j=column-1; j>=0; j--) {
+    //       const tci = targetC.indexOf(j)
+    //       if (rvc) {
+    //         if (tci >= 0) continue
+    //       } else {
+    //         if (tci < 0) continue
+    //       }
+    //       const index = j * row + i
+    //       const rw = raw[index]
+    //       let cc = j
+    //       for (let ii=0; ii<add; ii++) {
+    //         cc += 1
+    //         if (cc >= column || rw === 0) continue
+    //         const cIndex = cc * row + i
+    //         raw[cIndex] = rw
+    //       }
+    //     }
+    //   }
+    // }
+
+  </script>
+</body>
+</html>
