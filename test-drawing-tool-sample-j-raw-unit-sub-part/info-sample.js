@@ -222,3 +222,19 @@ const drwObjLinkInfoSample00 = {
     }
   ]
 }
+
+const bulletDrwObjLinkInfoSample = {
+  uCode: `202403041542_bullet_drwObjLinkInfo-sample`,
+  uCodeType: 'string',
+  memo: 'bullet_drwObj-sample',
+  r: 0, // row
+  c: 0, // column
+  rs: 3, // row size
+  cs: 5, // column size
+  rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 27 }, // uCodeType : index / string
+  colorLink:{
+    target: 'colorPalettesSampleList',
+    list: [34,25,42,11] // index list by rawNum
+  },
+  child: []
+}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <title>Test sample unit sub pp movement path 05</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-drawing-tool-sample/rbx-raw-string-sample-ut-00.js"></script>
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-draw-rect-box-03-new/simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="color-palettes-sample.js"></script>
+  <script type="application/javascript" src="drw-raw-lib.js"></script>
+  <script type="application/javascript" src="movement-raw-string-sample.js"></script>
+  <script type="application/javascript" src="info-sample.js"></script>
+  <script type="application/javascript" src="hit-lib.js"></script>
+  <script type="application/javascript" src="drw-raw-info-edit-lib.js"></script>
+  <script>
+    function init() {
+      console.log('init')
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      // movementRawStringList
+      // movementRawStringList01
+      // movementRawStringList02
+      const mList = []
+      const moveInfoList = []
+      for (const m of pathRwStrListSample) {
+        mList.push(parsingMovementRawStrToMrwInfo(m))
+        moveInfoList.push(parsingMovementRawStrToMdList(m))
+      }
+
+      const size = 8
+      const start = 30
+      const colorList = ['black']
+      for (let i=0; i<10; i++) {
+        colorList.push(colorPalettesSampleList1[start + i + 2])
+      }
+
+      const margin = 4
+      const sr = 5
+      const sc = 5
+      let r = sr
+      let c = sc
+      let h = 0
+      let ssr = 0
+      let ssc = 0
+      for (let i=0; i<mList.length; i++) {
+        const rawInfo = mList[i]
+        drawRawInfoByRCAll(ctx, rawInfo, r, c, size, colorList)
+
+        for (let j=0; j<rawInfo.raw.length; j++) {
+          const rw = rawInfo.raw[j]
+          if (rw === 1) {
+            const fr = j % rawInfo.row
+            const fc = Math.floor(j / rawInfo.row)
+            ssr = fr + r
+            ssc = fc + c
+          }
+        }
+
+        const list = moveInfoList[i]
+        drawMoveInfo(ctx, list, ssr, ssc, size)
+
+        r += margin + rawInfo.row
+        h = Math.max(rawInfo.column, h)
+      }
+
+      // 0 (left -> right), 1 (right -> left), 2 (bottom -> top), 3 (top -> bottom)
+      const lToRMrwInfo = mList[0]
+      const rToLMrwInfo = mList[1]
+      const bToTMrwInfo = mList[2]
+      const tToBMrwInfo = mList[3]
+
+      r = sr
+      c += h + margin
+
+      // add - 1, 2, 3
+      let add = 1
+      let addRowMrwInfo0 = addRow(lToRMrwInfo, 1, add, 0)
+      // addRowMrwInfo0 = addRow(addRowMrwInfo0, 2 + add, add, 0)
+      // addRowMrwInfo0 = addRow(addRowMrwInfo0, 3 + add + add, add, 0)
+      // drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //
+      // r += margin + addRowMrwInfo0.row
+      // add = 2
+      // addRowMrwInfo0 = addRow(lToRMrwInfo, 1, add, 0)
+      // addRowMrwInfo0 = addRow(addRowMrwInfo0, 2 + add, add, 0)
+      // addRowMrwInfo0 = addRow(addRowMrwInfo0, 3 + add + add, add, 0)
+      // drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //
+      // r += margin + addRowMrwInfo0.row
+      // add = 3
+      // addRowMrwInfo0 = addRow(lToRMrwInfo, 1, add, 0)
+      // addRowMrwInfo0 = addRow(addRowMrwInfo0, 2 + add, add, 0)
+      // addRowMrwInfo0 = addRow(addRowMrwInfo0, 3 + add + add, add, 0)
+      // drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //
+      //
+      // r += margin + addRowMrwInfo0.row
+      // addRowMrwInfo0 = addRowByList(lToRMrwInfo, [1,2,3], 4, 0)
+      // drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //
+      // r += margin + addRowMrwInfo0.row
+      // addRowMrwInfo0 = addRowByList(lToRMrwInfo, [1,2,3], 5, 0)
+      // drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //
+      // r += margin + addRowMrwInfo0.row
+      // addRowMrwInfo0 = addRowByList(lToRMrwInfo, [1,2,3], 6, 0)
+      // drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //
+      // r = sr
+      // c += addRowMrwInfo0.column + margin
+      //
+      // for (let i=0; i<6; i++) {
+      //   addRowMrwInfo0 = addRowByList(rToLMrwInfo, [1,2,3], i+1, 0)
+      //   drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //   r += margin + addRowMrwInfo0.row
+      // }
+      //
+      // r = sr
+      // c += addRowMrwInfo0.column + margin
+      // for (let i=0; i<6; i++) {
+      //   addRowMrwInfo0 = addColumnByList(bToTMrwInfo, [1,2,3], i+1, 0)
+      //   drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //   r += margin + addRowMrwInfo0.row
+      // }
+      //
+      // r = sr
+      // c += addRowMrwInfo0.column + margin
+      // for (let i=0; i<6; i++) {
+      //   addRowMrwInfo0 = addColumnByList(tToBMrwInfo, [1,2,3], i+1, 0)
+      //   drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //   r += margin + addRowMrwInfo0.row
+      // }
+
+      // 4 (rb -> lt), 5 (lb -> rt), 6 (lt -> rb), 7 (rt -> lb)
+      const rbToLtMrwInfo = mList[4]
+      const lbToRtMrwInfo = mList[5]
+      const ltToRbMrwInfo = mList[6]
+      const rtToLbMrwInfo = mList[7]
+
+    //   r = sr
+    //   c += addRowMrwInfo0.column + margin
+    //   for (let i=0; i<6; i++) {
+    //     addRowMrwInfo0 = addRowColumnByList(rbToLtMrwInfo, [1,2,3], i+1, 0)
+    //     drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+    //     r += margin + addRowMrwInfo0.row
+    //   }
+    //
+    //   r = sr
+    //   c += addRowMrwInfo0.column + margin
+    //   for (let i=0; i<6; i++) {
+    //     addRowMrwInfo0 = addRowColumnByList(lbToRtMrwInfo, [1,2,3], i+1, 0)
+    //     drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+    //     r += margin + addRowMrwInfo0.row
+    //   }
+
+      // r = sr
+      // c += addRowMrwInfo0.column + margin
+      // for (let i=0; i<6; i++) {
+      //   addRowMrwInfo0 = addRowColumnByList(ltToRbMrwInfo, [1,2,3], i+1, 0)
+      //   drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //   r += margin + addRowMrwInfo0.row
+      // }
+      //
+      // r = sr
+      // c += addRowMrwInfo0.column + margin
+      // for (let i=0; i<6; i++) {
+      //   addRowMrwInfo0 = addRowColumnByList(rtToLbMrwInfo, [1,2,3], i+1, 0)
+      //   drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //   r += margin + addRowMrwInfo0.row
+      // }
+
+      // r = sr
+      // c += addRowMrwInfo0.column + margin
+      // for (let i=0; i<6; i++) {
+      //   addRowMrwInfo0 = addRowByList(rbToLtMrwInfo, [1,2,3], i+1, 0)
+      //   drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+      //   r += margin + addRowMrwInfo0.row
+      // }
+
+      r = sr
+      c += addRowMrwInfo0.column + margin
+      for (let i=0; i<6; i++) {
+        addRowMrwInfo0 = addColumnByList(rbToLtMrwInfo, [1,2,3], i+1, 0)
+        drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+        r += margin + addRowMrwInfo0.row
+      }
+
+      r = sr
+      c += addRowMrwInfo0.column + margin
+      for (let i=0; i<6; i++) {
+        addRowMrwInfo0 = addRowColumnByList01(rbToLtMrwInfo, [1,2,3], 1, i+1, 0)
+        drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+        r += margin + addRowMrwInfo0.row
+      }
+
+      r = sr
+      c += addRowMrwInfo0.column + margin
+      for (let i=0; i<6; i++) {
+        addRowMrwInfo0 = addRowColumnByList01(rbToLtMrwInfo, [1,2,3], 2, i+1, 0)
+        drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+        r += margin + addRowMrwInfo0.row
+      }
+
+      r = sr
+      c += addRowMrwInfo0.column + margin
+      for (let i=0; i<6; i++) {
+        addRowMrwInfo0 = addRowColumnByList01(rbToLtMrwInfo, [1,2,3], 3, i+1, 0)
+        drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+        r += margin + addRowMrwInfo0.row
+      }
+
+      r = sr
+      c += addRowMrwInfo0.column + margin
+      for (let i=0; i<6; i++) {
+        addRowMrwInfo0 = addRowColumnByList01(rbToLtMrwInfo, [1,2,3], 4, i+1, 0)
+        drawRawInfoByRCAll(ctx, addRowMrwInfo0, r, c, size, colorList)
+        r += margin + addRowMrwInfo0.row
+      }
+    }
+
+    function addRowByList(oInfo, list, add, crw=-1) {
+      let info = oInfo
+      let a = 0
+      for (const i of list) {
+        const index = i + a
+        info = addRow(info, index, add, crw)
+        a += add
+      }
+      return info
+    }
+
+    function addColumnByList(oInfo, list, add, crw=-1) {
+      let info = oInfo
+      let a = 0
+      for (const i of list) {
+        const index = i + a
+        info = addColumn(info, index, add, crw)
+        a += add
+      }
+      return info
+    }
+
+    function addRowColumnByList(oInfo, list, add, crw=-1) {
+      let info = oInfo
+      let a = 0
+      for (const i of list) {
+        const index = i + a
+        info = addRow(info, index, add, crw)
+        info = addColumn(info, index, add, crw)
+        a += add
+      }
+      return info
+    }
+
+    function addRowColumnByList01(oInfo, list, addR, addC, crw=-1) {
+      let info = oInfo
+      let aR = 0
+      let aC = 0
+      for (const i of list) {
+        const rI = i + aR
+        const cI = i + aC
+        info = addRow(info, rI, addR, crw)
+        info = addColumn(info, cI, addC, crw)
+        aR += addR
+        aC += addC
+      }
+      return info
+    }
+
+    function drawMoveInfo(ctx, list, sr, sc, size) {
+      // {
+      //   fps: fps,
+      //     d: d,
+      //   currentMove: 0,
+      //   moveCount: 0,
+      //   list: mList
+      // }
+      ctx.beginPath()
+      ctx.moveTo(sr * size, sc * size)
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'red'
+      for (const p of list) {
+        const x = (sr + p.md[0]) * size
+        const y = (sc + p.md[1]) * size
+        console.log(`x : ${x}, y : ${y}`)
+        ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+
+    }
+  </script>
+</body>
+</html>

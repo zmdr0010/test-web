@@ -70,6 +70,17 @@ function drawRawInfoByRC(ctx, rawInfo, sr, sc, size, colorList) {
   }
 }
 
+function drawRawInfoByRCAll(ctx, rawInfo, sr, sc, size, colorList) {
+  const list = rawInfo.raw
+  const row = rawInfo.row
+  for (let i=0; i<list.length; i++) {
+    const rw = list[i]
+    const r = i % row
+    const c = Math.floor(i / row)
+    drawRawByRC(ctx, r, c, sr, sc, colorList[rw], size)
+  }
+}
+
 function saveString(str, name) {
   const link = document.createElement("a")
   const file = new Blob([str], {type:'text/plain'})
@@ -94,10 +105,138 @@ function generateSimpleUCode() {
 }
 
 // movement
+function parsingMovementRawStrToMrwInfo(str) {
+  const list = str.split('/')
+  const memo = list[0]
+  const row = Number(list[1])
+  const column = Number(list[2])
+  const rawNum = Number(list[3])
+  const rawStrList = list[4].split(',')
+  const mList = []
+  for (let i=0; i<rawStrList.length; i++) {
+    mList.push(Number(rawStrList[i]))
+  }
+  return {
+    memo: memo,
+    row: row,
+    column: column,
+    rawNum: rawNum,
+    raw: mList
+  }
+}
+
+function parsingMovementRawStrToMdList(str) {
+  const list = str.split('/')
+  const rawNum = Number(list[3])
+  const rawStrList = list[4].split(',')
+  const row = Number(list[1])
+
+  // const mList = []
+  // for (let i=0; i<rawNum; i++) {
+  //   mList.push({ md: [0, 0] })
+  // }
+  //
+  // const firstIndex = rawStrList.indexOf('1')
+  // const fr = firstIndex % row
+  // const fc = Math.floor(firstIndex/row)
+  //
+  // for (let i=0; i<rawStrList.length; i++) {
+  //   const rw = Number(rawStrList[i]) - 1
+  //   if (rw < 0) continue
+  //
+  //   const r = i % row
+  //   const c = Math.floor(i/row)
+  //   const mr = r - fr
+  //   const mc = c - fc
+  //   const mInfo = mList[rw]
+  //   mInfo.md[0] = mr
+  //   mInfo.md[1] = mc
+  // }
+  // return mList
+  return parsingRawToMdList(rawStrList, rawNum, row)
+}
+
+function parsingRawToMdList(raw, rawNum, row) {
+  const mList = []
+  for (let i=0; i<rawNum; i++) {
+    mList.push({ md: [0, 0] })
+  }
+
+  // this is
+  // m0 to m1
+  // m0 to m2
+  // m0 to m3
+  // ...
+  //
+  // const firstIndex = raw.indexOf(1)
+  // const fr = firstIndex % row
+  // const fc = Math.floor(firstIndex/row)
+  //
+  // for (let i=0; i<raw.length; i++) {
+  //   const rw = Number(raw[i]) - 1
+  //   if (rw < 0) continue
+  //
+  //   const r = i % row
+  //   const c = Math.floor(i/row)
+  //   const mr = r - fr
+  //   const mc = c - fc
+  //   const mInfo = mList[rw]
+  //   mInfo.md[0] = mr
+  //   mInfo.md[1] = mc
+  // }
+
+
+  // m0 to m1
+  // m1 to m2
+  // m2 to m3
+  // ...
+  let sr = 0
+  let sc = 0
+  let fr = 0
+  let fc = 0
+  let mr = 0
+  let mc = 0
+  for (let i=0; i<rawNum; i++) {
+    const index = raw.indexOf(i+1)
+    const r = index % row
+    const c = Math.floor(index/row)
+    if (i === 0) {
+      fr = r
+      fc = c
+    }
+    mr = r - fr
+    mc = c - fc
+    const mInfo = mList[i]
+    mInfo.md[0] = mr - sr
+    mInfo.md[1] = mc - sc
+    console.log(`i : ${i}, index : ${index}, r : ${r}, c : ${c}, sr : ${sr}, sc : ${sc}, md0 : ${mInfo.md[0]}, md1 : ${mInfo.md[1]}`)
+    sr = mr
+    sc = mc
+  }
+
+  return mList
+}
+
+function createMoveInfoFromMdList(list, fps=30, d=20, rs=10, cs=10) {
+  const mList = []
+  for (const info of list) {
+    const mr = info.md[0] * rs
+    const mc = info.md[1] * cs
+    mList.push({md: [mr, mc]})
+  }
+  return {
+    fps: fps,
+    d: d,
+    currentMove: 0,
+    moveCount: 0,
+    list: mList
+  }
+}
+
 // rs : row size, cs : column size
 function parsingMovementRawString(str, fps=30, d=20, rs=10, cs=10) {
   const list = str.split('/')
-  console.log(list)
+  // console.log(list)
   const memo = list[0]
   const row = Number(list[1])
   const column = Number(list[2])
@@ -155,6 +294,8 @@ function moveByFrame(unit, fps) {
     moveCount = 0
     currentMove++
     if (currentMove >= list.length) {
+      posInfo.r = currentM.md[0] + moveInfo.sr
+      posInfo.c = currentM.md[1] + moveInfo.sc
       unit.moveInfo = null
       return
     }
@@ -193,7 +334,6 @@ function copyMoveInfo(moveInfo) {
 
 function setUnitMoveInfo(unit, moveInfo) {
   unit.moveInfo = copyMoveInfo(moveInfo)
-  console.log(unit.moveInfo)
 }
 
 function moveUnit(unit, mr, mc) {

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <title>Test sample unit sub pp movement path</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-drawing-tool-sample/rbx-raw-string-sample-ut-00.js"></script>
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-draw-rect-box-03-new/simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="color-palettes-sample.js"></script>
+  <script type="application/javascript" src="drw-raw-lib.js"></script>
+  <script type="application/javascript" src="movement-raw-string-sample.js"></script>
+  <script type="application/javascript" src="info-sample.js"></script>
+  <script type="application/javascript" src="hit-lib.js"></script>
+  <script>
+    function init() {
+      console.log('init')
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      // movementRawStringList
+      // movementRawStringList01
+      // movementRawStringList02
+      const mList = []
+      const moveInfoList = []
+      for (const m of movementRawStringList) {
+        mList.push(parsingMovementRawStrToMrwInfo(m))
+        moveInfoList.push(parsingMovementRawStrToMdList(m))
+      }
+
+      const mList1 = []
+      const moveInfoList1 = []
+      for (const m of movementRawStringList01) {
+        mList1.push(parsingMovementRawStrToMrwInfo(m))
+        moveInfoList1.push(parsingMovementRawStrToMdList(m))
+      }
+
+      const mList2 = []
+      const moveInfoList2 = []
+      for (const m of movementRawStringList02) {
+        mList2.push(parsingMovementRawStrToMrwInfo(m))
+        moveInfoList2.push(parsingMovementRawStrToMdList(m))
+      }
+
+      const size = 10
+      const start = 30
+      const colorList = ['black']
+      for (let i=0; i<10; i++) {
+        colorList.push(colorPalettesSampleList1[start + i + 2])
+      }
+
+      const margin = 4
+      const sr = 5
+      const sc = 5
+      let r = sr
+      let c = sc
+      let h = 0
+      let ssr = 0
+      let ssc = 0
+      for (let i=0; i<mList.length; i++) {
+        const rawInfo = mList[i]
+        drawRawInfoByRCAll(ctx, rawInfo, r, c, size, colorList)
+
+        for (let j=0; j<rawInfo.raw.length; j++) {
+          const rw = rawInfo.raw[j]
+          if (rw === 1) {
+            const fr = j % rawInfo.row
+            const fc = Math.floor(j / rawInfo.row)
+            ssr = fr + r
+            ssc = fc + c
+          }
+        }
+
+        const list = moveInfoList[i]
+        drawMoveInfo(ctx, list, ssr, ssc, size)
+
+        r += margin + rawInfo.row
+        h = Math.max(rawInfo.column, h)
+      }
+
+      r = sr
+      c += margin + h
+
+      for (let i=0; i<mList1.length; i++) {
+        const rawInfo = mList1[i]
+        drawRawInfoByRCAll(ctx, rawInfo, r, c, size, colorList)
+
+        for (let j=0; j<rawInfo.raw.length; j++) {
+          const rw = rawInfo.raw[j]
+          if (rw === 1) {
+            const fr = j % rawInfo.row
+            const fc = Math.floor(j / rawInfo.row)
+            ssr = fr + r
+            ssc = fc + c
+          }
+        }
+
+        const list = moveInfoList1[i]
+        drawMoveInfo(ctx, list, ssr, ssc, size)
+
+        r += margin + rawInfo.row
+        h = Math.max(rawInfo.column, h)
+      }
+
+      r = sr
+      c += margin + h
+
+      for (let i=0; i<mList2.length; i++) {
+        const rawInfo = mList2[i]
+        drawRawInfoByRCAll(ctx, rawInfo, r, c, size, colorList)
+
+        for (let j=0; j<rawInfo.raw.length; j++) {
+          const rw = rawInfo.raw[j]
+          if (rw === 1) {
+            const fr = j % rawInfo.row
+            const fc = Math.floor(j / rawInfo.row)
+            ssr = fr + r
+            ssc = fc + c
+          }
+        }
+
+        const list = moveInfoList2[i]
+        drawMoveInfo(ctx, list, ssr, ssc, size)
+
+        r += margin + rawInfo.row
+        h = Math.max(rawInfo.column, h)
+      }
+
+      r = sr + 50
+      c = sc + 2
+
+      for (let i=0; i<moveInfoList.length; i++) {
+        const list = moveInfoList[i]
+        drawMoveInfo(ctx, list, r, c, size)
+        r += margin + 3
+      }
+
+      r = sr + 40
+      c += 10 + 2
+
+      for (let i=0; i<moveInfoList1.length; i++) {
+        const list = moveInfoList1[i]
+        drawMoveInfo(ctx, list, r, c, size)
+        r += margin + 3
+      }
+
+      r = sr + 40
+      c += 4 + 2
+
+      for (let i=0; i<moveInfoList2.length; i++) {
+        const list = moveInfoList2[i]
+        drawMoveInfo(ctx, list, r, c, size)
+        r += margin + 3
+      }
+    }
+
+    function drawMoveInfo(ctx, list, sr, sc, size) {
+      // {
+      //   fps: fps,
+      //     d: d,
+      //   currentMove: 0,
+      //   moveCount: 0,
+      //   list: mList
+      // }
+      ctx.beginPath()
+      ctx.moveTo(sr * size, sc * size)
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'red'
+      for (const p of list) {
+        const x = (sr + p.md[0]) * size
+        const y = (sc + p.md[1]) * size
+        console.log(`x : ${x}, y : ${y}`)
+        ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+
+    }
+  </script>
+</body>
+</html>
