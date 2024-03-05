@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <title>Test sample unit sub ppp movement path frame 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-drawing-tool-sample/rbx-raw-string-sample-ut-00.js"></script>
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-draw-rect-box-03-new/simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="color-palettes-sample.js"></script>
+  <script type="application/javascript" src="drw-raw-lib.js"></script>
+  <script type="application/javascript" src="movement-raw-string-sample.js"></script>
+  <script type="application/javascript" src="info-sample.js"></script>
+  <script type="application/javascript" src="hit-lib.js"></script>
+  <script type="application/javascript" src="drw-raw-info-edit-lib.js"></script>
+  <script type="application/javascript" src="temp-ani-play-ground.js"></script>
+  <script>
+    let pathRawInfo
+    let pathRawInfoSr = 5
+    let pathRawInfoSc = 5
+    let pathRawInfoColorList = []
+    let bulletList = []
+    let bulletDrwObjInfo
+    let moveInfoList = []
+    // let tempStartR = 10
+    // let tempStartC = 30
+    let tempStartR = 80
+    let tempStartC = 80
+    let pathInfoList = []
+    let tempStartList = []
+
+    function init() {
+      console.log('init')
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      initCanvas('id-canvas', canvasW, canvasH)
+
+      const drwResInfo = {
+        list: []
+      }
+
+      drwResInfo.list['rbxRawStringSampleUt00.raw'] = []
+      for (const rw of rbxRawStringSampleUt00.raw) {
+        drwResInfo.list['rbxRawStringSampleUt00.raw'].push(rw)
+      }
+
+      drwResInfo.list['colorPalettesSampleList'] = []
+      for (const color of colorPalettesSampleList) {
+        drwResInfo.list['colorPalettesSampleList'].push(color)
+      }
+
+      bulletDrwObjInfo = parsingDrwObjInfoByLinkInfo(bulletDrwObjLinkInfoSample, drwResInfo)
+
+      const bulletInfo = {
+        drwObj: bulletDrwObjInfo,
+        posInfo: {
+          r: tempStartR,
+          c: tempStartC
+        },
+        moveInfo: null,
+        hitInfo: {
+          hitBox: [
+            [0, bulletDrwObjInfo.rs-1, 0, bulletDrwObjInfo.cs-1]
+          ],
+          hitFrame: 0, // > 0 : hit state
+          hitState: 0, // 0 : normal, 1 : hit state
+          hitTarget: 'player',
+          hitType: 'enemy'
+        },
+        outInfo: {
+          type: 'goal' // move end
+          // type: 'loop',
+          // type: 'count',
+          // target: 0, // moveInfoList index
+          // countMax: 2,
+          // count: 2 // count--, 0 move end
+        }
+      }
+      // bulletList.push(bulletInfo)
+
+      // movementRawStringList
+      // movementRawStringList01
+      // movementRawStringList02
+      // const mList = []
+      // const moveInfoList = []
+      // for (const m of pathRwStrListSample) {
+      //   mList.push(parsingMovementRawStrToMrwInfo(m))
+      //   moveInfoList.push(parsingMovementRawStrToMdList(m))
+      // }
+
+      // pathRawInfo = parsingMovementRawStrToMrwInfo(pathRwStrListSample[0])
+      // pathRawInfo = parsingMovementRawStrToMrwInfo(movementRawStringList02[0])
+      // pathRawInfo = parsingMovementRawStrToMrwInfo(movementRawStringList02[2])
+      // pathRawInfo = parsingMovementRawStrToMrwInfo(movementRawStringList02[1])
+
+      // pathRawInfo = parsingMovementRawStrToMrwInfo(pathRwStrListSample[1])
+
+      // left - right / bottom to top
+      // 1, 4, 8, 12, 16, 2, 17, 13, 9, 5, 0
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[1]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[4]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[8]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[12]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[16]))
+
+      let pMrI = parsingMovementRawStrToMrwInfo(pathRwStrListSample[4])
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 4, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 5, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 6, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 7, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 8, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 9, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 10, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 11, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 12, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 13, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 14, 0))
+
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[2]))
+
+      pMrI = parsingMovementRawStrToMrwInfo(pathRwStrListSample[5])
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 14, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 13, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 12, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 11, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 10, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 9, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 8, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 7, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 6, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 5, 0))
+      pathInfoList.push(addColumnByIndexList(pMrI, [1,2,3], 4, 0))
+
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[17]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[13]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[9]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[5]))
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[0]))
+
+      // right - left / top to bottom
+      // 0, 6, 10, 14, 18, 3, 19, 15, 11, 7, 1
+
+      // pathRawInfo = addRow(pathRawInfo, 1, 1, 0)
+      // pathRawInfo = addRow(pathRawInfo, 4, 2, 0)
+
+      size = 3
+      const start = 30
+      pathRawInfoColorList = ['black']
+      for (let i=0; i<10; i++) {
+        pathRawInfoColorList.push(colorPalettesSampleList1[start + i + 2])
+      }
+
+      // const moveInfo = createMoveInfoFromMdList(parsingRawToMdList(pathRawInfo.raw, pathRawInfo.rawNum, pathRawInfo.row), 60, 60, 6, 6)
+      // moveInfoList.push(moveInfo)
+      // setUnitMoveInfo(bulletInfo, moveInfo)
+
+      // drawRawInfoByRCAll(ctx, pathRawInfo, pathRawInfoSr, pathRawInfoSc, size, pathRawInfoColorList)
+
+      // drawBulletList()
+
+      let margin = 10 + 2
+      let sr = 20
+      let sc = 240
+      let rsz = 6
+      let csz = 6
+      let bFps = 60
+      let bD = 60
+
+      for (const pathInfo of pathInfoList) {
+        const mInfo = createMoveInfoFromMdList(parsingRawToMdList(pathInfo.raw, pathInfo.rawNum, pathInfo.row), bFps, bD, rsz, csz)
+        console.log(mInfo)
+        moveInfoList.push(mInfo)
+        tempStartList.push([sr, sc])
+
+        drawRawInfoByRCAll(ctx, pathInfo, sr, 10, size, pathRawInfoColorList)
+        drawMList(ctx, mInfo.list, sr, sc, size)
+
+        const bullet = createBullet(bulletDrwObjInfo, sr, sc)
+        setUnitMoveInfo(bullet, mInfo)
+        bulletList.push(bullet)
+        drawUnit(ctx, bullet, size, pathRawInfoColorList)
+
+        sr += margin
+      }
+
+
+
+
+      // 0 (left -> right), 1 (right -> left), 2 (bottom -> top), 3 (top -> bottom)
+      // 4 (rb -> lt), 5 (lb -> rt), 6 (lt -> rb), 7 (rt -> lb)
+
+      // loop count (num)
+      // back to start type (rotation? / cycle?)
+
+      updateFunc = update
+      drawFunc = draw
+
+      // drawMList(ctx, moveInfoList[0].list, tempStartR, tempStartC, size)
+
+      startAni()
+    }
+
+    function update() {
+      // console.log('update')
+      updateBulletList()
+    }
+
+    function draw() {
+      // console.log('draw')
+      // drawRawInfoByRCAll(ctx, pathRawInfo, pathRawInfoSr, pathRawInfoSc, size, pathRawInfoColorList)
+
+      for (let i=0; i<pathInfoList.length; i++) {
+        const pathInfo = pathInfoList[i]
+        const moveInfo = moveInfoList[i]
+        const tempStart = tempStartList[i]
+        const sr = tempStart[0]
+        const sc = tempStart[1]
+        drawRawInfoByRCAll(ctx, pathInfo, sr, 10, size, pathRawInfoColorList)
+        drawMList(ctx, moveInfo.list, sr, sc, size)
+      }
+
+      drawBulletList()
+
+      // drawMList(ctx, moveInfoList[0].list, tempStartR, tempStartC, size)
+    }
+
+    function updateBulletList() {
+      for (const bullet of bulletList) {
+        if (bullet.moveInfo) {
+          moveByFrame(bullet, fps)
+        } else {
+          if (bullet.outInfo.type === 'loop') {
+            tempStartR = bullet.posInfo.r
+            tempStartC = bullet.posInfo.c
+            setUnitMoveInfo(bullet, moveInfoList[bullet.outInfo.target])
+          }  else if (bullet.outInfo.type === 'count') {
+            if (bullet.outInfo.count <= 0) return
+            tempStartR = bullet.posInfo.r
+            tempStartC = bullet.posInfo.c
+            setUnitMoveInfo(bullet, moveInfoList[bullet.outInfo.target])
+            bullet.outInfo.count--
+          }
+        }
+      }
+    }
+
+    function drawBulletList() {
+      for (const bullet of bulletList) {
+        drawUnit(ctx, bullet, size)
+      }
+    }
+
+    function drawMoveInfo(ctx, list, sr, sc, size) {
+      // {
+      //   fps: fps,
+      //     d: d,
+      //   currentMove: 0,
+      //   moveCount: 0,
+      //   list: mList
+      // }
+      ctx.beginPath()
+      ctx.moveTo(sr * size, sc * size)
+      ctx.lineWidth = 2
+      ctx.strokeStyle = 'red'
+      for (const p of list) {
+        const x = (sr + p.md[0]) * size
+        const y = (sc + p.md[1]) * size
+        console.log(`x : ${x}, y : ${y}`)
+        ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+
+    }
+
+    function drawMList(ctx, list, r, c, size) {
+      // const sr = r * size
+      // const sc = c * size
+      // for (const m of list) {
+      //   ctx.strokeStyle = 'red'
+      //   ctx.beginPath()
+      //   ctx.rect((r + m.md[0]) * size, (c + m.md[1]) * size, size, size)
+      //   ctx.stroke()
+      // }
+      let sr = r
+      let sc = c
+      for (let i=0; i<list.length; i++) {
+        const m = list[i]
+        // console.log(`md0 : ${m.md[0]}, md1 : ${m.md[1]}`)
+        ctx.strokeStyle = 'red'
+        ctx.beginPath()
+        ctx.rect((sr + m.md[0]) * size, (sc + m.md[1]) * size, size, size)
+        ctx.stroke()
+        sr += m.md[0]
+        sc += m.md[1]
+      }
+    }
+
+    function createBullet(drwObjInfo, r, c, outInfo={type:'goal'}) {
+      const bulletInfo = {
+        drwObj: drwObjInfo,
+        posInfo: {
+          r: r,
+          c: c
+        },
+        moveInfo: null,
+        hitInfo: {
+          hitBox: [
+            [0, drwObjInfo.rs-1, 0, drwObjInfo.cs-1]
+          ],
+          hitFrame: 0, // > 0 : hit state
+          hitState: 0, // 0 : normal, 1 : hit state
+          hitTarget: 'player',
+          hitType: 'enemy'
+        },
+        outInfo: outInfo
+      }
+      return bulletInfo
+    }
+  </script>
+</body>
+</html>
