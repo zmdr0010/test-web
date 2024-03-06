@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test draw rect box 00</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="rbxInfo-sample-00.js"></script>
+  <script>
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      draw(rbxInfoSample00.list[0], ctx, 20, 10, 10)
+      draw(rbxInfoSample00.list[1], ctx, 20, 220, 10)
+      draw(rbxInfoSample00.list[2], ctx, 20, 10, 220)
+      draw(rbxInfoSample00.list[3], ctx, 20, 220, 220)
+    }
+
+    function draw(info, ctx, boxSize=10, x=0, y=0) {
+      // const w = info.size.w
+      // const h = info.size.h
+      // const startX = x
+      // const startY = y
+      for (const key in info.child) {
+        drawChild(info.child[key], ctx, boxSize, x, y)
+      }
+    }
+
+    function drawChild(info, ctx, boxSize, x, y) {
+      for (const key in info.rbxs) {
+        drawRbxs(info.rbxs[key], ctx, info.color, boxSize, x, y)
+      }
+    }
+
+    function drawRbxs(info, ctx, color, boxSize, x, y) {
+      console.log('color : ' + color)
+      const startX = boxSize * info.x + x
+      const startY = boxSize * info.y + y
+      const size = boxSize
+      ctx.fillStyle = color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+  </script>
+</body>
+</html>

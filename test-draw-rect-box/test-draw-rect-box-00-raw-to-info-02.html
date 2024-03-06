@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test draw rect box 00 raw to info 02</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="rbx-raw-sample-01.js"></script>
+  <script type="application/javascript" src="drwInfo-sample-00.js"></script>
+  <script>
+    const rbxInfoSample = {
+      list: []
+    }
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      initInfo(fList)
+      initInfo(bdList)
+      initInfo(lList)
+      initInfo(rList)
+      initInfo(bkList)
+
+      // front
+      // draw(rbxInfoSample.list[0], ctx, 20, 10, 10)
+      // draw(rbxInfoSample.list[1], ctx, 20, 220, 10)
+      // draw(rbxInfoSample.list[2], ctx, 20, 10, 220)
+      // draw(rbxInfoSample.list[3], ctx, 20, 220, 220)
+
+      // body
+      // draw(rbxInfoSample.list[4], ctx, 20, 10, 10)
+      // draw(rbxInfoSample.list[5], ctx, 20, 220, 10)
+      // draw(rbxInfoSample.list[6], ctx, 20, 10, 220)
+      // draw(rbxInfoSample.list[7], ctx, 20, 220, 220)
+
+      // left
+      // draw(rbxInfoSample.list[8], ctx, 20, 10, 10)
+
+      // right
+      // draw(rbxInfoSample.list[9], ctx, 20, 220, 10)
+
+      // back
+      // draw(rbxInfoSample.list[10], ctx, 20, 10, 220)
+
+
+      // draw(rbxInfoSample.list[0], ctx, 20, 160, 10)
+      // draw(rbxInfoSample.list[4], ctx, 20, 180, 200)
+      // draw(rbxInfoSample.list[8], ctx, 20, 30, 220)
+      // draw(rbxInfoSample.list[9], ctx, 20, 350, 220)
+      // draw(rbxInfoSample.list[10], ctx, 20, 180, 380)
+
+      // draw(rbxInfoSample.list[0], ctx, 20, 160, 60)
+      // draw(rbxInfoSample.list[4], ctx, 20, 180, 200)
+      // draw(rbxInfoSample.list[8], ctx, 20, 60, 220)
+      // draw(rbxInfoSample.list[9], ctx, 20, 320, 220)
+      // draw(rbxInfoSample.list[10], ctx, 20, 180, 340)
+
+      // draw(rbxInfoSample.list[0], ctx, 5, 160, 60)
+      // draw(rbxInfoSample.list[4], ctx, 5, 180, 200)
+      // draw(rbxInfoSample.list[8], ctx, 5, 60, 220)
+      // draw(rbxInfoSample.list[9], ctx, 5, 320, 220)
+      // draw(rbxInfoSample.list[10], ctx, 5, 180, 340)
+
+      // const size = 4
+      // draw(rbxInfoSample.list[0], ctx, size, 160, 60)
+      // draw(rbxInfoSample.list[4], ctx, size, 180, 200)
+      // draw(rbxInfoSample.list[8], ctx, size, 60, 220)
+      // draw(rbxInfoSample.list[9], ctx, size, 320, 220)
+      // draw(rbxInfoSample.list[10], ctx, size, 180, 340)
+
+      const drwInfoSample = {
+        size: 15,
+        x: 20,
+        y: 20,
+        list: [
+          {
+            target: 0,
+            // x: 100,
+            // y: 0,
+            x : 5,
+            y : 0
+          },
+          {
+            target: 4,
+            // x: 120,
+            // y: 140,
+            x : 6,
+            y : 7
+          },
+          {
+            target: 8,
+            // x: 0,
+            // y: 160,
+            x : 0,
+            y: 9
+          },
+          {
+            target: 9,
+            // x: 260,
+            // y: 160,
+            x : 13,
+            y : 9
+          },
+          {
+            target: 10,
+            // x: 120,
+            // y: 280,
+            x : 6,
+            y : 14
+          }
+        ]
+      }
+
+      // for (const key in drwInfoSample.list) {
+      //   const info = drwInfoSample.list[key]
+      //   const size = drwInfoSample.size
+      //   const x = size * info.x + drwInfoSample.x
+      //   const y = size * info.y + drwInfoSample.y
+      //   draw(rbxInfoSample.list[info.target], ctx, size, x, y)
+      // }
+      // startDraw(ctx, drwInfoSample)
+
+      // startDraw(ctx, drwInfoSample00.list[drwInfoSample00.list.length-1])
+
+      const size = 4
+      const div = 9
+      const marginX = 160
+      const marginY = 200
+      let count = 0
+
+      for (const key in drwInfoSample00.list) {
+        const info = drwInfoSample00.list[key]
+        const x = count % div
+        const y = Math.floor(count/div)
+        console.log(`x : ${x}, y : ${y}`)
+        info.size = size
+        info.x = x * marginX
+        info.y = y * marginY
+        startDraw(ctx, info)
+        count++
+      }
+    }
+
+    function initInfo(list) {
+      for (const key in list) {
+        initRaw(rbxInfoSample.list, list[key])
+      }
+    }
+
+    function initRaw(resultList, raw) {
+      const info = {
+        type: raw.type,
+        name: raw.name,
+        size: { w:raw.w, h:raw.h },
+        child: [
+          // {
+          //   // name: "front-sample-00-sub-00",
+          //   color: "rgb(50, 50, 50)",
+          //   rbxs: [
+          //     { x:1, y:0 }, { x:3, y:0 }, { x:0, y:1 }, { x:1, y:1 },
+          //     { x:2, y:1 }, { x:3, y:1 }, { x:4, y:1 }, { x:1, y:2 },
+          //     { x:2, y:2 }, { x:3, y:2 }, { x:1, y:3 }, { x:2, y:3 },
+          //     { x:3, y:3 }
+          //   ]
+          // },
+        ]
+      }
+
+      resultList.push(info)
+
+      for (const key in raw.list) {
+        const item = raw.list[key]
+        const child = {
+          color: item.color,
+          rbxs: []
+        }
+        info.child.push(child)
+
+        initRbx(child, item)
+      }
+    }
+
+    function initRbx(child, item) {
+      for (let i=0; i<item.list.length; i+=2) {
+        console.log(`i : ${i}`)
+        child.rbxs.push({x:item.list[i], y:item.list[i+1]})
+      }
+    }
+
+    function startDraw(ctx, drwInfo) {
+      for (const key in drwInfo.list) {
+        const info = drwInfo.list[key]
+        const size = drwInfo.size
+        const x = size * info.x + drwInfo.x
+        const y = size * info.y + drwInfo.y
+        draw(rbxInfoSample.list[info.target], ctx, size, x, y)
+      }
+    }
+
+    function draw(info, ctx, boxSize=10, x=0, y=0) {
+      // const w = info.size.w
+      // const h = info.size.h
+      // const startX = x
+      // const startY = y
+      for (const key in info.child) {
+        drawChild(info.child[key], ctx, boxSize, x, y)
+      }
+    }
+
+    function drawChild(info, ctx, boxSize, x, y) {
+      for (const key in info.rbxs) {
+        drawRbxs(info.rbxs[key], ctx, info.color, boxSize, x, y)
+      }
+    }
+
+    function drawRbxs(info, ctx, color, boxSize, x, y) {
+      // console.log('color : ' + color)
+      const startX = boxSize * info.x + x
+      const startY = boxSize * info.y + y
+      const size = boxSize
+      ctx.fillStyle = color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+  </script>
+</body>
+</html>
