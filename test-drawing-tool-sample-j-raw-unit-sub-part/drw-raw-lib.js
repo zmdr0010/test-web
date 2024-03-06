@@ -209,7 +209,7 @@ function parsingRawToMdList(raw, rawNum, row) {
     const mInfo = mList[i]
     mInfo.md[0] = mr - sr
     mInfo.md[1] = mc - sc
-    console.log(`i : ${i}, index : ${index}, r : ${r}, c : ${c}, sr : ${sr}, sc : ${sc}, md0 : ${mInfo.md[0]}, md1 : ${mInfo.md[1]}`)
+    // console.log(`i : ${i}, index : ${index}, r : ${r}, c : ${c}, sr : ${sr}, sc : ${sc}, md0 : ${mInfo.md[0]}, md1 : ${mInfo.md[1]}`)
     sr = mr
     sc = mc
   }
@@ -316,6 +316,48 @@ function moveByFrame(unit, fps) {
   moveInfo.currentMove = currentMove
 }
 
+function moveByFrameMoveSet(unit, fps) {
+  const posInfo = unit.posInfo
+  const moveInfo = unit.moveSetInfo.moveInfo
+  const fpsScale = fps / moveInfo.fps
+  const d = Math.floor(moveInfo.d * fpsScale)
+  const list = moveInfo.list
+  let moveCount = moveInfo.moveCount
+  let currentMove = moveInfo.currentMove
+  let currentM = list[currentMove]
+  if (moveCount === 0 && currentMove === 0) {
+    moveInfo.sr = posInfo.r
+    moveInfo.sc = posInfo.c
+    currentMove++
+    currentM = list[currentMove]
+  }
+  moveCount++
+  if (moveCount > d) {
+    moveCount = 0
+    currentMove++
+    if (currentMove >= list.length) {
+      posInfo.r = currentM.md[0] + moveInfo.sr
+      posInfo.c = currentM.md[1] + moveInfo.sc
+      unit.moveSetInfo.moveInfo = null
+      return
+    }
+    moveInfo.sr += currentM.md[0]
+    moveInfo.sc += currentM.md[1]
+    currentM = list[currentMove]
+  }
+
+  const dr = currentM.md[0]
+  const dc = currentM.md[1]
+  const rate = moveCount / d
+  // posInfo.r = Math.floor(dr * rate + moveInfo.sr)
+  // posInfo.c = Math.floor(dc * rate + moveInfo.sc)
+  posInfo.r = dr * rate + moveInfo.sr
+  posInfo.c = dc * rate + moveInfo.sc
+
+  moveInfo.moveCount = moveCount
+  moveInfo.currentMove = currentMove
+}
+
 function copyMoveInfo(moveInfo) {
   const list = []
   for (const info of moveInfo.list) {
@@ -334,6 +376,10 @@ function copyMoveInfo(moveInfo) {
 
 function setUnitMoveInfo(unit, moveInfo) {
   unit.moveInfo = copyMoveInfo(moveInfo)
+}
+
+function setUnitMoveInfoMoveSet(unit, moveInfo) {
+  unit.moveSetInfo.moveInfo = copyMoveInfo(moveInfo)
 }
 
 function moveUnit(unit, mr, mc) {
@@ -376,6 +422,7 @@ function parsingDrwObjInfoByLinkInfo(linkInfo, resInfo) {
   if (linkInfo.rawLink.target && linkInfo.rawLink.target.length > 0) {
     const list = getDrwResObj(resInfo, linkInfo.rawLink.target)
     rawInfo = parsingRawStringToRawInfo(list[linkInfo.rawLink.index])
+    if (linkInfo.rawLink.type === 'reverse-v') rawInfo = reverseVerticalRawInfo(rawInfo)
   }
   if (rawInfo && linkInfo.colorLink.list.length > 0) {
     const target = linkInfo.colorLink.target

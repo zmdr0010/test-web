@@ -223,6 +223,88 @@ const drwObjLinkInfoSample00 = {
   ]
 }
 
+const drwObjLinkInfoSample01 = { // enemy
+  uCode: `202403061235_drwObjLinkInfo-sample-01`,
+  uCodeType: 'string',
+  memo: 'drwObj-sample-01',
+  r: 0, // row
+  c: 0, // column
+  rs: 27, // row size
+  cs: 30, // column size
+  rawLink: { target: '', index: 0 }, // uCodeType : index / string
+  colorLink:{
+    target: '',
+    list: [] // index list by rawNum
+  },
+  child: [
+    {
+      memo: 'f', // front
+      r: 9,
+      c: 18,
+      rs: 9,
+      cs: 12,
+      rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 1, type: 'reverse-v' },
+      colorLink: {
+        target: 'colorPalettesSampleList',
+        list: [31, 34, 35, 6, 7, 8]
+      },
+      child: []
+    },
+    {
+      memo: 'l', // left
+      r: 0,
+      c: 6,
+      rs: 9,
+      cs: 12,
+      rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 6, type: 'reverse-v' },
+      colorLink: {
+        target: 'colorPalettesSampleList',
+        list: [44, 51, 36, 27, 48, 59]
+      },
+      child: []
+    },
+    {
+      memo: 'r', // right
+      r: 18,
+      c: 6,
+      rs: 9,
+      cs: 12,
+      rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 11, type: 'reverse-v' },
+      colorLink: {
+        target: 'colorPalettesSampleList',
+        list: [44, 51, 36, 27, 48, 59]
+      },
+      child: []
+    },
+    {
+      memo: 'bk', // back
+      r: 9,
+      c: 0,
+      rs: 9,
+      cs: 9,
+      rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 16, type: 'reverse-v' },
+      colorLink: {
+        target: 'colorPalettesSampleList',
+        list: [27, 15, 46, 37, 18, 39]
+      },
+      child: []
+    },
+    {
+      memo: 'bd', // body
+      r: 6,
+      c: 6,
+      rs: 15,
+      cs: 15,
+      rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 21, type: 'reverse-v' },
+      colorLink: {
+        target: 'colorPalettesSampleList',
+        list: [44, 45, 26, 27, 18, 9]
+      },
+      child: []
+    }
+  ]
+}
+
 const bulletDrwObjLinkInfoSample = {
   uCode: `202403041542_bullet_drwObjLinkInfo-sample`,
   uCodeType: 'string',
@@ -235,6 +317,22 @@ const bulletDrwObjLinkInfoSample = {
   colorLink:{
     target: 'colorPalettesSampleList',
     list: [34,25,42,11] // index list by rawNum
+  },
+  child: []
+}
+
+const bulletDrwObjLinkInfoSample01 = { // enemy
+  uCode: `202403061245_bullet_drwObjLinkInfo-sample`,
+  uCodeType: 'string',
+  memo: 'bullet_drwObj-sample',
+  r: 0, // row
+  c: 0, // column
+  rs: 3, // row size
+  cs: 5, // column size
+  rawLink: { target: 'rbxRawStringSampleUt00.raw', index: 27, type: 'reverse-v' }, // uCodeType : index / string
+  colorLink:{
+    target: 'colorPalettesSampleList',
+    list: [4,5,12,8] // index list by rawNum
   },
   child: []
 }
