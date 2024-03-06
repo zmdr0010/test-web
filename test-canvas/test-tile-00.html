@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test tile 00 36x36</title>
+</head>
+<body onload="init()" style="background-color: gray">
+  <canvas id="id-canvas" style="background-color: #000000"></canvas>
+<!--  <canvas id="id-canvas"></canvas>-->
+
+  <script type="application/javascript" src="testDrawManager.js"></script>
+  <script type="application/javascript" src="testDisplayInfo-01.js"></script>
+  <script type="application/javascript" src="testTileInfo-00.js"></script>
+<!--  <script type="application/javascript" src="testTileInfo-01_72.js"></script>-->
+<!--  <script type="application/javascript" src="testTileInfo-02_80.js"></script>-->
+  <script>
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      console.log(`canvas w : ${canvas.width}, h : ${canvas.height}`)
+      console.log(`window inner w : ${window.innerWidth}, h : ${window.innerHeight}`)
+      console.log(`body w : ${document.body.width}, h : ${document.body.height}`)
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2
+      console.log(`canvasW : ${canvasW}, canvasH : ${canvasH}`)
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      const ctx = canvas.getContext('2d')
+      startDraw(testDisplayInfo01, ctx)
+      startDraw(testTileInfo00, ctx)
+      // startDraw(testTileInfo01, ctx)
+      // startDraw(testTileInfo02, ctx)
+    }
+  </script>
+</body>
+</html>

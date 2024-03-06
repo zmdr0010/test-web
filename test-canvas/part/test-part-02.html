@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Part 02</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="sampleInfo.js"></script>
+  <script type="application/javascript" src="bfaceInfo.js"></script>
+  <script>
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      let isVisibleBound = true
+      // drawPart(sample00, ctx, 50, 50, isVisibleBound)
+      // drawPart(sample01, ctx, 150, 88, isVisibleBound)
+
+      // isVisibleBound = false
+      // drawPart(bfaceInfo01, ctx, 50, 50, isVisibleBound)
+      // drawPart(bfaceInfo00, ctx, 44, 95, isVisibleBound)
+
+      // drawPart(bfaceInfo00, ctx, 50, 50, isVisibleBound)
+      // drawPart(bfaceInfo01, ctx, 270, 50, isVisibleBound)
+      // drawPart(bfaceInfo02, ctx, 550, 50, isVisibleBound)
+      // drawPart(bfaceInfo03, ctx, 50, 265, isVisibleBound)
+      // drawPart(bfaceInfo04, ctx, 550, 265, isVisibleBound)
+      // drawPart(bfaceInfo05, ctx, 50, 400, isVisibleBound)
+      // drawPart(bfaceInfo06, ctx, 200, 400, isVisibleBound)
+      // drawPart(bfaceInfo07, ctx, 350, 360, isVisibleBound)
+      // drawPart(bfaceInfo08, ctx, 50, 530, isVisibleBound)
+      // drawPart(bfaceInfo09, ctx, 220, 530, isVisibleBound)
+      // drawPart(bfaceInfo10, ctx, 400, 530, isVisibleBound)
+      // drawPart(bfaceInfo11, ctx, 570, 530, isVisibleBound)
+
+      drawPart(bfaceInfo12, ctx, 50, 50, isVisibleBound)
+      drawPart(bfaceInfo13, ctx, 200, 50, isVisibleBound)
+      drawPart(bfaceInfo14, ctx, 370, 50, isVisibleBound)
+      drawPart(bfaceInfo15, ctx, 540, 50, isVisibleBound)
+      drawPart(bfaceInfo16, ctx, 700, 50, isVisibleBound)
+      drawPart(bfaceInfo17, ctx, 50, 230, isVisibleBound)
+      drawPart(bfaceInfo18, ctx, 220, 230, isVisibleBound)
+      drawPart(bfaceInfo19, ctx, 380, 230, isVisibleBound)
+      drawPart(bfaceInfo20, ctx, 540, 230, isVisibleBound)
+      drawPart(bfaceInfo21, ctx, 50, 400, isVisibleBound)
+      drawPart(bfaceInfo22, ctx, 230, 400, isVisibleBound)
+      drawPart(bfaceInfo23, ctx, 350, 400, isVisibleBound)
+      drawPart(bfaceInfo24, ctx, 520, 380, isVisibleBound)
+      drawPart(bfaceInfo25, ctx, 670, 380, isVisibleBound)
+      drawPart(bfaceInfo26, ctx, 50, 540, isVisibleBound)
+      drawPart(bfaceInfo27, ctx, 240, 540, isVisibleBound)
+      drawPart(bfaceInfo28, ctx, 400, 540, isVisibleBound)
+      drawPart(bfaceInfo29, ctx, 570, 540, isVisibleBound)
+
+
+      // drawPart(bfaceInfo29, ctx, 50, 50, isVisibleBound)
+    }
+
+    function drawPart(info, ctx, x=0, y=0, isVisibleBound=true) {
+      if (info.hasOwnProperty('size') && isVisibleBound) drawBound(ctx, info.size.w, info.size.h, x, y, 'red')
+      if (info.hasOwnProperty('render')) drawPartRender(ctx, info.render, x, y)
+    }
+
+    function drawBound(ctx, w, h, x, y, color='blue') {
+      ctx.strokeStyle = color
+      ctx.strokeRect(x, y, w, h)
+    }
+
+    function drawPartRender(ctx, render, x, y) {
+      for (const key in render) {
+        drawPartByInfo(ctx, render[key], x, y)
+      }
+    }
+
+    function drawPartByInfo(ctx, info, sx=0, sy=0, t='stroke', c='black') {
+      let startX = 0 + sx
+      let startY = 0 + sy
+      let type = t
+      ctx.fillStyle = c
+      ctx.strokeStyle = c
+      // if (info.hasOwnProperty('start')) {
+      //   startX = info.start[0] + sx
+      //   startY = info.start[1] + sy
+      // }
+      if (info.hasOwnProperty('type')) type = info.type
+      console.log('startX : ' + startX + ', startY : ' + startY)
+      if (info.hasOwnProperty('points')) {
+        const size = info.points.length / 2
+        if (type === 'fill') {
+          if (info.hasOwnProperty('color')) ctx.fillStyle = info.color
+        } else {
+          if (info.hasOwnProperty('color')) ctx.strokeStyle = info.color
+          if (info.hasOwnProperty('line_width')) ctx.lineWidth = info.line_width
+        }
+        ctx.beginPath()
+
+        for (let i=0; i<size; i++) {
+          const index = i * 2
+          const x = info.points[index] + startX
+          const y = info.points[index+1] + startY
+          if (i === 0) {
+            ctx.moveTo(x, y)
+          } else {
+            ctx.lineTo(x, y)
+          }
+        }
+
+        if (type === 'fill') {
+          console.log('---------- type === fill')
+          // ctx.closePath()
+          ctx.fill()
+        } else {
+          // ctx.closePath()
+          ctx.stroke()
+        }
+      }
+      if (info.hasOwnProperty('child')) {
+        for (const c in info.child) {
+          console.log(info.child[c])
+          // drawByInfo(ctx, info.child[c], startX, startY)
+          let color = 'black'
+          if (info.hasOwnProperty('color')) color = info.color
+
+          drawPartByInfo(ctx, info.child[c], startX, startY, type, color)
+        }
+      }
+    }
+  </script>
+</body>
+</html>

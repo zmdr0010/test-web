@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test display</title>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas" style="border: 1px solid #000000"></canvas>
+
+  <script>
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      console.log(`canvas w : ${canvas.width}, h : ${canvas.height}`)
+      console.log(`window inner w : ${window.innerWidth}, h : ${window.innerHeight}`)
+      console.log(`body w : ${document.body.width}, h : ${document.body.height}`)
+      const canvasW = window.innerWidth - 8 * 2 - 2
+      const canvasH = window.innerHeight - 8 * 2 - 2
+      console.log(`canvasW : ${canvasW}, canvasH : ${canvasH}`)
+      canvas.width = canvasW
+      canvas.height = canvasH
+    }
+  </script>
+</body>
+</html>

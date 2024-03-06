@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Draw Part 00</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    const partInfoSample = {
+      id: "test-part-sample",
+      name: "",
+      memo: "",
+      size: {
+        w: 100,
+        h: 100
+      },
+      render: [
+        {
+          memo: "", // optional
+          color: 'green',
+          type: 'fill',
+          // type: 'stroke', // default
+          child: [
+            {
+              // type: "stroke", // fill
+              // color: "black", // rgba(0, 0, 200, 0.5) // rgb(200, 0, 0)
+              // line_width: 5,
+              // color: "white",
+              points: [0,25, 25,50, 25,0], // first is moveTo
+            },
+            {
+              // type: "fill",
+              type: "stroke",
+              color: "blue",
+              // line_width: 2,
+              points: [0,25, 25,50, 25,0, 0,25]
+            }
+          ]
+        }
+      ]
+    }
+    const partInfo00 = {
+      id: "test-part-00",
+      name: "",
+      memo: "",
+      size: {
+        w: 100,
+        h: 100
+      },
+      render: [
+        {
+          color: 'green',
+          type: 'fill',
+          // type: 'stroke', // default
+          child: [
+            // {
+            //   // type: "stroke", // fill
+            //   // color: "black", // rgba(0, 0, 200, 0.5) // rgb(200, 0, 0)
+            //   // line_width: 5,
+            //   // color: "white",
+            //   points: [0,25, 25,50, 25,0], // first is moveTo
+            // },
+            {
+              // type: "fill",
+              type: "stroke",
+              // color: "blue",
+              color: "black",
+              // line_width: 2,
+              points: [0,25, 25,50, 25,0, 0,25]
+            }
+          ]
+        }
+      ]
+    }
+
+    let isDown = false
+    let mx = 0
+    let my = 0
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      // canvas.addEventListener("mousedown", onDown)
+      // canvas.addEventListener("mousemove", onMove)
+      // canvas.addEventListener("mouseup", onUp)
+
+      canvas.addEventListener("mousedown", (e) => {
+        mx = e.offsetX
+        my = e.offsetY
+        console.log(`down ::: mx : ${mx}, my : ${my}`)
+        isDown = true
+      })
+
+      canvas.addEventListener("mousemove", (e) => {
+        if (isDown) {
+          drawLine(ctx, mx, my, e.offsetX, e.offsetY)
+          mx = e.offsetX
+          my = e.offsetY
+          console.log(`move ::: mx : ${mx}, my : ${my}`)
+        }
+      })
+
+      canvas.addEventListener("mouseup", (e) => {
+        if (isDown) {
+          drawLine(ctx, mx, my, e.offsetX, e.offsetY)
+          mx = 0
+          my = 0
+          isDown = false
+          console.log(`up ::: offsetX : ${e.offsetX}, offsetY : ${e.offsetY}`)
+        }
+      })
+
+      // drawPart(partInfo00, ctx, 50, 50)
+    }
+
+    function onDown(e) {
+      const x = e.offsetX
+      const y = e.offsetY
+      console.log(`down ::: x : ${x}, y : ${y}`)
+      isDown = true
+    }
+
+    function onMove(e) {
+      if (isDown) {
+        const x = e.offsetX
+        const y = e.offsetY
+        console.log(`move ::: x : ${x}, y : ${y}`)
+      }
+    }
+
+    function onUp(e) {
+      const x = e.offsetX
+      const y = e.offsetY
+      console.log(`up ::: x : ${x}, y : ${y}`)
+      isDown = false
+    }
+
+    function drawLine(ctx, x1, y1, x2, y2) {
+      ctx.beginPath()
+      ctx.strokeStyle = "black"
+      ctx.lineWidth = 1
+      ctx.moveTo(x1, y1)
+      ctx.lineTo(x2, y2)
+      ctx.stroke()
+      ctx.closePath()
+    }
+
+    // function drawPart(info, ctx, x=0, y=0, isVisibleBound=true) {
+    //   if (info.hasOwnProperty('size') && isVisibleBound) drawBound(ctx, info.size.w, info.size.h, x, y, 'red')
+    //   if (info.hasOwnProperty('render')) drawPartRender(ctx, info.render, x, y)
+    // }
+    //
+    // function drawBound(ctx, w, h, x, y, color='blue') {
+    //   ctx.strokeStyle = color
+    //   ctx.strokeRect(x, y, w, h)
+    // }
+    //
+    // function drawPartRender(ctx, render, x, y) {
+    //   for (const key in render) {
+    //     drawPartByInfo(ctx, render[key], x, y)
+    //   }
+    // }
+    //
+    // function drawPartByInfo(ctx, info, sx=0, sy=0, t='stroke', c='black') {
+    //   let startX = 0 + sx
+    //   let startY = 0 + sy
+    //   let type = t
+    //   ctx.fillStyle = c
+    //   ctx.strokeStyle = c
+    //   // if (info.hasOwnProperty('start')) {
+    //   //   startX = info.start[0] + sx
+    //   //   startY = info.start[1] + sy
+    //   // }
+    //   if (info.hasOwnProperty('type')) type = info.type
+    //   console.log('startX : ' + startX + ', startY : ' + startY)
+    //   if (info.hasOwnProperty('points')) {
+    //     const size = info.points.length / 2
+    //     if (type === 'fill') {
+    //       if (info.hasOwnProperty('color')) ctx.fillStyle = info.color
+    //     } else {
+    //       if (info.hasOwnProperty('color')) ctx.strokeStyle = info.color
+    //       if (info.hasOwnProperty('line_width')) ctx.lineWidth = info.line_width
+    //     }
+    //     ctx.beginPath()
+    //
+    //     for (let i=0; i<size; i++) {
+    //       const index = i * 2
+    //       const x = info.points[index] + startX
+    //       const y = info.points[index+1] + startY
+    //       if (i === 0) {
+    //         ctx.moveTo(x, y)
+    //       } else {
+    //         ctx.lineTo(x, y)
+    //       }
+    //     }
+    //
+    //     if (type === 'fill') {
+    //       console.log('---------- type === fill')
+    //       // ctx.closePath()
+    //       ctx.fill()
+    //     } else {
+    //       // ctx.closePath()
+    //       ctx.stroke()
+    //     }
+    //   }
+    //   if (info.hasOwnProperty('child')) {
+    //     for (const c in info.child) {
+    //       console.log(info.child[c])
+    //       // drawByInfo(ctx, info.child[c], startX, startY)
+    //       let color = 'black'
+    //       if (info.hasOwnProperty('color')) color = info.color
+    //
+    //       drawPartByInfo(ctx, info.child[c], startX, startY, type, color)
+    //     }
+    //   }
+    // }
+  </script>
+</body>
+</html>

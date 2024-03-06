@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test canvas graph</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    let canvas = null
+    let ctx = null
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      // drawGraph00(ctx, 100, 100, 200, 200)
+
+      // drawGraph01(ctx, 100, 100, 200, 200)
+      // drawGraph01(ctx, 200, 100, 300, 100)
+      // drawGraph01(ctx, 300, 100, 300, 300) // x size is 0, not drawing
+
+      drawGraph02(ctx, 100, 100, 200, 200)
+      drawGraph02(ctx, 200, 100, 300, 100)
+      // drawGraph02(ctx, 300, 100, 300, 300)
+    }
+
+    function drawGraph00(ctx, sx, sy, ex, ey) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      // Linear Tween
+      // time x change / duration + begin
+      // let c = 0
+      // let d = Math.abs(ey - sy)
+      let b = sy
+      let size = Math.abs(ex - sx)
+      let dir = (ex - sx) / size
+      console.log('size : ' + size + ', dir : ' + dir)
+      for (let t=0; t<size; t++) {
+        const x = t * dir + sx
+        const y = t * x / size + b
+        ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+    }
+
+    function drawGraph01(ctx, sx, sy, ex, ey) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      // Linear Tween
+      // time x change / duration + begin
+      // let c = 0
+      // let d = Math.abs(ey - sy)
+      // let b = sy
+      let size = Math.abs(ex - sx)
+      let sizeY = Math.abs(ey - sy)
+      let dirX = (ex - sx) / size
+      let dirY = (ey - sy) / sizeY
+      if(!dirX)dirX = 0
+      if(!dirY)dirY = 0
+      console.log('size : ' + size + ', dirX : ' + dirX)
+      console.log('sizeY : ' + sizeY + ', dirY : ' + dirY)
+      for (let t=0; t<size; t++) {
+        const x = t * dirX + sx
+        let y = t / size * dirY * sizeY + sy
+        // if (t === 0) y = sy
+        console.log('t : ' + t + ', x : ' + x + ', y : ' + y)
+        ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+    }
+
+    function drawGraph02(ctx, sx, sy, ex, ey) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      // Linear Tween
+      // time x change / duration + begin
+      // let c = 0
+      // let d = Math.abs(ey - sy)
+      // let b = sy
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = Math.sqrt(Math.abs(dx * dx) + Math.abs(dy * dy))
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      for (let t=0; t<distance; t++) {
+        let s = t / distance
+        let x = s * dx + sx
+        let y = s * dy + sy
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test canvas graph 01</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    let canvas = null
+    let ctx = null
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      // drawLineGraph00(ctx, 100, 100, 200, 200)
+      // drawLineGraph00(ctx, 200, 100, 300, 100)
+      // drawLineGraph00(ctx, 350, 100, 350, 300)
+
+      // drawLineGraph01(ctx, 100, 100, 200, 200)
+      // drawLineGraph01(ctx, 200, 100, 300, 100)
+      // drawLineGraph01(ctx, 350, 100, 350, 300)
+
+      drawLineGraph02_1(ctx, 100, 100, 200, 200, 100, 200)
+      // drawLineGraph02(ctx, 200, 100, 300, 100)
+      // drawLineGraph02(ctx, 350, 100, 350, 300)
+
+      drawLineCubicBezier(ctx, 300, 200, 500, 200, 350, 100, 460, 100)
+
+      drawLineCubicBezier_n4(ctx, 300,400, 650,240, 280,230, 500,230, 550,400)
+
+      drawLineCubicBezier_n5(ctx, 700,500, 1000,400, 800,100, 900,400, 1000,200, 1100,300)
+
+      drawBezierCircle(ctx, 1200, 300, 100)
+    }
+s
+    function calcDistance(dx, dy) {
+      return Math.sqrt(Math.abs(dx * dx) + Math.abs(dy * dy))
+    }
+
+    function drawLineGraph00(ctx, sx, sy, ex, ey) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      // Linear Tween
+      // time x change / duration + begin
+      // let c = 0
+      // let d = Math.abs(ey - sy)
+      // let b = sy
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = calcDistance(dx, dy)
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      for (let t=0; t<distance; t++) {
+        let s = t / distance
+        let x = s * dx + sx
+        let y = s * dy + sy
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+    }
+
+    function drawLineGraph01(ctx, sx, sy, ex, ey) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      // Linear Tween
+      // time x change / duration + begin
+      // let c = 0
+      // let d = Math.abs(ey - sy)
+      // let b = sy
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = calcDistance(dx, dy)
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      let t = 0
+      let interval = 8
+
+      while (t <= distance) {
+
+        let s = t / distance
+        let x = s * dx + sx
+        let y = s * dy + sy
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        ctx.lineTo(x, y)
+        // ctx.strokeRect(x, y, 1, 1)
+
+        if (t === distance) break
+
+        t += interval
+        if (t > distance) {
+          t = distance
+        }
+      }
+
+      ctx.stroke()
+    }
+
+    function drawLineGraph02(ctx, sx, sy, ex, ey) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      // Linear Tween
+      // time x change / duration + begin
+      // let c = 0
+      // let d = Math.abs(ey - sy)
+      // let b = sy
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = calcDistance(dx, dy)
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      let t = 0
+      let interval = 8
+
+      let px = 100
+      let py = 200
+
+      while (t <= distance) {
+
+        // let s = t / distance
+        // let x = s * dx + sx
+        // let y = s * dy + sy
+        let s = t / distance
+        // let x = (1 - s) * (1 - s) * sx + 2 * (1 - s) * dx + s * s * px
+        // let y = (1 - s) * (1 - s) * sy + 2 * (1 - s) * dy + s * s * py
+
+        let xn = s * dx
+        let yn = s * dy
+        // let x = 2 * (1 - s) * (xn - sx) + 2 * s * (px - xn)
+        // let y = 2 * (1 - s) * (yn - sy) + 2 * s * (py - yn)
+
+        let x = 2 * (px - 2 * xn + sx)
+        let y = 2 * (py - 2 * yn + sy)
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        // ctx.lineTo(x, y)
+        ctx.strokeRect(x, y, 1, 1)
+
+        if (t === distance) break
+
+        t += interval
+        if (t > distance) {
+          t = distance
+        }
+      }
+
+      ctx.stroke()
+
+      ctx.strokeRect(100, 100, 10, 10)
+      ctx.strokeRect(200, 200, 10, 10)
+      ctx.strokeRect(100, 200, 10, 10)
+    }
+
+    function drawLineGraph02_1(ctx, sx, sy, ex, ey, px, py) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+      // Linear Tween
+      // time x change / duration + begin
+      // let c = 0
+      // let d = Math.abs(ey - sy)
+      // let b = sy
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = calcDistance(dx, dy)
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      let t = 0
+      let interval = 8
+
+      while (t <= distance) {
+
+        let s = t / distance
+
+        let x = (1 - s) * (1 - s) * sx + 2 * s * (1 - s) * px + s * s * ex
+        let y = (1 - s) * (1 - s) * sy + 2 * s * (1 - s) * py + s * s * ey
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        // ctx.lineTo(x, y)
+        ctx.strokeRect(x, y, 1, 1)
+
+        if (t === distance) break
+
+        t += interval
+        if (t > distance) {
+          t = distance
+        }
+      }
+
+      ctx.stroke()
+
+      ctx.strokeRect(sx, sy, 10, 10)
+      ctx.strokeRect(ex, ey, 10, 10)
+      ctx.strokeRect(px, py, 10, 10)
+
+      // ctx.bezierCurveTo(100, 100, 100, 200, 200, 200)
+    }
+
+    function drawLineCubicBezier(ctx, sx, sy, ex, ey, px0, py0, px1, py1) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = calcDistance(dx, dy)
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      let t = 0
+      let interval = 8
+
+      while (t <= distance) {
+
+        let s = t / distance
+        let rs = 1 - s
+        // console.log('1 - s = ' + rs)
+
+        let x = rs * rs * rs * sx + 3 * rs * rs * s * px0 + 3 * rs * s * s * px1 + s * s * s * ex
+        let y = rs * rs * rs * sy + 3 * rs * rs * s * py0 + 3 * rs * s * s * py1 + s * s * s * ey
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        // ctx.lineTo(x, y)
+        ctx.strokeRect(x, y, 1, 1)
+
+        if (t === distance) break
+
+        t += interval
+        if (t > distance) {
+          t = distance
+        }
+      }
+
+      ctx.stroke()
+
+      ctx.strokeRect(sx, sy, 10, 10)
+      ctx.strokeRect(ex, ey, 10, 10)
+      ctx.strokeRect(px0, py0, 10, 10)
+      ctx.strokeRect(px1, py1, 10, 10)
+    }
+
+    function drawLineCubicBezier_n4(ctx, sx, sy, ex, ey, px0, py0, px1, py1, px2, py2) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = calcDistance(dx, dy)
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      let t = 0
+      let interval = 8
+
+      while (t <= distance) {
+
+        let s = t / distance
+        let rs = 1 - s
+        // console.log('1 - s = ' + rs)
+
+        let x = rs * rs * rs * rs * sx + 4 * rs * rs * rs * s * px0 + 4 * rs * rs * s * s * px1
+          + 4 * rs * s * s * s * px2  + s * s * s * s * ex
+        let y = rs * rs * rs * rs * sy + 4 * rs * rs * rs * s * py0 + 4 * rs * rs * s * s * py1
+          + 4 * rs * s * s * s * py2  + s * s * s * s * ey
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        // ctx.lineTo(x, y)
+        ctx.strokeRect(x, y, 1, 1)
+
+        if (t === distance) break
+
+        t += interval
+        if (t > distance) {
+          t = distance
+        }
+      }
+
+      ctx.stroke()
+
+      ctx.strokeRect(sx, sy, 10, 10)
+      ctx.strokeRect(ex, ey, 10, 10)
+      ctx.strokeRect(px0, py0, 10, 10)
+      ctx.strokeRect(px1, py1, 10, 10)
+      ctx.strokeRect(px2, py2, 10, 10)
+    }
+
+    function drawLineCubicBezier_n5(ctx, sx, sy, ex, ey, px0, py0, px1, py1, px2, py2, px3, py3) {
+      ctx.strokeStyle = 'black'
+      ctx.beginPath()
+      ctx.moveTo(sx, sy)
+
+      let dx = ex - sx
+      let dy = ey - sy
+      let distance = calcDistance(dx, dy)
+
+      console.log('dx : ' + dx + ', dy : ' + dy + ', distance : ' + distance)
+
+      let t = 0
+      let interval = 8
+
+      while (t <= distance) {
+
+        let s = t / distance
+        let rs = 1 - s
+        // console.log('1 - s = ' + rs)
+
+        let x = rs * rs * rs * rs * rs * sx
+          + 5 * rs * rs * rs * rs * s * px0
+          + 10 * rs * rs * rs * s * s * px1
+          + 10 * rs * rs * s * s * s * px2
+          + 5 * rs * s * s * s * s * px3
+          + s * s * s * s * s * ex
+        let y = rs * rs * rs * rs * rs * sy
+          + 5 * rs * rs * rs * rs * s * py0
+          + 10 * rs * rs * rs * s * s * py1
+          + 10 * rs * rs * s * s * s * py2
+          + 5 * rs * s * s * s * s * py3
+          + s * s * s * s * s * ey
+        console.log('t : ' + t + ', s : ' + s + ', x : ' + x + ', y : ' + y)
+        // ctx.lineTo(x, y)
+        ctx.strokeRect(x, y, 1, 1)
+
+        if (t === distance) break
+
+        t += interval
+        if (t > distance) {
+          t = distance
+        }
+      }
+
+      ctx.stroke()
+
+      ctx.strokeRect(sx, sy, 10, 10)
+      ctx.strokeRect(ex, ey, 10, 10)
+      ctx.strokeRect(px0, py0, 10, 10)
+      ctx.strokeRect(px1, py1, 10, 10)
+      ctx.strokeRect(px2, py2, 10, 10)
+      ctx.strokeRect(px3, py3, 10, 10)
+    }
+
+    function drawBezierOvalQuarter(ctx, centerX, centerY, sizeX, sizeY) {
+      let sx = centerX - sizeX
+      let sy = centerY - 0
+      let px0 = centerX - sizeX
+      let py0 = centerY - (0.552 * sizeY)
+      let px1 = centerX - (0.552 * sizeX)
+      let py1 = centerY - sizeY
+      let ex = centerX - 0
+      let ey = centerY - sizeY
+      drawLineCubicBezier(ctx, sx, sy, ex, ey, px0, py0, px1, py1)
+    }
+
+    function drawBezierOval(ctx, centerX, centerY, sizeX, sizeY) {
+      drawBezierOvalQuarter(ctx, centerX, centerY, -sizeX, sizeY)
+      drawBezierOvalQuarter(ctx, centerX, centerY, sizeX, sizeY)
+      drawBezierOvalQuarter(ctx, centerX, centerY, sizeX, -sizeY)
+      drawBezierOvalQuarter(ctx, centerX, centerY, -sizeX, -sizeY)
+    }
+
+    function drawBezierCircle(ctx, centerX, centerY, size) {
+      drawBezierOval(ctx, centerX, centerY, size, size)
+    }
+  </script>
+</body>
+</html>

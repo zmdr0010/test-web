@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Center Point 00</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      drawLineCenter(ctx, 100, 100, 300, 200)
+      drawLineCenter(ctx, 300, 300, 100, 500)
+
+      drawLineCenter01(ctx, 400, 100, 500, 300)
+    }
+
+    function drawLineCenter(ctx, x0, y0, x1, y1) {
+      const mx = (x0 + x1) / 2
+      const my = (y0 + y1) / 2
+      ctx.beginPath()
+      ctx.strokeStyle = "black"
+      ctx.moveTo(x0, y0)
+      ctx.lineTo(x1, y1)
+      ctx.stroke()
+      drawPoint(ctx, x0, y0)
+      drawPoint(ctx, x1, y1)
+      drawPoint(ctx, mx, my, "red")
+    }
+
+    function drawLineCenter01(ctx, x0, y0, x1, y1) {
+      const mx0 = (x0 + x1) / 2
+      const my0 = (y0 + y1) / 2
+      const mx1 = (x0 + mx0) / 2
+      const my1 = (y0 + my0) / 2
+      const mx2 = (mx0 + x1) / 2
+      const my2 = (my0 + y1) / 2
+      ctx.beginPath()
+      ctx.strokeStyle = "black"
+      ctx.moveTo(x0, y0)
+      ctx.lineTo(x1, y1)
+      ctx.stroke()
+      drawPoint(ctx, x0, y0)
+      drawPoint(ctx, x1, y1)
+      drawPoint(ctx, mx0, my0, "red")
+      drawPoint(ctx, mx1, my1, "red")
+      drawPoint(ctx, mx2, my2, "red")
+    }
+
+    function drawPoint(ctx, x, y, color='black') {
+      ctx.beginPath()
+      ctx.strokeStyle = color
+      ctx.arc(x, y, 6, 0, 2 * Math.PI)
+      ctx.stroke()
+    }
+  </script>
+</body>
+</html>
