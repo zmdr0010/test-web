@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test draw rect box 00 raw to info 02</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="rbx-raw-info-00.js"></script>
+<!--  <script type="application/javascript" src="part-info-00.js"></script>-->
+  <script type="application/javascript" src="part-info-01-link.js"></script>
+  <script type="application/javascript" src="unit-info-00.js"></script>
+  <script>
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      // front
+      // drawRawSample(rbxRawInfo00.list[0], ctx, 20, 10, 10)
+      // drawRawSample(rbxRawInfo00.list[1], ctx, 20, 220, 10)
+      // drawRawSample(rbxRawInfo00.list[2], ctx, 20, 10, 220)
+      // drawRawSample(rbxRawInfo00.list[3], ctx, 20, 220, 220)
+
+      // body
+      // drawRawSample(rbxRawInfo00.list[4], ctx, 20, 10, 10)
+      // drawRawSample(rbxRawInfo00.list[5], ctx, 20, 220, 10)
+      // drawRawSample(rbxRawInfo00.list[6], ctx, 20, 10, 220)
+      // drawRawSample(rbxRawInfo00.list[7], ctx, 20, 220, 220)
+
+      // left
+      // drawRawSample(rbxRawInfo00.list[8], ctx, 20, 10, 10)
+
+      // right
+      // drawRawSample(rbxRawInfo00.list[9], ctx, 20, 220, 10)
+
+      // back
+      // drawRawSample(rbxRawInfo00.list[10], ctx, 20, 10, 220)
+
+      const partRawInfo = {
+        list: []
+      }
+
+      initPartRawInfo(partRawInfo.list, partInfo01, rbxRawInfo00)
+
+      // front
+      // drawPartSample(partRawInfo.list[0], ctx, 20, 10, 10)
+      // drawPartSample(partRawInfo.list[1], ctx, 20, 220, 10)
+      // drawPartSample(partRawInfo.list[2], ctx, 20, 10, 220)
+      // drawPartSample(partRawInfo.list[3], ctx, 20, 220, 220)
+
+      // body
+      // drawPartSample(partRawInfo.list[4], ctx, 20, 10, 10)
+      // drawPartSample(partRawInfo.list[5], ctx, 20, 220, 10)
+      // drawPartSample(partRawInfo.list[6], ctx, 20, 10, 220)
+      // drawPartSample(partRawInfo.list[7], ctx, 20, 220, 220)
+
+      // left
+      // drawPartSample(partRawInfo.list[8], ctx, 20, 10, 10)
+
+      // right
+      // drawPartSample(partRawInfo.list[9], ctx, 20, 220, 10)
+
+      // back
+      // drawPartSample(partRawInfo.list[10], ctx, 20, 10, 220)
+
+
+      // drawUnit(unitInfo00.list[0], partRawInfo, ctx, 100, 100, 8)
+
+      const unitDrwInfo = {
+        list: []
+      }
+
+      initUnitDrwInfo(unitDrwInfo.list, unitInfo00, partRawInfo)
+
+      // drawUnit(unitInfo00.list[15], partRawInfo, ctx, 0, 0, 10)
+
+      const size = 6
+      const div = 9
+      const marginX = 160
+      const marginY = 200
+      let count = 0
+
+      for (const key in unitInfo00.list) {
+        const info = unitInfo00.list[key]
+        const x = count % div
+        const y = Math.floor(count / div)
+        console.log(`------------------ x : ${x}, y : ${y}`)
+        console.log(`------------------ key : ${key}`)
+        const change = size
+        const sx = x * marginX
+        const sy = y * marginY
+        drawUnit(info, partRawInfo, ctx, sx, sy, change)
+
+        count++
+      }
+    }
+
+    function initPartRawInfo(resultList, part, raw) {
+      for (const key in part.list) {
+        const partInfo = part.list[key]
+        const rawInfo = raw.list.find((info) => info.ucode === partInfo.target)
+        // console.log(`rawInfo : ${rawInfo.ucode}`)
+        if (rawInfo) {
+          resultList.push({
+            part: partInfo, raw: rawInfo
+          })
+        }
+      }
+    }
+
+    function initUnitDrwInfo(resultList, unitInfo, partRaw) {
+      for (const key in unitInfo.list) {
+        const unit = unitInfo.list[key]
+        // console.log(`unit.ucode : ${unit.ucode}`)
+        const unitDrw = {
+          unit: unit,
+          part: []
+        }
+        resultList.push(unitDrw)
+        checkPart(unitDrw, partRaw)
+      }
+    }
+
+    function checkPart(unitDrw, partRaw) {
+      let fp = [0, 0] // f pos
+      let bdp = [0, 0] // bd pos
+      let lp = [0, 0] // l pos
+      let rp = [0, 0] // r pos
+      let bkp = [0, 0] // bk pos
+
+      let f_bdlink = [0, 0] // f bd link
+      let l_bdlink = [0, 0] // l bd link
+      let r_bdlink = [0, 0] // r bd link
+      let bk_bdlink = [0, 0] // bk bd link
+
+      let bd_flink = [0, 0] // bd f link
+      let bd_llink = [0, 0] // bd l link
+      let bd_rlink = [0, 0] // bd r link
+      let bd_bklink = [0, 0] // bd bk link
+
+      let frc = [0, 0] // f row column
+      let bdrc = [0, 0] // bd row column
+      let lrc = [0, 0] // l row column
+      let rrc = [0, 0] // r row column
+      let bkrc = [0, 0] // bk row column
+
+      for (const key in unitDrw.unit.part) {
+        const part = unitDrw.unit.part[key]
+        const partRawInfo = partRaw.list.find((info) => info.part.ucode === part.target)
+
+        const type = partRawInfo.part.type
+        const row = partRawInfo.raw.row
+        const column = partRawInfo.raw.column
+        const link = partRawInfo.part.link
+
+        console.log(`partRawInfo.part.name : ${partRawInfo.part.name}`)
+        console.log(`part link num : ${link.length}`)
+        console.log(`part row : ${row}, column : ${column}`)
+        console.log(`part type : ${type}`)
+
+        if (type === "f") {
+          f_bdlink[0] = partRawInfo.part.link[0].x
+          f_bdlink[1] = partRawInfo.part.link[0].y
+          // console.log(`----------------- f_bdlink : ${f_bdlink}`)
+          frc[0] = partRawInfo.raw.row
+          frc[1] = partRawInfo.raw.column
+
+          fp[0] = 0
+          fp[1] = 0
+
+          // part.x = fp[0]
+          // part.y = fp[1]
+        }
+        if (type === "bd") {
+          bd_flink[0] = partRawInfo.part.link[0].x
+          bd_flink[1] = partRawInfo.part.link[0].y
+          bd_llink[0] = partRawInfo.part.link[1].x
+          bd_llink[1] = partRawInfo.part.link[1].y
+          bd_rlink[0] = partRawInfo.part.link[2].x
+          bd_rlink[1] = partRawInfo.part.link[2].y
+          bd_bklink[0] = partRawInfo.part.link[3].x
+          bd_bklink[1] = partRawInfo.part.link[3].y
+          // console.log(`----------------- bd_flink : ${bd_flink}`)
+          // console.log(`----------------- bd_flink : ${bd_llink}`)
+          // console.log(`----------------- bd_flink : ${bd_rlink}`)
+          // console.log(`----------------- bd_flink : ${bd_bklink}`)
+          bdrc[0] = partRawInfo.raw.row
+          bdrc[1] = partRawInfo.raw.column
+
+          // fp[0] + f_bdlink[0] - bd_flink[0] : fp[0] = 0
+          bdp[0] = f_bdlink[0] - bd_flink[0]
+          // fp[1] + f_bdlink[1] - bd_flink[1] : fp[1] = 0
+          bdp[1] = f_bdlink[1] - bd_flink[1]
+
+          // part.x = bdp[0]
+          // part.y = bdp[1]
+        }
+        if (type === "l") {
+          l_bdlink[0] = partRawInfo.part.link[0].x
+          l_bdlink[1] = partRawInfo.part.link[0].y
+          lrc[0] = partRawInfo.raw.row
+          lrc[1] = partRawInfo.raw.column
+
+          lp[0] = bdp[0] + bd_llink[0] - l_bdlink[0]
+          lp[1] = bdp[1] + bd_llink[1] - l_bdlink[1]
+
+          // part.x = lp[0]
+          // part.y = lp[1]
+        }
+        if (type === "r") {
+          r_bdlink[0] = partRawInfo.part.link[0].x
+          r_bdlink[1] = partRawInfo.part.link[0].y
+          rrc[0] = partRawInfo.raw.row
+          rrc[1] = partRawInfo.raw.column
+
+          rp[0] = bdp[0] + bd_rlink[0] - r_bdlink[0]
+          rp[1] = bdp[1] + bd_rlink[1] - r_bdlink[1]
+
+          // part.x = rp[0]
+          // part.y = rp[1]
+         }
+        if (type === "bk") {
+          bk_bdlink[0] = partRawInfo.part.link[0].x
+          bk_bdlink[1] = partRawInfo.part.link[0].y
+          bkrc[0] = partRawInfo.raw.row
+          bkrc[1] = partRawInfo.raw.column
+
+          bkp[0] = bdp[0] + bd_bklink[0] - bk_bdlink[0]
+          bkp[1] = bdp[1] + bd_bklink[1] - bk_bdlink[1]
+
+          // part.x = bkp[0]
+          // part.y = bkp[1]
+
+          const m = 0 - lp[0]
+          fp[0] += m
+          bdp[0] += m
+          lp[0] += m
+          rp[0] += m
+          bkp[0] += m
+        }
+
+        unitDrw.part.push(partRawInfo)
+      }
+
+      for (const key in unitDrw.unit.part) {
+        const part = unitDrw.unit.part[key]
+        const partRawInfo = partRaw.list.find((info) => info.part.ucode === part.target)
+        const type = partRawInfo.part.type
+        if (type === "f") {
+          part.x = fp[0]
+          part.y = fp[1]
+        }
+        if (type === "bd") {
+          part.x = bdp[0]
+          part.y = bdp[1]
+        }
+        if (type === "l") {
+          part.x = lp[0]
+          part.y = lp[1]
+        }
+        if (type === "r") {
+          part.x = rp[0]
+          part.y = rp[1]
+        }
+        if (type === "bk") {
+          part.x = bkp[0]
+          part.y = bkp[1]
+        }
+      }
+    }
+
+    function drawUnit(unit, partRaw, ctx, sx=0, sy=0, change=0) {
+      for (const key in unit.part) {
+        const part = unit.part[key]
+        // console.log(`part target : ${part.target}`)
+        const partRawInfo = partRaw.list.find((obj) => obj.part.ucode === part.target)
+        // console.log(`partRawInfo.part.ucode : ${partRawInfo.part.ucode}`)
+        let size = unit.size
+        if (change > 0) size = change
+        const x = size * part.x + unit.x + sx
+        const y = size * part.y + unit.y + sy
+        drawPartSample(partRawInfo, ctx, size, x, y)
+      }
+    }
+
+    function drawPartSample(info, ctx, size, startX, startY) {
+      // drawRaw(info.raw, ctx, size, startX, startY, info.part.color)
+      for (const key in info.raw.raw) {
+        // console.log(`key : ${key}`)
+        const list = info.raw.raw[key]
+        // console.log(`list : ${list}`)
+        const theme = info.part.child[key]
+        // console.log(`color : ${theme.color}`)
+        drawRawList(list, ctx, size, theme.color, startX, startY)
+      }
+    }
+
+    // function drawRaw(info, ctx, size, startX, startY, color) {
+    //   for (const key in info.raw) {
+    //     const list = info.raw[key]
+    //     drawRawList(list, ctx, size, color, startX, startY)
+    //   }
+    // }
+
+    function drawRawSample(info, ctx, size, startX, startY) {
+      let colorVal = 200
+
+      for (const key in info.raw) {
+        const list = info.raw[key]
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        drawRawList(list, ctx, size, color, startX, startY)
+        colorVal -= 35
+      }
+    }
+
+    function drawRawList(list, ctx, size, color, startX, startY) {
+      for (let i=0; i<list.length; i+=2) {
+        const x = list[i]
+        const y = list[i+1]
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      const startX = size * info.x + info.startX
+      const startY = size * info.y + info.startY
+      ctx.fillStyle = info.color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+  </script>
+</body>
+</html>

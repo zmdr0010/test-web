@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test draw rect box 00 raw to info 02</title>
+
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div id="id-display-size">canvas</div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="rbx-raw-info-00.js"></script>
+  <script type="application/javascript" src="part-info-00.js"></script>
+  <script type="application/javascript" src="unit-info-00.js"></script>
+  <script>
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+      console.log('window inner w : ' + window.innerWidth + ', h : ' + window.innerHeight)
+      console.log('window outer w : ' + window.outerWidth + ', h : ' + window.outerHeight)
+      console.log('canvas w : ' + canvas.width + ', h : ' + canvas.height)
+
+      const displaySize = document.getElementById('id-display-size')
+      console.log('displaySize h : ' + displaySize.offsetHeight)
+
+      const canvasW = window.innerWidth - 8 * 2
+      const canvasH = window.innerHeight - 8 * 2 - displaySize.offsetHeight
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      displaySize.innerText = `canvas w : ${canvasW}, h : ${canvasH}`
+
+      // front
+      // drawRawSample(rbxRawInfo00.list[0], ctx, 20, 10, 10)
+      // drawRawSample(rbxRawInfo00.list[1], ctx, 20, 220, 10)
+      // drawRawSample(rbxRawInfo00.list[2], ctx, 20, 10, 220)
+      // drawRawSample(rbxRawInfo00.list[3], ctx, 20, 220, 220)
+
+      // body
+      // drawRawSample(rbxRawInfo00.list[4], ctx, 20, 10, 10)
+      // drawRawSample(rbxRawInfo00.list[5], ctx, 20, 220, 10)
+      // drawRawSample(rbxRawInfo00.list[6], ctx, 20, 10, 220)
+      // drawRawSample(rbxRawInfo00.list[7], ctx, 20, 220, 220)
+
+      // left
+      // drawRawSample(rbxRawInfo00.list[8], ctx, 20, 10, 10)
+
+      // right
+      // drawRawSample(rbxRawInfo00.list[9], ctx, 20, 220, 10)
+
+      // back
+      // drawRawSample(rbxRawInfo00.list[10], ctx, 20, 10, 220)
+
+      const partRawInfo = {
+        list: []
+      }
+
+      initPartRawInfo(partRawInfo.list, partInfo00, rbxRawInfo00)
+
+      // front
+      // drawPartSample(partRawInfo.list[0], ctx, 20, 10, 10)
+      // drawPartSample(partRawInfo.list[1], ctx, 20, 220, 10)
+      // drawPartSample(partRawInfo.list[2], ctx, 20, 10, 220)
+      // drawPartSample(partRawInfo.list[3], ctx, 20, 220, 220)
+
+      // body
+      // drawPartSample(partRawInfo.list[4], ctx, 20, 10, 10)
+      // drawPartSample(partRawInfo.list[5], ctx, 20, 220, 10)
+      // drawPartSample(partRawInfo.list[6], ctx, 20, 10, 220)
+      // drawPartSample(partRawInfo.list[7], ctx, 20, 220, 220)
+
+      // left
+      // drawPartSample(partRawInfo.list[8], ctx, 20, 10, 10)
+
+      // right
+      // drawPartSample(partRawInfo.list[9], ctx, 20, 220, 10)
+
+      // back
+      // drawPartSample(partRawInfo.list[10], ctx, 20, 10, 220)
+
+
+      // drawUnit(unitInfo00.list[0], partRawInfo, ctx, 100, 100, 8)
+
+
+      const size = 4
+      const div = 9
+      const marginX = 160
+      const marginY = 200
+      let count = 0
+
+      for (const key in unitInfo00.list) {
+        const info = unitInfo00.list[key]
+        const x = count % div
+        const y = Math.floor(count / div)
+        console.log(`------------------ x : ${x}, y : ${y}`)
+        console.log(`------------------ key : ${key}`)
+        const change = size
+        const sx = x * marginX
+        const sy = y * marginY
+        drawUnit(info, partRawInfo, ctx, sx, sy, change)
+
+        count++
+      }
+    }
+
+    function initPartRawInfo(resultList, part, raw) {
+      for (const key in part.list) {
+        const partInfo = part.list[key]
+        const rawInfo = raw.list.find((info) => info.ucode === partInfo.target)
+        // console.log(`rawInfo : ${rawInfo.ucode}`)
+        if (rawInfo) {
+          resultList.push({
+            part: partInfo, raw: rawInfo
+          })
+        }
+      }
+    }
+
+    function drawUnit(unit, partRaw, ctx, sx=0, sy=0, change=0) {
+      for (const key in unit.part) {
+        const part = unit.part[key]
+        // console.log(`part target : ${part.target}`)
+        const partRawInfo = partRaw.list.find((obj) => obj.part.ucode === part.target)
+        // console.log(`partRawInfo.part.ucode : ${partRawInfo.part.ucode}`)
+        let size = unit.size
+        if (change > 0) size = change
+        const x = size * part.x + unit.x + sx
+        const y = size * part.y + unit.y + sy
+        drawPartSample(partRawInfo, ctx, size, x, y)
+      }
+    }
+
+    function drawPartSample(info, ctx, size, startX, startY) {
+      // drawRaw(info.raw, ctx, size, startX, startY, info.part.color)
+      for (const key in info.raw.raw) {
+        // console.log(`key : ${key}`)
+        const list = info.raw.raw[key]
+        // console.log(`list : ${list}`)
+        const theme = info.part.child[key]
+        // console.log(`color : ${theme.color}`)
+        drawRawList(list, ctx, size, theme.color, startX, startY)
+      }
+    }
+
+    // function drawRaw(info, ctx, size, startX, startY, color) {
+    //   for (const key in info.raw) {
+    //     const list = info.raw[key]
+    //     drawRawList(list, ctx, size, color, startX, startY)
+    //   }
+    // }
+
+    function drawRawSample(info, ctx, size, startX, startY) {
+      let colorVal = 200
+
+      for (const key in info.raw) {
+        const list = info.raw[key]
+        const color = `rgb(${colorVal},${colorVal},${colorVal})`
+        drawRawList(list, ctx, size, color, startX, startY)
+        colorVal -= 35
+      }
+    }
+
+    function drawRawList(list, ctx, size, color, startX, startY) {
+      for (let i=0; i<list.length; i+=2) {
+        const x = list[i]
+        const y = list[i+1]
+        drawRawInfo({
+          x: x, y: y, startX: startX, startY: startY, size: size, color: color
+        }, ctx)
+      }
+    }
+
+    function drawRawInfo(info, ctx) {
+      // console.log('color : ' + color)
+      const size = info.size
+      const startX = size * info.x + info.startX
+      const startY = size * info.y + info.startY
+      ctx.fillStyle = info.color
+      ctx.beginPath()
+      ctx.rect(startX, startY, size, size)
+      ctx.fill()
+    }
+  </script>
+</body>
+</html>
