@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <title>Test sample unit sub q stage 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-drawing-tool-sample/rbx-raw-string-sample-ut-00.js"></script>
+  <script type="application/javascript" src="https://zmdr0010.github.io/test-web/test-draw-rect-box-03-new/simple-rbx-raw-string-00.js"></script>
+  <script type="application/javascript" src="color-palettes-sample.js"></script>
+  <script type="application/javascript" src="drw-raw-lib.js"></script>
+  <script type="application/javascript" src="movement-raw-string-sample.js"></script>
+  <script type="application/javascript" src="info-sample.js"></script>
+  <script type="application/javascript" src="hit-lib.js"></script>
+  <script type="application/javascript" src="drw-raw-info-edit-lib.js"></script>
+  <script type="application/javascript" src="temp-stage-01.js"></script>
+  <script>
+    let unitInfo
+    let enemyMoveInfoTargetList = [6, 3, 7, 1, 4, 3, 5]
+    const hitColorList = []
+
+    function init() {
+      console.log('init')
+      size = 4 // 8 ~ 10
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      initStage('id-canvas', canvasW, canvasH)
+
+      const drwResInfo = {
+        list: []
+      }
+
+      drwResInfo.list['rbxRawStringSampleUt00.raw'] = []
+      for (const rw of rbxRawStringSampleUt00.raw) {
+        drwResInfo.list['rbxRawStringSampleUt00.raw'].push(rw)
+      }
+
+      drwResInfo.list['colorPalettesSampleList'] = []
+      for (const color of colorPalettesSampleList) {
+        drwResInfo.list['colorPalettesSampleList'].push(color)
+      }
+
+      // 40, 41, 42, 43, 44, 45
+      hitColorList.push(drwResInfo.list['colorPalettesSampleList'][40])
+      hitColorList.push(drwResInfo.list['colorPalettesSampleList'][41])
+      hitColorList.push(drwResInfo.list['colorPalettesSampleList'][42])
+      hitColorList.push(drwResInfo.list['colorPalettesSampleList'][43])
+      hitColorList.push(drwResInfo.list['colorPalettesSampleList'][44])
+      hitColorList.push(drwResInfo.list['colorPalettesSampleList'][45])
+
+      const bulletDrwObjInfo = parsingDrwObjInfoByLinkInfo(bulletDrwObjLinkInfoSample, drwResInfo)
+      drwObjList.push(bulletDrwObjInfo) // 0
+
+      const enemyBulletDrwObjInfo = parsingDrwObjInfoByLinkInfo(bulletDrwObjLinkInfoSample01, drwResInfo)
+      // enemyBulletDrwObjInfo.rawInfo = reverseVerticalRawInfo(enemyBulletDrwObjInfo.rawInfo)
+      drwObjList.push(enemyBulletDrwObjInfo) // 1
+
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[2])) // down to top // 0
+      pathInfoList.push(parsingMovementRawStrToMrwInfo(pathRwStrListSample[3])) // top to down // 1
+
+      // size = 3
+
+      let pathInfo = pathInfoList[0]
+      moveInfoList.push(
+        createMoveInfoFromMdList(parsingRawToMdList(pathInfo.raw, pathInfo.rawNum, pathInfo.row), 60, 30, 40, 40)
+      ) // 0
+      moveInfoList.push(
+        createMoveInfoFromMdList(parsingRawToMdList(pathInfo.raw, pathInfo.rawNum, pathInfo.row), 60, 30, 50, 50)
+      ) // 1
+
+      pathInfo = pathInfoList[1] // enemy
+      moveInfoList.push(
+        createMoveInfoFromMdList(parsingRawToMdList(pathInfo.raw, pathInfo.rawNum, pathInfo.row), 60, 30, 40, 40)
+      ) // 2
+      moveInfoList.push(
+        createMoveInfoFromMdList(parsingRawToMdList(pathInfo.raw, pathInfo.rawNum, pathInfo.row), 60, 30, 50, 50)
+      ) // 3
+
+      const enemyMoveInfoList = []
+      for (const index of enemyMoveInfoTargetList) {
+        const pathInfo = parsingMovementRawStrToMrwInfo(pathRwStrListSample[index])
+        // moveInfoList.push(createMoveInfoFromMdList(parsingRawToMdList(pathInfo.raw, pathInfo.rawNum, pathInfo.row), 60, 30, 10, 10))
+        // 4 ~ 10
+        enemyMoveInfoList.push(createMoveInfoFromMdList(parsingRawToMdList(pathInfo.raw, pathInfo.rawNum, pathInfo.row), 60, 30, 10, 10))
+      }
+
+      const drwObjInfo = parsingDrwObjInfoByLinkInfo(drwObjLinkInfoSample00, drwResInfo)
+      drwObjList.push(drwObjInfo) // 2
+
+      unitInfo = {
+        order: 0,
+        drwObj: drwObjInfo,
+        posInfo: {
+          r: 0,
+          c: 0,
+        },
+        moveInfo: null,
+        moveSetInfo: {
+          type: 'stay', // stay / cycle / out / etc...
+          list: [], // moveInfo list
+          moveInfo: null,
+          currentMove: -1
+        },
+        hitInfo: {
+          hitBox: [
+            [11, 15, 2, 10], // f : left, right, top, bottom
+            [2, 7, 14, 21], // l
+            [19, 24, 14, 21], // r
+            [11, 15, 22, 27], // bk
+            [8, 18, 11, 21] // bd
+          ],
+          hitFrame: 0,
+          hitState: 0,
+          type: 'player'
+        },
+        effectInfoList: [
+          {
+            target: 'bullet-hit',
+            type: 'color',
+            colorList: hitColorList
+          }
+        ],
+        weaponInfo: {
+          list: [
+            {
+              name: 'f-shoot',
+              actInfo: {
+                type: 'cycle', // ui / count / cycle / etc..
+                frame: 20, // frame--
+                frameMax: 20,
+                count: 0,
+                countMax: 0
+              },
+              actObjSetList: [
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[1],
+                  startPosInfo: { // dir row, column from unit
+                    dr: 0,
+                    dc: 0
+                  }
+                },
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[1],
+                  startPosInfo: { // dir row, column from unit
+                    dr: -4,
+                    dc: 0
+                  }
+                },
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[1],
+                  startPosInfo: { // dir row, column from unit
+                    dr: 4,
+                    dc: 0
+                  }
+                }
+              ]
+            },
+            {
+              name: 'l-shoot',
+              actInfo: {
+                type: 'cycle', // ui / count / cycle / etc..
+                frame: 20, // frame--
+                frameMax: 20,
+                count: 0,
+                countMax: 0
+              },
+              actObjSetList: [
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[0],
+                  startPosInfo: { // dir row, column from unit
+                    dr: -12,
+                    dc: 4
+                  }
+                },
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[0],
+                  startPosInfo: { // dir row, column from unit
+                    dr: -16,
+                    dc: 4
+                  }
+                },
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[0],
+                  startPosInfo: { // dir row, column from unit
+                    dr: -8,
+                    dc: 4
+                  }
+                }
+              ]
+            },
+            {
+              name: 'r-shoot',
+              actInfo: {
+                type: 'cycle', // ui / count / cycle / etc..
+                frame: 20, // frame--
+                frameMax: 20,
+                count: 0,
+                countMax: 0
+              },
+              actObjSetList: [
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[0],
+                  startPosInfo: { // dir row, column from unit
+                    dr: 12,
+                    dc: 4
+                  }
+                },
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[0],
+                  startPosInfo: { // dir row, column from unit
+                    dr: 16,
+                    dc: 4
+                  }
+                },
+                {
+                  hitType: 'bullet',
+                  drwObjInfo: bulletDrwObjInfo,
+                  moveInfo: moveInfoList[0],
+                  startPosInfo: { // dir row, column from unit
+                    dr: 8,
+                    dc: 4
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+      moveUnit(unitInfo, 50, 160)
+      // drawUnit(ctx, unitInfo, size)
+
+      // unitList.push(unitInfo)
+      addUnit(unitInfo)
+
+      const enemyDrwObjInfo = parsingDrwObjInfoByLinkInfo(drwObjLinkInfoSample01, drwResInfo)
+
+      drwObjList.push(enemyDrwObjInfo) // 3
+
+      addUnit(createEnemy(enemyDrwObjInfo, 50, 20, createEnemyWeapon(), createEnemyMoveSet('stay', enemyMoveInfoList)))
+      addUnit(createEnemy(enemyDrwObjInfo, 10, 40, null, createEnemyMoveSet('stay', enemyMoveInfoList)))
+      addUnit(createEnemy(enemyDrwObjInfo, 70, 30, null, createEnemyMoveSet()))
+
+      addUnit(createEnemy(enemyDrwObjInfo, 50, 70, null, createEnemyMoveSet('stay', enemyMoveInfoList)))
+
+
+      updateFunc = update
+      drawFunc = draw
+      start()
+    }
+
+
+
+    function createEnemy(drwObjInfo, r, c, weaponInfo, moveSetInfo) {
+      return {
+        order:3,
+        drwObj: drwObjInfo,
+        posInfo: {
+          r: r,
+          c: c,
+        },
+        moveInfo: null,
+        // moveSetInfo: {
+        //   type: 'cycle', // cycle / goal / etc...
+        //   list: [], // moveInfo list
+        //   moveInfo: null
+        // },
+        moveSetInfo: moveSetInfo,
+        hitInfo: {
+          hitBox: [
+            [11, 15, 2, 10], // f : left, right, top, bottom
+            [2, 7, 14, 21], // l
+            [19, 24, 14, 21], // r
+            [11, 15, 22, 27], // bk
+            [8, 18, 11, 21] // bd
+          ],
+          hitFrame: 0,
+          hitState: 0,
+          type: 'enemy'
+        },
+        effectInfoList: [
+          {
+            target: 'bullet-hit',
+            type: 'color',
+            colorList: hitColorList
+          }
+        ],
+        weaponInfo: weaponInfo
+      }
+    }
+
+    // 6, 3, 7, 1, 4, 3, 5
+    function createEnemyMoveSet(type='stay',list=[]) {
+      let moveInfo = null
+      let currentMove = -1
+      if (list.length > 0) {
+        moveInfo = copyMoveInfo(list[0])
+        currentMove = 0
+      }
+
+      return {
+        type: type, // stay / cycle / out / etc...
+        list: list, // moveInfo list
+        moveInfo: moveInfo,
+        currentMove: currentMove // list index
+      }
+    }
+
+    function createActObjUnit(drwObjInfo, r, c, type='bullet') {
+      const actObjUnit = {
+        drwObj: drwObjInfo,
+        posInfo: {
+          r: r,
+          c: c
+        },
+        moveInfo: null,
+        moveSetInfo: {
+          type: 'out', // stay / cycle / out / etc...
+          list: [], // moveInfo list
+          moveInfo: null,
+          currentMove: -1
+        },
+        hitInfo: {
+          hitBox: [
+            [0, drwObjInfo.rs-1, 0, drwObjInfo.cs-1]
+          ],
+          hitFrame: 0, // > 0 : hit state
+          hitState: 0, // 0 : normal, 1 : hit state
+          type: type
+        },
+        effectInfoList: [
+          {
+            target: 'unit-hit',
+            type: 'color',
+            colorList: hitColorList
+          }
+        ],
+      }
+      return actObjUnit
+    }
+
+    function createEnemyWeapon() {
+      return {
+        list: [
+          {
+            name: 'enemy-f-shoot',
+            actInfo: {
+              type: 'cycle', // ui / count / cycle / etc..
+              frame: 20, // frame--
+              frameMax: 20,
+              count: 0,
+              countMax: 0
+            },
+            actObjSetList: [
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[3],
+                startPosInfo: { // dir row, column from unit
+                  dr: 0,
+                  dc: 0
+                }
+              },
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[3],
+                startPosInfo: { // dir row, column from unit
+                  dr: -4,
+                  dc: 0
+                }
+              },
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[3],
+                startPosInfo: { // dir row, column from unit
+                  dr: 4,
+                  dc: 0
+                }
+              }
+            ]
+          },
+          {
+            name: 'enemy-l-shoot',
+            actInfo: {
+              type: 'cycle', // ui / count / cycle / etc..
+              frame: 20, // frame--
+              frameMax: 20,
+              count: 0,
+              countMax: 0
+            },
+            actObjSetList: [
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[2],
+                startPosInfo: { // dir row, column from unit
+                  dr: -12,
+                  dc: 4
+                }
+              },
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[2],
+                startPosInfo: { // dir row, column from unit
+                  dr: -16,
+                  dc: 4
+                }
+              },
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[2],
+                startPosInfo: { // dir row, column from unit
+                  dr: -8,
+                  dc: 4
+                }
+              }
+            ]
+          },
+          {
+            name: 'enemy-r-shoot',
+            actInfo: {
+              type: 'cycle', // ui / count / cycle / etc..
+              frame: 20, // frame--
+              frameMax: 20,
+              count: 0,
+              countMax: 0
+            },
+            actObjSetList: [
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[2],
+                startPosInfo: { // dir row, column from unit
+                  dr: 12,
+                  dc: 4
+                }
+              },
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[2],
+                startPosInfo: { // dir row, column from unit
+                  dr: 16,
+                  dc: 4
+                }
+              },
+              {
+                hitType: 'enemy-bullet',
+                drwObjInfo: drwObjList[1],
+                moveInfo: moveInfoList[2],
+                startPosInfo: { // dir row, column from unit
+                  dr: 8,
+                  dc: 4
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  </script>
+</body>
+</html>
