@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test state unit preset auto join 01 e preset 2 input</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <input type="text" id="id-json-string" name="json-string" />
+  <button onclick="onDraw()">draw</button>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="lib-draw-guide.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-info.js"></script>
+  <script type="application/javascript" src="lib-part-join.js"></script>
+  <script type="application/javascript" src="lib-raw-str.js"></script>
+  <script type="application/javascript" src="manager-preset-link-info.js"></script>
+  <script type="application/javascript" src="manager-res-info.js"></script>
+  <script type="application/javascript" src="sample-color-palettes.js"></script>
+  <script type="application/javascript" src="sample-drw-obj-link-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-color-set-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-str.js"></script>
+  <script type="application/javascript" src="sample-hit-link-info.js"></script>
+  <script type="application/javascript" src="sample-part-preset-info.js"></script>
+  <script type="application/javascript" src="stage.js"></script>
+  <script>
+    const saveObjList = []
+
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      initStage('id-canvas', canvasW, canvasH * 2)
+      size = 6
+      checkParams(window)
+      initPartPresetInfoList(partPresetInfoSampleList)
+      initResInfo(drwRawInfoSampleList, drwRawColorSetInfoList, colorPalettesInfoSampleList,
+        drwObjLinkInfoSampleList, hitLinkInfoSampleList)
+
+      const tempColorSetInfo = {
+        uCode: 'temp-color-set-info-00',
+        palettes: 'sample-palettes-01', // palettes info uCode
+        list: [40, 41, 42, 43, 10, 11, 12, 13, 14, 15, 16, 30, 31, 32, 33, 2, 23, 24, 25]
+      }
+      resInfo.colorSetInfoList.push(tempColorSetInfo)
+
+      const tempDrwObjLinkInfoF = {
+        uCode: 'temp-drw-obj-link-info-raw-front-sample-00',
+        drwRawInfo: 'raw-front-sample-00', // drwRawInfo uCode
+        colorSetInfo: 'temp-color-set-info-00', // colorSetInfo uCode
+        rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },
+        child: []
+      }
+      resInfo.drwObjLinkInfoList.push(tempDrwObjLinkInfoF)
+
+      const tempDrwObjLinkInfoL = {
+        uCode: 'temp-drw-obj-link-info-raw-left-sample-00',
+        drwRawInfo: 'raw-left-sample-00',
+        colorSetInfo: 'temp-color-set-info-00', // colorSetInfo uCode
+        rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },
+        child: []
+      }
+      resInfo.drwObjLinkInfoList.push(tempDrwObjLinkInfoL)
+
+      const tempDrwObjLinkInfoR = {
+        uCode: 'temp-drw-obj-link-info-raw-right-sample-00',
+        drwRawInfo: 'raw-right-sample-00',
+        colorSetInfo: 'temp-color-set-info-00', // colorSetInfo uCode
+        rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },
+        child: []
+      }
+      resInfo.drwObjLinkInfoList.push(tempDrwObjLinkInfoR)
+
+      const tempDrwObjLinkInfoBk = {
+        uCode: 'temp-drw-obj-link-info-raw-back-sample-00',
+        drwRawInfo: 'raw-back-sample-00',
+        colorSetInfo: 'temp-color-set-info-00', // colorSetInfo uCode
+        rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },
+        child: []
+      }
+      resInfo.drwObjLinkInfoList.push(tempDrwObjLinkInfoBk)
+
+      const tempDrwObjLinkInfoBd = {
+        uCode: 'temp-drw-obj-link-info-raw-body-sample-00',
+        drwRawInfo: 'raw-body-sample-00',
+        colorSetInfo: 'temp-color-set-info-00',
+        rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },
+        child: []
+      }
+      resInfo.drwObjLinkInfoList.push(tempDrwObjLinkInfoBd)
+
+      const tempPartPresetInfoMain = {
+        uCode: 'temp-part-preset-info-main',
+        partInfo: {
+          uCode: 'temp-part-info-main',
+          tCode: 'main',
+          rcInfo: {r: 0, c: 0, rsz: -1, csz: -1},// -1 : calculating (include drwObj and child) on init
+          drwObjLink: '', // drwObjLinkInfo uCode
+          moveLink: '',
+          hitLink: '',
+          effectLink: '',
+          equipLink: '',
+          child: [
+            {
+              uCode: 'temp-part-info-f',
+              tCode: 'f',
+              rcInfo: {r: 10, c: 0, rsz: -1, csz: -1},// -1 : calculating (include drwObj and child) on init
+              drwObjLink: 'temp-drw-obj-link-info-raw-front-sample-00', // drwObjLinkInfo uCode
+              moveLink: '',
+              hitLink: 'hit-link-info-obj-area',
+              effectLink: '',
+              equipLink: '',
+              child: []
+            },
+            {
+              uCode: 'temp-part-info-l',
+              tCode: 'l',
+              rcInfo: {r: 0, c: 20, rsz: -1, csz: -1},// -1 : calculating (include drwObj and child) on init
+              drwObjLink: 'temp-drw-obj-link-info-raw-left-sample-00', // drwObjLinkInfo uCode
+              moveLink: '',
+              hitLink: 'hit-link-info-obj-area',
+              effectLink: '',
+              equipLink: '',
+              child: []
+            },
+            {
+              uCode: 'temp-part-info-r',
+              tCode: 'r',
+              rcInfo: {r: 30, c: 20, rsz: -1, csz: -1},// -1 : calculating (include drwObj and child) on init
+              drwObjLink: 'temp-drw-obj-link-info-raw-right-sample-00', // drwObjLinkInfo uCode
+              moveLink: '',
+              hitLink: 'hit-link-info-obj-area',
+              effectLink: '',
+              equipLink: '',
+              child: []
+            },
+            {
+              uCode: 'temp-part-info-bk',
+              tCode: 'bk',
+              rcInfo: {r: 20, c: 30, rsz: -1, csz: -1},// -1 : calculating (include drwObj and child) on init
+              drwObjLink: 'temp-drw-obj-link-info-raw-back-sample-00', // drwObjLinkInfo uCode
+              moveLink: '',
+              hitLink: 'hit-link-info-obj-area',
+              effectLink: '',
+              equipLink: '',
+              child: []
+            },
+            {
+              uCode: 'temp-part-info-body',
+              tCode: 'bd',
+              rcInfo: {r: 20, c: 20, rsz: -1, csz: -1},// -1 : calculating (include drwObj and child) on init
+              drwObjLink: 'temp-drw-obj-link-info-raw-body-sample-00', // drwObjLinkInfo uCode
+              moveLink: '',
+              hitLink: 'hit-link-info-obj-area',
+              effectLink: '',
+              equipLink: '',
+              child: []
+            }
+          ]
+        }
+      }
+
+
+      // auto join f, bd, l, r, bk
+      // 0. auto calculate jrc (joint row column)
+      // 1. f to top (base : f.c = 0)
+      // 2. bd to f jrc (joint row column)
+      // 3. l, r, bk to bd jrc
+      // 4. l to left => f, bd, r, bk to left
+      // 5. re calculate rsz, csz
+
+      const calcJrcInfo = {
+        list: [
+          {
+            target: 'f', // tCode
+            key: 'jp-f-bd',
+            type: 'scale', // scale / fix
+            jrcType: 'g', // m (move) / g (goal)
+            rs: 0.5, // row scale (type = scale)
+            // cs: 0.9,  // column scale (type = scale)
+            cs: 1.0,
+            r: 3, // row (type = fix)
+            c: 5  // column (type = fix)
+          },
+          {
+            target: 'bd',
+            key: 'jp-f-bd',
+            type: 'scale',
+            jrcType: 'm', // m (move) / g (goal)
+            rs: 0.5,
+            // cs: 0.1,
+            cs: 0.0,
+            r: 3,
+            c: 2
+          },
+          {
+            target: 'bd',
+            key: 'jp-bd-l',
+            type: 'scale',
+            jrcType: 'g', // m (move) / g (goal)
+            // rs: 0.1,
+            rs: 0.0,
+            cs: 0.5,
+            r: 2,
+            c: 5
+          },
+          {
+            target: 'bd',
+            key: 'jp-bd-r',
+            type: 'scale',
+            jrcType: 'g', // m (move) / g (goal)
+            // rs: 0.9,
+            rs: 1.0,
+            cs: 0.5,
+            r: 6,
+            c: 5
+          },
+          {
+            target: 'bd',
+            key: 'jp-bd-bk',
+            type: 'scale',
+            jrcType: 'g', // m (move) / g (goal)
+            rs: 0.5,
+            // cs: 0.9,
+            cs: 1.0,
+            r: 3,
+            c: 7
+          },
+          {
+            target: 'l',
+            key: 'jp-bd-l',
+            type: 'scale',
+            jrcType: 'm', // m (move) / g (goal)
+            // rs: 0.9,
+            rs: 1.0,
+            cs: 0.5,
+            r: 7,
+            c: 3
+          },
+          {
+            target: 'r',
+            key: 'jp-bd-r',
+            type: 'scale',
+            jrcType: 'm', // m (move) / g (goal)
+            // rs: 0.1,
+            rs: 0.0,
+            cs: 0.5,
+            r: 1,
+            c: 3
+          },
+          {
+            target: 'bk',
+            key: 'jp-bd-bk',
+            type: 'scale',
+            jrcType: 'm', // m (move) / g (goal)
+            rs: 0.5,
+            // cs: 0.1,
+            cs: 0.0,
+            r: 4,
+            c: 1
+          }
+        ]
+      }
+
+      const jrcInfoSample = {
+        list: [
+          {
+            target: 'f',
+            key: 'jp-f-bd',
+            type: 'g', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+          {
+            target: 'bd',
+            key: 'jp-f-bd',
+            type: 'm', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+          {
+            target: 'bd',
+            key: 'jp-bd-l',
+            type: 'g', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+          {
+            target: 'bd',
+            key: 'jp-bd-r',
+            type: 'g', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+          {
+            target: 'bd',
+            key: 'jp-bd-bk',
+            type: 'g', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+          {
+            target: 'l',
+            key: 'jp-bd-l',
+            type: 'm', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+          {
+            target: 'r',
+            key: 'jp-bd-r',
+            type: 'm', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+          {
+            target: 'bk',
+            key: 'jp-bd-bk',
+            type: 'm', // m (move) / g (goal)
+            r: 0,
+            c: 0
+          },
+        ]
+      }
+
+      // drawPresetInfo(ctx, tempPartPresetInfoMain, resInfo, 10, 10)
+
+      const partInfo = createPartInfoFromPresetInfo(tempPartPresetInfoMain, resInfo)
+
+      // // 0. auto calculate jrc (joint row column)
+      // const jrcInfoList = calculateToJrcInfo(partInfo.child, calcJrcInfo)
+      // console.log(jrcInfoList)
+      //
+      // // 1. f to top (base : f.c = 0)
+      // const fPart = partInfo.child.find(info => info.tCode === 'f')
+      // fPart.rcInfo.c = 0
+      //
+      // // 2. bd to f jrc (joint row column)
+      // // 3. l, r, bk to bd jrc
+      // moveByJrcInfo(partInfo.child, jrcInfoList)
+      //
+      // // 4. l to left => f, bd, r, bk to left
+      // const lPart = partInfo.child.find(info => info.tCode === 'l')
+      // const mr = 0 - lPart.rcInfo.r
+      // for (const pI of partInfo.child) {
+      //   pI.rcInfo.r += mr
+      // }
+      //
+      // // 5. re calculate rsz, csz
+      // partInfo.rcInfo.rsz = 0
+      // partInfo.rcInfo.csz = 0
+      // calculateRCsz(partInfo)
+
+      moveAutoJoin(partInfo, calcJrcInfo)
+
+      console.log(partInfo)
+
+
+      drawTemp(ctx, partInfo, resInfo, 10, 10)
+
+      updatePresetRcInfoByJrc(tempPartPresetInfoMain.partInfo, partInfo)
+
+      const partInfo01 = createPartInfoFromPresetInfo(tempPartPresetInfoMain, resInfo)
+      drawTemp(ctx, partInfo01, resInfo, 40, 10)
+
+      // saveObjList.push(partInfo01)
+      saveObjList.push(tempPartPresetInfoMain)
+    }
+
+    // function drawPresetInfo(ctx, presetInfo, resInfo, sr, sc) {
+    //   const partInfo = createPartInfoFromPresetInfo(presetInfo, resInfo)
+    //   drawPartInfo(ctx, partInfo, sr, sc, size)
+    //   drawRCArea(ctx, partInfo, sr, sc, size)
+    //   drawHitBox(ctx, partInfo, sr, sc, size)
+    // }
+
+    function drawTemp(ctx, partInfo, resInfo, sr, sc) {
+      drawPartInfo(ctx, partInfo, sr, sc, size)
+      drawRCArea(ctx, partInfo, sr, sc, size)
+      drawHitBox(ctx, partInfo, sr, sc, size)
+    }
+
+    function updatePresetRcInfoByJrc(presetPartInfo, partInfo) {
+      presetPartInfo.rcInfo.r = partInfo.rcInfo.r
+      presetPartInfo.rcInfo.c = partInfo.rcInfo.c
+      presetPartInfo.rcInfo.rsz = partInfo.rcInfo.rsz
+      presetPartInfo.rcInfo.csz = partInfo.rcInfo.csz
+      for (const cPresetI of presetPartInfo.child) {
+        const cPartI = partInfo.child.find(info => info.uCode === cPresetI.uCode)
+        updatePresetRcInfoByJrc(cPresetI, cPartI)
+      }
+    }
+
+    function onDraw() {
+      const presetInfo = JSON.parse(document.getElementById('id-json-string').value)
+      const partInfo = createPartInfoFromPresetInfo(presetInfo, resInfo)
+      drawTemp(ctx, partInfo, resInfo, 50, 50)
+    }
+  </script>
+</body>
+</html>
