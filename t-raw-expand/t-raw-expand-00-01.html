@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>t raw expand 00 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../stage-proto/lib-draw-guide.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-drw-raw-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-part-join.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-raw-str.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-move.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-preset-link-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-res-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/stage.js"></script>
+  <script type="application/javascript" src="../sample-00/sample-00.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-layer.js"></script>
+  <script>
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      initStage('id-canvas', canvasW, canvasH * 2)
+      size = 6
+      checkParams(window)
+
+      initPartPresetInfoList([rbxLabSamplePartPresetInfo00])
+      // initArmsPresetInfoList(tempPlayerArmsPresetInfoSampleList)
+      initResInfo([rbxLabSampleDrwRawInfo00], [rbxLabSampleColorSetInfo00], [rbxLabSamplePalettesInfo00],
+        [rbxLabSampleDrwObjLinkInfo00], [rbxLabSampleHitLinkInfo00],
+        [], [])
+
+      const partInfo = createPartInfoFromPresetInfo(rbxLabSamplePartPresetInfo00, resInfo)
+      // console.log(partInfo)
+      // setPartMoveSetByPresetList(partInfo, partMoveSetPresetLinkInfoSampleList, moveSetPresetInfoSampleList)
+      // setPartArmsByPresetList(partInfo, tempPlayerArmsPresetInfoSampleList, resInfo, presetInfoManager.list)
+
+      // const unitInfo = {
+      //   uCode: 'sample-unit',
+      //   partInfo: partInfo
+      // }
+      //
+      // unitList.push(unitInfo)
+
+      // console.log(unitInfo)
+      // moveUnit(unitInfo, 40, 80)
+
+      // drawPartInfo(ctx, partInfo, 30, 60, size)
+      // drawPartInfo(ctx, partInfo, 37, 60, size)
+
+      // const misPartInfo = createPartInfoFromPresetInfo(sampleTempPartPresetInfoMissileShootF, resInfo)
+      // console.log(misPartInfo)
+      // drawPartInfo(ctx, misPartInfo, 37 + 7, 60, size)
+
+      // start()
+
+
+      drawPartInfo(ctx, partInfo, 10, 10, size)
+      console.log('----- partInfo ---------')
+      console.log(partInfo)
+
+      // const drwRawInfoX2 = expandRawSimple(rbxLabSampleDrwRawInfo00)
+      // console.log('----- drwRawInfoX2 ---------')
+      // console.log(drwRawInfoX2)
+      // rbxLabSampleDrwRawInfo00.row = drwRawInfoX2.row
+      // rbxLabSampleDrwRawInfo00.column = drwRawInfoX2.column
+      // rbxLabSampleDrwRawInfo00.rawNum = drwRawInfoX2.rawNum
+      // rbxLabSampleDrwRawInfo00.raw = drwRawInfoX2.raw
+      // const partInfoX2 = createPartInfoFromPresetInfo(rbxLabSamplePartPresetInfo00, resInfo)
+      // drawPartInfo(ctx, partInfoX2, 30, 10, size)
+      // console.log('----- partInfoX2 ---------')
+      // console.log(partInfoX2)
+      //
+      // const drwRawInfoX3 = expandRawSimple(rbxLabSampleDrwRawInfo00, 3)
+      // rbxLabSampleDrwRawInfo00.row = drwRawInfoX3.row
+      // rbxLabSampleDrwRawInfo00.column = drwRawInfoX3.column
+      // rbxLabSampleDrwRawInfo00.rawNum = drwRawInfoX3.rawNum
+      // rbxLabSampleDrwRawInfo00.raw = drwRawInfoX3.raw
+      // const partInfoX3 = createPartInfoFromPresetInfo(rbxLabSamplePartPresetInfo00, resInfo)
+      // drawPartInfo(ctx, partInfoX3, 60, 10, size)
+      //
+      // console.log('----- resInfo ---------')
+      // console.log(resInfo)
+      // console.log('----- partInfoX3 ---------')
+      // console.log(partInfoX3)
+
+      // const rawInfo = partInfoX3.drwObj.rawInfo
+      const rawInfo = partInfo.drwObj.rawInfo
+      console.log('----- rawInfo ---------')
+      console.log(rawInfo)
+      const rawLayerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+
+      let sr = 10
+      let sc = 70
+      let margin = 56
+      for (const layer of rawLayerList) {
+
+        checkCorner(layer, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+
+        const pInfo = createPartInfo()
+        pInfo.drwObj.rawInfo.raw = layer
+        console.log(pInfo)
+        drawPartInfo(ctx, pInfo, sr, sc, size)
+        sr += margin
+      }
+
+      sr = 0
+      for (const layer of rawLayerList) {
+        const pInfo = createPartInfo()
+        pInfo.drwObj.rawInfo.raw = layer
+        drawPartInfo(ctx, pInfo, sr, sc, size)
+      }
+    }
+
+    function checkCorner(raw, rawNum, row, column, cList=[5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]) {
+      const rawList = []
+      for (let i=0; i<raw.length; i++) {
+        const rw = raw[i]
+        if (rw === 0) {
+          rawList.push(rw)
+          continue
+        }
+        const r = i % row
+        const c = Math.floor(i / row)
+        let isEL = false
+        let isER = false
+        let isET = false
+        let isEB = false
+        let index = -1
+        let rww = -1
+        // check left
+        const lr = r - 1
+        if (lr >= 0) {
+          index = lr + c * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isEL = true
+          }
+        } else {
+          isEL = true
+        }
+        // check right
+        const rr = r + 1
+        if (rr < row) {
+          index = rr + c * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isER = true
+          }
+        } else {
+          isER = true
+        }
+        // check top
+        const tc = c - 1
+        if (tc >= 0) {
+          index = r + tc * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isET = true
+          }
+        } else {
+          isET = true
+        }
+        // check bottom
+        const bc = c + 1
+        if (bc < column) {
+          index = r + bc * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isEB = true
+          }
+        } else {
+          isEB = true
+        }
+        // if (isE){
+        //   rawList.push(5)
+        // } else {
+        //   rawList.push(rw)
+        // }
+
+        let isPush = false
+        if (!isEL && !isER && !isET && !isEB) {
+          rawList.push(rw)
+          isPush = true
+        }
+        if (isEL && isER && isET && isEB) {
+          rawList.push(cList[0])
+          isPush = true
+        }
+        if (isEL && isER && isET && !isEB) {
+          rawList.push(cList[1])
+          isPush = true
+        }
+        if (isEL && !isER && isET && isEB) {
+          rawList.push(cList[2])
+          isPush = true
+        }
+        if (isEL && isER && !isET && isEB) {
+          rawList.push(cList[3])
+          isPush = true
+        }
+        if (!isEL && isER && isET && isEB) {
+          rawList.push(cList[4])
+          isPush = true
+        }
+        if (!isEL && isER && !isET && isEB) {
+          rawList.push(cList[5])
+          isPush = true
+        }
+        if (!isEL && isER && isET && !isEB) {
+          rawList.push(cList[6])
+          isPush = true
+        }
+        if (isEL && !isER && isET && !isEB) {
+          rawList.push(cList[7])
+          isPush = true
+        }
+        if (isEL && !isER && !isET && isEB) {
+          rawList.push(cList[8])
+          isPush = true
+        }
+        if (!isEL && !isER && isET && isEB) {
+          rawList.push(cList[9])
+          isPush = true
+        }
+        if (isEL && isER && !isET && !isEB) {
+          rawList.push(cList[10])
+          isPush = true
+        }
+        if (!isEL && !isER && isET && !isEB) {
+          rawList.push(cList[11])
+          isPush = true
+        }
+        if (isEL && !isER && !isET && !isEB) {
+          rawList.push(cList[12])
+          isPush = true
+        }
+        if (!isEL && !isER && !isET && isEB) {
+          rawList.push(cList[13])
+          isPush = true
+        }
+        if (!isEL && isER && !isET && !isEB) {
+          rawList.push(cList[14])
+          isPush = true
+        }
+
+
+        if (!isPush) rawList.push(rw)
+      }
+
+      for (let i=0; i<rawList.length; i++) {
+        raw[i] = rawList[i]
+      }
+      console.log(raw)
+    }
+    // 9 // 54
+    function createPartInfo(sz=9) {
+      return {
+        uCode: `${generateSimpleUCode()}-rbx-lab-sample-part-info`,
+        tCode: "f",
+        rcInfo: { r: 0, c: 0, rsz: sz, csz: sz },
+        drwObj: {
+          uCode: `${generateSimpleUCode()}-rbx-lab-sample-drw-raw-info`,
+          rcInfo: { r: 0, c: 0, rsz: sz, csz: sz },
+          rawInfo: {
+            uCode: `${generateSimpleUCode()}-rbx-lab-sample-drw-raw-info`,
+            row: sz,
+            column: sz,
+            rawNum: 4,
+            raw: []
+          },
+          colorList: [
+            "rgb(249,199,79)",
+            "rgb(144,190,109)",
+            "rgb(67,170,139)",
+            "rgb(77,144,142)",
+            "rgb(87,117,144)",
+            'rgb(116,0,184)',
+            'rgb(247,220,111)', // 19
+            'rgb(244,208,63)',
+            'rgb(241,196,15)',
+            'rgb(212,172,13)',
+            'rgb(183,149,11)',
+            'rgb(154,125,10)',
+            'rgb(125,102,8)',
+            'rgb(248,196,113)',
+            'rgb(245,176,65)',
+            'rgb(243,156,18)',
+            'rgb(214,137,16)',
+            'rgb(185,119,14)',
+            'rgb(156,100,12)',
+            'rgb(126,81,9)',
+            'rgb(230,126,34)',
+            'rgb(202,111,30)',
+            'rgb(175,96,26)',
+            'rgb(147,81,22)',
+            'rgb(120,66,18)', // 37
+          ],
+          child: []
+        },
+        moveSetInfo: null,
+        hitInfo: { hitBox: [[ 0, sz, 0, sz]] },
+        effectInfo: null,
+        armsInfo: null,
+        child: []
+      }
+    }
+  </script>
+</body>
+</html>

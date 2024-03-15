@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>t raw expand 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../stage-proto/lib-draw-guide.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-drw-raw-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-part-join.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-raw-str.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-move.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-preset-link-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-res-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/stage.js"></script>
+  <script type="application/javascript" src="../sample-00/sample-00.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-layer.js"></script>
+  <script>
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      initStage('id-canvas', canvasW, canvasH * 2)
+      size = 6
+      checkParams(window)
+
+      initPartPresetInfoList([rbxLabSamplePartPresetInfo00])
+      // initArmsPresetInfoList(tempPlayerArmsPresetInfoSampleList)
+      initResInfo([rbxLabSampleDrwRawInfo00], [rbxLabSampleColorSetInfo00], [rbxLabSamplePalettesInfo00],
+        [rbxLabSampleDrwObjLinkInfo00], [rbxLabSampleHitLinkInfo00],
+        [], [])
+
+      const partInfo = createPartInfoFromPresetInfo(rbxLabSamplePartPresetInfo00, resInfo)
+
+      const rawInfo = partInfo.drwObj.rawInfo
+      const rawLayerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+
+      drawPartInfo(ctx, partInfo, 10, 10, size)
+
+      // const drwRawInfoX3 = expandRawSimple(rbxLabSampleDrwRawInfo00, 3)
+      // rbxLabSampleDrwRawInfo00.row = drwRawInfoX3.row
+      // rbxLabSampleDrwRawInfo00.column = drwRawInfoX3.column
+      // rbxLabSampleDrwRawInfo00.rawNum = drwRawInfoX3.rawNum
+      // rbxLabSampleDrwRawInfo00.raw = drwRawInfoX3.raw
+      // const partInfoX3 = createPartInfoFromPresetInfo(rbxLabSamplePartPresetInfo00, resInfo)
+      // drawPartInfo(ctx, partInfoX3, 60, 10, size)
+
+      const partList = []
+
+      let sr = 10
+      let sc = 70
+      let margin = 40
+      let count = 0
+      for (const layer of rawLayerList) {
+        // checkCorner(layer, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+        let rwI = {
+          uCode: rawInfo.uCode,
+          row: rawInfo.row,
+          column: rawInfo.column,
+          rawNum: rawInfo.rawNum,
+          raw: layer
+        }
+
+        if (count === 3) {
+          rwI = expandRawEditM(rwI, 3, [
+            {
+              target: 12,
+              m: [
+                0,0,1,
+                0,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 13,
+              m: [
+                1,0,1,
+                1,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 14,
+              m: [
+                1,0,0,
+                1,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 30,
+              m: [
+                1,1,1,
+                0,0,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 39,
+              m: [
+                0,1,1,
+                0,0,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 32,
+              m: [
+                1,1,1,
+                1,0,0,
+                1,1,0
+              ]
+            },
+            {
+              target: 41,
+              m: [
+                1,1,0,
+                1,0,0,
+                1,1,0
+              ]
+            }
+          ])
+        }
+
+        if (count === 0 || count === 4) {
+          rwI = expandRawEditM(rwI, 3, [
+            {
+              target: 2,
+              m: [
+                0,1,0,
+                0,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 6,
+              m: [
+                0,1,0,
+                1,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 13,
+              m: [
+                0,1,0,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 21,
+              m: [
+                0,0,1,
+                1,1,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 23,
+              m: [
+                1,0,0,
+                1,1,1,
+                1,1,0
+              ]
+            },
+            {
+              target: 31,
+              m: [
+                1,1,1,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 40,
+              m: [
+                1,1,1,
+                0,1,0,
+                0,1,0
+              ]
+            }
+          ])
+        }
+
+        if (count === 2) {
+          rwI = expandRawEditM(rwI, 3, [
+            {
+              target: 36,
+              m: [
+                0,1,1,
+                1,1,1,
+                0,0,1
+              ]
+            },
+            {
+              target: 37,
+              m: [
+                1,0,0,
+                1,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 43,
+              m: [
+                1,0,0,
+                1,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 44,
+              m: [
+                1,1,0,
+                1,1,1,
+                1,0,0
+              ]
+            },
+            {
+              target: 46,
+              m: [
+                1,1,1,
+                0,1,1,
+                0,0,1
+              ]
+            },
+            {
+              target: 47,
+              m: [
+                1,1,1,
+                1,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 51,
+              m: [
+                1,1,1,
+                0,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 52,
+              m: [
+                1,1,1,
+                1,1,0,
+                1,0,0
+              ]
+            },
+            {
+              target: 56,
+              m: [
+                1,1,1,
+                0,1,1,
+                0,0,1
+              ]
+            },
+            {
+              target: 57,
+              m: [
+                1,1,0,
+                1,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 59,
+              m: [
+                0,1,1,
+                1,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 60,
+              m: [
+                1,1,1,
+                1,1,0,
+                1,0,0
+              ]
+            },
+            {
+              target: 66,
+              m: [
+                1,1,1,
+                0,1,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 67,
+              m: [
+                1,0,1,
+                1,1,1,
+                0,1,0
+              ]
+            },
+            {
+              target: 68,
+              m: [
+                1,1,1,
+                1,1,0,
+                1,1,0
+              ]
+            },
+          ])
+        }
+
+        // if (count === 1) {
+        //   rwI = expandRawSimple(rwI, 3)
+        // }
+        if (count === 1) {
+          rwI = expandRawEditM(rwI, 3, [
+            {
+              target: 2,
+              m: [
+                0,1,0,
+                0,1,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 6,
+              m: [
+                0,1,0,
+                1,1,0,
+                1,1,0
+              ]
+            },
+            {
+              target: 11,
+              m: [
+                0,1,1,
+                1,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 15,
+              m: [
+                1,1,0,
+                1,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 19,
+              m: [
+                0,1,0,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 20,
+              m: [
+                0,1,1,
+                0,1,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 24,
+              m: [
+                1,1,0,
+                1,1,0,
+                1,1,0
+              ]
+            },
+            {
+              target: 25,
+              m: [
+                0,1,0,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 27,
+              m: [
+                0,1,0,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 35,
+              m: [
+                0,1,0,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 65,
+              m: [
+                0,1,1,
+                0,1,1,
+                0,1,0
+              ]
+            },
+            {
+              target: 69,
+              m: [
+                1,1,0,
+                1,1,0,
+                0,1,0
+              ]
+            },
+            {
+              target: 75,
+              m: [
+                1,1,1,
+                1,1,0,
+                1,0,0
+              ]
+            },
+            {
+              target: 76,
+              m: [
+                1,1,1,
+                1,1,1,
+                0,1,0
+              ]
+            },
+            {
+              target: 77,
+              m: [
+                1,1,1,
+                0,1,1,
+                0,0,1
+              ]
+            },
+          ])
+        }
+
+        const pInfo = createPartInfo(27)
+        pInfo.drwObj.rawInfo.raw = rwI.raw
+        console.log(pInfo.drwObj.rawInfo)
+        console.log(rwI)
+        partList.push(pInfo)
+        drawPartInfo(ctx, pInfo, sr, sc, size)
+        sr += margin
+        count++
+      }
+
+      for (const pi of partList) {
+        drawPartInfo(ctx, pi, 10, 70, size)
+      }
+    }
+
+    function checkCorner(raw, rawNum, row, column, cList) {
+      const rawList = []
+      for (let i=0; i<raw.length; i++) {
+        const rw = raw[i]
+        if (rw === 0) {
+          rawList.push(rw)
+          continue
+        }
+        const r = i % row
+        const c = Math.floor(i / row)
+        let isEL = false
+        let isER = false
+        let isET = false
+        let isEB = false
+        let index = -1
+        let rww = -1
+        // check left
+        const lr = r - 1
+        if (lr >= 0) {
+          index = lr + c * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isEL = true
+          }
+        }
+        // check right
+        const rr = r + 1
+        if (rr < row) {
+          index = rr + c * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isER = true
+          }
+        }
+        // check top
+        const tc = c - 1
+        if (tc >= 0) {
+          index = r + tc * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isET = true
+          }
+        }
+        // check bottom
+        const bc = c + 1
+        if (bc < column) {
+          index = r + bc * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isEB = true
+          }
+        }
+
+
+      }
+
+      for (let i=0; i<rawList.length; i++) {
+        raw[i] = rawList[i]
+      }
+    }
+
+    function createPartInfo(sz=9) {
+      return {
+        uCode: `${generateSimpleUCode()}-rbx-lab-sample-part-info`,
+        tCode: "f",
+        rcInfo: { r: 0, c: 0, rsz: sz, csz: sz },
+        drwObj: {
+          uCode: `${generateSimpleUCode()}-rbx-lab-sample-drw-raw-info`,
+          rcInfo: { r: 0, c: 0, rsz: sz, csz: sz },
+          rawInfo: {
+            uCode: `${generateSimpleUCode()}-rbx-lab-sample-drw-raw-info`,
+            row: sz,
+            column: sz,
+            rawNum: 4,
+            raw: []
+          },
+          colorList: [
+            "rgb(249,199,79)",
+            "rgb(144,190,109)",
+            "rgb(67,170,139)",
+            "rgb(77,144,142)",
+            "rgb(87,117,144)",
+            'rgb(116,0,184)'
+          ],
+          child: []
+        },
+        moveSetInfo: null,
+        hitInfo: { hitBox: [[ 0, sz, 0, sz]] },
+        effectInfo: null,
+        armsInfo: null,
+        child: []
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test mtx u preset 02 01 00 top edge</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-part-indices.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-part-indices-01.js"></script>
+  <script>
+    const colorList = [
+      'rgb(235,245,251)',
+      'rgb(214,234,248)',
+      'rgb(174,214,241)',
+      'rgb(133,193,233)',
+      'rgb(93,173,226)',
+      'rgb(52,152,219)',
+      'rgb(46,134,193)',
+      'rgb(40,116,166)',
+      'rgb(33,97,140)',
+      'rgb(27,79,114)'
+    ]
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH * 5
+
+      let size = 18
+
+      const mtxPresetList = getMtxPresetX3SampleList()
+      let list = mtxPresetX3IndicesTopEdge
+      list = mtxPresetX3IndicesTopEdge01
+
+      let startR = 3
+      let startC = 3
+      let margin = 4
+      let startColor = 3
+      let row = 10
+      console.log(list.length)
+      for (let i=0; i<list.length; i++) {
+        const r = i % row
+        const c = Math.floor(i / row)
+        const index = list[i]
+        const samp = mtxPresetList[index]
+        draw(ctx, samp, startR + margin * r, startC + margin * c, size, startColor)
+
+        drawText(ctx, index,
+          (startR + margin * r) * size,
+          (startC + margin * c) * size)
+      }
+
+    }
+
+    function draw(ctx, obj, sr, sc, size, start=0) {
+      const list = obj.list
+
+      for (let i=0; i<list.length; i++) {
+        const r = i % obj.r
+        const c = Math.floor(i / obj.r)
+        const raw = list[i]
+        ctx.fillStyle = colorList[raw+start]
+        ctx.beginPath()
+        ctx.rect((sr + r) * size, (sc + c) * size, size, size)
+        ctx.fill()
+      }
+    }
+
+    function drawText(ctx, text, x, y) {
+      ctx.font = '14px serif'
+      ctx.fillText(text, x, y)
+    }
+  </script>
+</body>
+</html>

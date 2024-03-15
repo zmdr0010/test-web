@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test mtx u preset 02 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../sample-00/sample-00.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-info-color-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-layer.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-reverse.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-skin.js"></script>
+  <script type="application/javascript" src="../sample-mtx/manager-mtx-preset-x3.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-b-set.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-part-indices.js"></script>
+  <script type="application/javascript" src="../stage-proto/sample-drw-raw-info.js"></script>
+  <script>
+    const colorList = [
+      'rgb(235,245,251)',
+      'rgb(214,234,248)',
+      'rgb(174,214,241)',
+      'rgb(133,193,233)',
+      'rgb(93,173,226)',
+      'rgb(52,152,219)',
+      'rgb(46,134,193)',
+      'rgb(40,116,166)',
+      'rgb(33,97,140)',
+      'rgb(27,79,114)'
+    ]
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH * 5
+
+      let size = 5
+
+      const rawInfo00 = {
+        uCode: 'raw-info-00',
+        row: 3,
+        column: 4,
+        rawNum: 1,
+        raw: [
+          0,1,0,
+          1,1,1,
+          1,1,1,
+          0,1,0
+        ]
+      }
+      const rawInfo01 = {
+        uCode: 'raw-info-01',
+        row: 5,
+        column: 8,
+        rawNum: 1,
+        raw: [
+          0,0,1,0,0,
+          0,0,1,0,0,
+          0,1,1,1,0,
+          0,1,1,1,0,
+          1,1,1,1,1,
+          0,1,1,1,0,
+          0,0,1,0,0,
+          0,0,1,0,0,
+        ]
+      }
+
+      const rawInfo02 = {
+        uCode: 'raw-info-02',
+        row: 9,
+        column: 8,
+        rawNum: 1,
+        raw: [
+          0,0,0,0,1,0,0,0,0,
+          0,0,0,0,1,0,0,0,0,
+          0,0,1,1,1,1,1,0,0,
+          0,0,1,1,1,1,1,0,0,
+          1,1,1,1,1,1,1,1,1,
+          0,0,1,1,1,1,1,0,0,
+          0,0,0,0,1,0,0,0,0,
+          0,0,0,0,1,0,0,0,0
+        ]
+      }
+
+      let bSet01 = [
+        1,0,1,
+        0,1,0,
+        1,0,1
+      ]
+      let bSet02 = [
+        1,1,1,
+        1,0,1,
+        1,1,1
+      ]
+
+      // const rawInfo = rbxLabSampleDrwRawInfo00
+      // const rawInfo = rbxLabSampleDrwRawInfo01
+      // const rawInfo = rbxLabSampleDrwRawInfo02
+      // const rawInfo = rbxLabSampleDrwRawInfo03
+
+      const rawInfo = drwRawInfoSampleList[50]
+
+      // const rawInfo = rawInfo00
+      // const rawInfo = rawInfo01
+      // const rawInfo = rawInfo02
+
+      // const bSet = []
+      // const bSet = bSet01
+      const bSet = getMtxPresetX3SampleList()[mtxPresetX3BSetIndexList[0]].list
+
+      const layerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+      let sr = 10
+      let sc = 10
+      let margin = 10
+      let row = 11
+      const rawInfoList = []
+      for (let i=0; i<layerList.length; i++) {
+        const r = i % row
+        const c = Math.floor(i / row)
+        const layer = layerList[i]
+        const rwInfo = {
+          uCode: `layer-raw-info-${i}`,
+          row: rawInfo.row,
+          column: rawInfo.column,
+          rawNum: rawInfo.rawNum,
+          raw: layer
+        }
+        rawInfoList.push(rwInfo)
+        drawRawInfoExp(ctx, rwInfo, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      for (const rwInfo of rawInfoList) {
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      const rawInfoX3 = expandRawSimple(rawInfo, 3)
+      const rawX3LayerList = divideRawLayer(rawInfoX3.raw, rawInfoX3.rawNum, rawInfoX3.row, rawInfoX3.column)
+      const rawInfoX3List = []
+      sc = 30
+      margin = 30
+      for (let i=0; i<rawX3LayerList.length; i++) {
+        const r = i % row
+        const c = Math.floor(i / row)
+        const layer = rawX3LayerList[i]
+        const rwInfo = {
+          uCode: `layer-raw-info-x3-${i}`,
+          row: rawInfoX3.row,
+          column: rawInfoX3.column,
+          rawNum: rawInfoX3.rawNum,
+          raw: layer
+        }
+        rawInfoX3List.push(rwInfo)
+        drawRawInfoExp(ctx, rwInfo, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      for (const rwInfo of rawInfoX3List) {
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      // let mtxListList = [
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0),
+      //   getMtxX3ListByIndicesListIndex(0)
+      // ]
+
+      let mtx00 = [
+        getMtxX3ListByPresetIndex(511), // 0 : dot
+        getMtxX3ListByPresetIndex(151), // 1 : top edge
+        getMtxX3ListByPresetIndex(255), // 2 : left edge
+        getMtxX3ListByPresetIndex(186), // 3 : bottom edge
+        getMtxX3ListByPresetIndex(447), // 4 : right edge
+        getMtxX3ListByPresetIndex(127), // 5 : left top
+        getMtxX3ListByPresetIndex(473), // 6 : left bottom
+        getMtxX3ListByPresetIndex(500), // 7 : right bottom
+        getMtxX3ListByPresetIndex(319), // 8 : right top
+        getMtxX3ListByPresetIndex(493), // 9 : horizontal center line
+        getMtxX3ListByPresetIndex(381), // 10 : vertical center line
+        getMtxX3ListByPresetIndex(47), // 11 : top line
+        getMtxX3ListByPresetIndex(479), // 12 : left line
+        getMtxX3ListByPresetIndex(504), // 13 : bottom line
+        getMtxX3ListByPresetIndex(503) // 14 : right line
+      ]
+
+      console.log(`topEdge length : ${mtxPresetX3IndicesTopEdge.length}`)
+      console.log(`leftEdge length : ${mtxPresetX3IndicesLeftEdge.length}`)
+      console.log(`bottomEdge length : ${mtxPresetX3IndicesBottomEdge.length}`)
+      console.log(`rightEdge length : ${mtxPresetX3IndicesRightEdge.length}`)
+      console.log(`leftTop length : ${mtxPresetX3IndicesLeftTop.length}`)
+      console.log(`leftBottom length : ${mtxPresetX3IndicesLeftBottom.length}`)
+      console.log(`rightBottom length : ${mtxPresetX3IndicesRightBottom.length}`)
+      console.log(`rightTop length : ${mtxPresetX3IndicesRightTop.length}`)
+      console.log(`hCLine length : ${mtxPresetX3IndicesHorizontalCenterLine.length}`)
+      console.log(`vCLine length : ${mtxPresetX3IndicesVerticalCenterLine.length}`)
+      console.log(`topLine length : ${mtxPresetX3IndicesTopLine.length}`)
+      console.log(`leftLine length : ${mtxPresetX3IndicesLeftLine.length}`)
+      console.log(`bottomLine length : ${mtxPresetX3IndicesBottomLine.length}`)
+      console.log(`rightLine length : ${mtxPresetX3IndicesRightLine.length}`)
+
+      let presetTopEdge = mtxPresetX3IndicesTopEdge
+      let presetLeftEdge = mtxPresetX3IndicesLeftEdge
+      let presetBottomEdge = mtxPresetX3IndicesBottomEdge
+      let presetRightEdge = mtxPresetX3IndicesRightEdge
+      let presetLeftTop = mtxPresetX3IndicesLeftTop
+      let presetLeftBottom = mtxPresetX3IndicesLeftBottom
+      let presetRightBottom = mtxPresetX3IndicesRightBottom
+      let presetRightTop = mtxPresetX3IndicesRightTop
+      let presetHCLine = mtxPresetX3IndicesHorizontalCenterLine
+      let presetVCLine = mtxPresetX3IndicesVerticalCenterLine
+      let presetTopLine = mtxPresetX3IndicesTopLine
+      let presetLeftLine = mtxPresetX3IndicesLeftLine
+      let presetBottomLine = mtxPresetX3IndicesBottomLine
+      let presetRightLine = mtxPresetX3IndicesRightLine
+
+      let topEdge = 46
+      let leftEdge = 46
+      let bottomEdge = 16
+      let rightEdge = leftEdge
+      let leftTop = 22
+      let leftBottom = 35
+      let rightBottom = leftBottom
+      let rightTop = leftTop
+      let hCLine = 12
+      let vCLine = 8
+      let topLine = 7
+      let leftLine = 12
+      let bottomLine = 14
+      let rightLine = leftLine
+
+      // let mtx01 = [
+      //   mtxPresetX3SampleList[511].list, // 0 : dot
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesTopEdge[topEdge]].list, // 1 : top edge
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesLeftEdge[leftEdge]].list, // 2 : left edge
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesBottomEdge[bottomEdge]].list, // 3 : bottom edge
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesRightEdge[rightEdge]].list, // 4 : right edge
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesLeftTop[leftTop]].list, // 5 : left top
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesLeftBottom[leftBottom]].list, // 6 : left bottom
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesRightBottom[rightBottom]].list, // 7 : right bottom
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesRightTop[rightTop]].list, // 8 : right top
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesHorizontalCenterLine[hCLine]].list, // 9 : horizontal center line
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesVerticalCenterLine[vCLine]].list, // 10 : vertical center line
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesTopLine[topLine]].list, // 11 : top line
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesLeftLine[leftLine]].list, // 12 : left line
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesBottomLine[bottomLine]].list, // 13 : bottom line
+      //   mtxPresetX3SampleList[mtxPresetX3IndicesRightLine[rightLine]].list // 14 : right line
+      // ]
+      let mtx01 = [
+        mtxPresetX3SampleList[511].list, // 0 : dot
+        mtxPresetX3SampleList[presetTopEdge[topEdge]].list, // 1 : top edge
+        mtxPresetX3SampleList[presetLeftEdge[leftEdge]].list, // 2 : left edge
+        mtxPresetX3SampleList[presetBottomEdge[bottomEdge]].list, // 3 : bottom edge
+        mtxPresetX3SampleList[presetRightEdge[rightEdge]].list, // 4 : right edge
+        mtxPresetX3SampleList[presetLeftTop[leftTop]].list, // 5 : left top
+        mtxPresetX3SampleList[presetLeftBottom[leftBottom]].list, // 6 : left bottom
+        mtxPresetX3SampleList[presetRightBottom[rightBottom]].list, // 7 : right bottom
+        mtxPresetX3SampleList[presetRightTop[rightTop]].list, // 8 : right top
+        mtxPresetX3SampleList[presetHCLine[hCLine]].list, // 9 : horizontal center line
+        mtxPresetX3SampleList[presetVCLine[vCLine]].list, // 10 : vertical center line
+        mtxPresetX3SampleList[presetTopLine[topLine]].list, // 11 : top line
+        mtxPresetX3SampleList[presetLeftLine[leftLine]].list, // 12 : left line
+        mtxPresetX3SampleList[presetBottomLine[bottomLine]].list, // 13 : bottom line
+        mtxPresetX3SampleList[presetRightLine[rightLine]].list // 14 : right line
+      ]
+
+
+      // let mtxListList = [mtx00, mtx00]
+      let mtxListList = [mtx01, mtx01, mtx01, mtx01, mtx01,
+        mtx01, mtx01, mtx01, mtx01, mtx01, mtx01, mtx01, mtx01, mtx01, mtx01]
+
+      const rawX3MtxSetLayerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+      const rawInfoX3MtxSetList = []
+      sc = 60
+      for (let i=0; i<rawX3MtxSetLayerList.length; i++) {
+        drawX3(ctx, i, rawInfo, row, rawX3MtxSetLayerList, rawInfoX3MtxSetList,
+          mtxListList[i], bSet, size, sr, sc, margin)
+      }
+
+      for (const rwInfo of rawInfoX3MtxSetList) {
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+
+      // const mpList = getMtxPresetX3SampleList()
+      // let findList = [
+      //   1,1,1,
+      //   1,1,1,
+      //   1,1,1
+      // ]
+      // const ob = mpList.find(info => info.list === findList)
+      // console.log('-------------- find')
+      // console.log(ob)
+      //
+      // const ob01 = findPresetByRaw(findList)
+      // console.log('-------------- find 01')
+      // console.log(ob01)
+      //
+      // const obIndex = findPresetIndexByRaw(findList)
+      // console.log('-------------- find 01 index')
+      // console.log(obIndex)
+      //
+      // const fIndices = []
+      // for (const index of mtxPresetX3IndicesTopEdge) {
+      //   const info = mpList[index]
+      //   const reverse = reverseVertical(info.list, info.r, info.c)
+      //   console.log(info.list)
+      //   console.log('---')
+      //   console.log(reverse)
+      //   const fIndex = findPresetIndexByRaw(reverse)
+      //   fIndices.push(fIndex)
+      // }
+      // console.log(fIndices)
+
+      // for (const index of mtxPresetX3IndicesLeftEdge){
+      //   const info = mpList[index]
+      //   const reverse = reverseHorizontal(info.list, info.r)
+      //   console.log(info.list)
+      //   console.log('---')
+      //   console.log(reverse)
+      //   const fIndex = findPresetIndexByRaw(reverse)
+      //   fIndices.push(fIndex)
+      // }
+      // console.log(fIndices)
+
+      // for (const index of mtxPresetX3IndicesLeftBottom){
+      //   const info = mpList[index]
+      //   const reverse = reverseHorizontal(info.list, info.r)
+      //   console.log(info.list)
+      //   console.log('---')
+      //   console.log(reverse)
+      //   const fIndex = findPresetIndexByRaw(reverse)
+      //   fIndices.push(fIndex)
+      // }
+      // console.log(fIndices)
+
+      // for (const index of mtxPresetX3IndicesLeftTop){
+      //   const info = mpList[index]
+      //   const reverse = reverseHorizontal(info.list, info.r)
+      //   console.log(info.list)
+      //   console.log('---')
+      //   console.log(reverse)
+      //   const fIndex = findPresetIndexByRaw(reverse)
+      //   fIndices.push(fIndex)
+      // }
+      // console.log(fIndices)
+
+      // for (const index of mtxPresetX3IndicesTopLine) {
+      //   const info = mpList[index]
+      //   const reverse = reverseVertical(info.list, info.r, info.c)
+      //   console.log(info.list)
+      //   console.log('---')
+      //   console.log(reverse)
+      //   const fIndex = findPresetIndexByRaw(reverse)
+      //   fIndices.push(fIndex)
+      // }
+      // console.log(fIndices)
+
+      // for (const index of mtxPresetX3IndicesLeftLine){
+      //   const info = mpList[index]
+      //   const reverse = reverseHorizontal(info.list, info.r)
+      //   console.log(info.list)
+      //   console.log('---')
+      //   console.log(reverse)
+      //   const fIndex = findPresetIndexByRaw(reverse)
+      //   fIndices.push(fIndex)
+      // }
+      // console.log(fIndices)
+    }
+
+    function drawX3(ctx, i, rawInfo, row, layerList, rawInfoList, mtxList, bSet, size, sr, sc, margin) {
+      const r = i % row
+      const c = Math.floor(i / row)
+      const layer = layerList[i]
+      const rwInfo = {
+        uCode: `layer-raw-info-x3-mtx-set-${i}`,
+        row: rawInfo.row,
+        column: rawInfo.column,
+        rawNum: rawInfo.rawNum,
+        raw: layer
+      }
+      const rwInfoX3 = expandCheckRawCornerByMtxSetX3(rwInfo, mtxList, bSet)
+      rawInfoList.push(rwInfoX3)
+      drawRawInfoExp(ctx, rwInfoX3, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+    }
+  </script>
+</body>
+</html>

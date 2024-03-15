@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>t raw expand 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../stage-proto/lib-draw-guide.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-drw-raw-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-part-join.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-raw-str.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-move.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-preset-link-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/manager-res-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/stage.js"></script>
+  <script type="application/javascript" src="../sample-00/sample-00.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-layer.js"></script>
+  <script>
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      initStage('id-canvas', canvasW, canvasH * 2)
+      size = 6
+      checkParams(window)
+
+      initPartPresetInfoList([rbxLabSamplePartPresetInfo00])
+      // initArmsPresetInfoList(tempPlayerArmsPresetInfoSampleList)
+      initResInfo([rbxLabSampleDrwRawInfo00], [rbxLabSampleColorSetInfo00], [rbxLabSamplePalettesInfo00],
+        [rbxLabSampleDrwObjLinkInfo00], [rbxLabSampleHitLinkInfo00],
+        [], [])
+
+      const partInfo = createPartInfoFromPresetInfo(rbxLabSamplePartPresetInfo00, resInfo)
+
+      const rawInfo = partInfo.drwObj.rawInfo
+      const rawLayerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+
+      drawPartInfo(ctx, partInfo, 10, 10, size)
+
+      // const drwRawInfoX3 = expandRawSimple(rbxLabSampleDrwRawInfo00, 3)
+      // rbxLabSampleDrwRawInfo00.row = drwRawInfoX3.row
+      // rbxLabSampleDrwRawInfo00.column = drwRawInfoX3.column
+      // rbxLabSampleDrwRawInfo00.rawNum = drwRawInfoX3.rawNum
+      // rbxLabSampleDrwRawInfo00.raw = drwRawInfoX3.raw
+      // const partInfoX3 = createPartInfoFromPresetInfo(rbxLabSamplePartPresetInfo00, resInfo)
+      // drawPartInfo(ctx, partInfoX3, 60, 10, size)
+
+
+      let sr = 10
+      let sc = 70
+      let margin = 56
+      let count = 0
+      for (const layer of rawLayerList) {
+        // checkCorner(layer, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+        let rwI = {
+          uCode: rawInfo.uCode,
+          row: rawInfo.row,
+          column: rawInfo.column,
+          rawNum: rawInfo.rawNum,
+          raw: layer
+        }
+
+        if (count === 0 || count === 4) {
+          rwI = expandRawEditM(rwI, 3, [
+            {
+              target: 2,
+              m: [
+                0,1,0,
+                0,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 6,
+              m: [
+                0,1,0,
+                1,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 13,
+              m: [
+                0,1,0,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 21,
+              m: [
+                0,0,1,
+                1,1,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 23,
+              m: [
+                1,0,0,
+                1,1,1,
+                1,1,0
+              ]
+            },
+            {
+              target: 31,
+              m: [
+                1,1,1,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 40,
+              m: [
+                1,1,1,
+                0,1,0,
+                0,1,0
+              ]
+            }
+          ])
+        } else {
+          rwI = expandRawSimple(rwI, 3)
+        }
+
+        const pInfo = createPartInfo(27)
+        pInfo.drwObj.rawInfo.raw = rwI.raw
+        console.log(pInfo.drwObj.rawInfo)
+        console.log(rwI)
+        drawPartInfo(ctx, pInfo, sr, sc, size)
+        sr += margin
+        count++
+      }
+
+      sr = 0
+      count = 0
+      for (const layer of rawLayerList) {
+        let rwI = {
+          uCode: rawInfo.uCode,
+          row: rawInfo.row,
+          column: rawInfo.column,
+          rawNum: rawInfo.rawNum,
+          raw: layer
+        }
+
+        if (count === 0 || count === 4) {
+          rwI = expandRawEditM(rwI, 3, [
+            {
+              target: 2,
+              m: [
+                0,1,0,
+                0,1,1,
+                1,1,1
+              ]
+            },
+            {
+              target: 6,
+              m: [
+                0,1,0,
+                1,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 13,
+              m: [
+                0,1,0,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 21,
+              m: [
+                0,0,1,
+                1,1,1,
+                0,1,1
+              ]
+            },
+            {
+              target: 23,
+              m: [
+                1,0,0,
+                1,1,1,
+                1,1,0
+              ]
+            },
+            {
+              target: 31,
+              m: [
+                1,1,1,
+                0,1,0,
+                1,1,1
+              ]
+            },
+            {
+              target: 40,
+              m: [
+                1,1,1,
+                0,1,0,
+                0,1,0
+              ]
+            }
+          ])
+        } else {
+          rwI = expandRawSimple(rwI, 3)
+        }
+
+        const pInfo = createPartInfo(27)
+        pInfo.drwObj.rawInfo.raw = rwI.raw
+        drawPartInfo(ctx, pInfo, sr, sc, size)
+
+        count++
+      }
+    }
+
+    function checkCorner(raw, rawNum, row, column) {
+      const rawList = []
+      for (let i=0; i<raw.length; i++) {
+        const rw = raw[i]
+        if (rw === 0) {
+          rawList.push(rw)
+          continue
+        }
+        const r = i % row
+        const c = Math.floor(i / row)
+        let isE = false
+        let index = -1
+        let rww = -1
+        // check left
+        const lr = r - 1
+        if (lr >= 0) {
+          index = lr + c * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isE = true
+          }
+        }
+        // check right
+        const rr = r + 1
+        if (rr < row) {
+          index = rr + c * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isE = true
+          }
+        }
+        // check top
+        const tc = c - 1
+        if (tc >= 0) {
+          index = r + tc * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isE = true
+          }
+        }
+        // check bottom
+        const bc = c + 1
+        if (bc < column) {
+          index = r + bc * row
+          if (index < raw.length) {
+            rww = raw[index]
+            if (rww === 0) isE = true
+          }
+        }
+        if (isE){
+          rawList.push(5)
+        } else {
+          rawList.push(rw)
+        }
+      }
+
+      for (let i=0; i<rawList.length; i++) {
+        raw[i] = rawList[i]
+      }
+    }
+
+    function createPartInfo(sz=9) {
+      return {
+        uCode: `${generateSimpleUCode()}-rbx-lab-sample-part-info`,
+        tCode: "f",
+        rcInfo: { r: 0, c: 0, rsz: sz, csz: sz },
+        drwObj: {
+          uCode: `${generateSimpleUCode()}-rbx-lab-sample-drw-raw-info`,
+          rcInfo: { r: 0, c: 0, rsz: sz, csz: sz },
+          rawInfo: {
+            uCode: `${generateSimpleUCode()}-rbx-lab-sample-drw-raw-info`,
+            row: sz,
+            column: sz,
+            rawNum: 4,
+            raw: []
+          },
+          colorList: [
+            "rgb(249,199,79)",
+            "rgb(144,190,109)",
+            "rgb(67,170,139)",
+            "rgb(77,144,142)",
+            "rgb(87,117,144)",
+            'rgb(116,0,184)'
+          ],
+          child: []
+        },
+        moveSetInfo: null,
+        hitInfo: { hitBox: [[ 0, sz, 0, sz]] },
+        effectInfo: null,
+        armsInfo: null,
+        child: []
+      }
+    }
+  </script>
+</body>
+</html>

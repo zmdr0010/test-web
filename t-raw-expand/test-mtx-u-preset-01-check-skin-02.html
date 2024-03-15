@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test mtx u preset 01 check skin 02</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../sample-00/sample-00.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-info-color-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-layer.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-skin.js"></script>
+  <script type="application/javascript" src="test-mtx-sample-preset-x3.js"></script>
+  <script>
+    const colorList = [
+      'rgb(235,245,251)',
+      'rgb(214,234,248)',
+      'rgb(174,214,241)',
+      'rgb(133,193,233)',
+      'rgb(93,173,226)',
+      'rgb(52,152,219)',
+      'rgb(46,134,193)',
+      'rgb(40,116,166)',
+      'rgb(33,97,140)',
+      'rgb(27,79,114)'
+    ]
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH * 5
+
+      let size = 6
+
+      const mtxPresetList = getMtxPresetX3SampleList()
+
+      const rawInfo00 = {
+        uCode: 'raw-info-00',
+        row: 3,
+        column: 4,
+        rawNum: 1,
+        raw: [
+          0,1,0,
+          1,1,1,
+          1,1,1,
+          0,1,0
+        ]
+      }
+      const rawInfo01 = {
+        uCode: 'raw-info-01',
+        row: 5,
+        column: 8,
+        rawNum: 1,
+        raw: [
+          0,0,1,0,0,
+          0,0,1,0,0,
+          0,1,1,1,0,
+          0,1,1,1,0,
+          1,1,1,1,1,
+          0,1,1,1,0,
+          0,0,1,0,0,
+          0,0,1,0,0,
+        ]
+      }
+
+      let bSet01 = [
+        1,0,1,
+        0,1,0,
+        1,0,1
+      ]
+
+      // const rawInfo = rbxLabSampleDrwRawInfo00
+      // const rawInfo = rbxLabSampleDrwRawInfo01
+      // const rawInfo = rbxLabSampleDrwRawInfo02
+      // const rawInfo = rbxLabSampleDrwRawInfo03
+
+      // const rawInfo = rawInfo00
+      const rawInfo = rawInfo01
+
+      const bSet = []
+      // const bSet = bSet01
+
+      const layerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+      let sr = 10
+      let sc = 10
+      let margin = 10
+      let row = 10
+      const rawInfoList = []
+      for (let i=0; i<layerList.length; i++) {
+        const r = i % row
+        const c = Math.floor(i / row)
+        const layer = layerList[i]
+        const rwInfo = {
+          uCode: `layer-raw-info-${i}`,
+          row: rawInfo.row,
+          column: rawInfo.column,
+          rawNum: rawInfo.rawNum,
+          raw: layer
+        }
+        rawInfoList.push(rwInfo)
+        drawRawInfoExp(ctx, rwInfo, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      for (const rwInfo of rawInfoList) {
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      const rawInfoX3 = expandRawSimple(rawInfo, 3)
+      const rawX3LayerList = divideRawLayer(rawInfoX3.raw, rawInfoX3.rawNum, rawInfoX3.row, rawInfoX3.column)
+      const rawInfoX3List = []
+      sc = 30
+      margin = 30
+      for (let i=0; i<rawX3LayerList.length; i++) {
+        const r = i % row
+        const c = Math.floor(i / row)
+        const layer = rawX3LayerList[i]
+        const rwInfo = {
+          uCode: `layer-raw-info-x3-${i}`,
+          row: rawInfoX3.row,
+          column: rawInfoX3.column,
+          rawNum: rawInfoX3.rawNum,
+          raw: layer
+        }
+        rawInfoX3List.push(rwInfo)
+        drawRawInfoExp(ctx, rwInfo, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      for (const rwInfo of rawInfoX3List) {
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+      }
+
+      // -1, 0
+      // 1 ~ 14
+      let mtxSetList = [
+        mtxPresetList[511].list, // 0 : dot
+        mtxPresetList[175].list, // 1 : top edge
+        mtxPresetList[255].list, // 2 : left edge
+        mtxPresetList[186].list, // 3 : bottom edge
+        mtxPresetList[447].list, // 4 : right edge
+        mtxPresetList[127].list, // 5 : left top
+        mtxPresetList[243].list, // 6 : left bottom
+        mtxPresetList[414].list, // 7 : right bottom
+        mtxPresetList[319].list, // 8 : right top
+        mtxPresetList[511].list, // 9 : horizontal center line
+        mtxPresetList[511].list, // 10 : vertical center line
+        mtxPresetList[367].list, // 11 : top line
+        mtxPresetList[351].list, // 12 : left line
+        mtxPresetList[506].list, // 13 : bottom line
+        mtxPresetList[375].list // 14 : right line
+      ]
+
+      let mtxSetList1 = [
+        mtxPresetList[511].list, // 0 : dot
+        mtxPresetList[151].list, // 1 : top edge
+        mtxPresetList[255].list, // 2 : left edge
+        mtxPresetList[186].list, // 3 : bottom edge
+        mtxPresetList[447].list, // 4 : right edge
+        mtxPresetList[127].list, // 5 : left top
+        mtxPresetList[473].list, // 6 : left bottom
+        mtxPresetList[500].list, // 7 : right bottom
+        mtxPresetList[319].list, // 8 : right top
+        mtxPresetList[511].list, // 9 : horizontal center line
+        mtxPresetList[511].list, // 10 : vertical center line
+        mtxPresetList[186].list, // 11 : top line
+        mtxPresetList[479].list, // 12 : left line
+        mtxPresetList[504].list, // 13 : bottom line
+        mtxPresetList[503].list // 14 : right line
+      ]
+
+      let mtxSetList2 = [
+        mtxPresetList[511].list, // 0 : dot
+        mtxPresetList[175].list, // 1 : top edge
+        mtxPresetList[255].list, // 2 : left edge
+        mtxPresetList[186].list, // 3 : bottom edge
+        mtxPresetList[447].list, // 4 : right edge
+        mtxPresetList[127].list, // 5 : left top
+        mtxPresetList[473].list, // 6 : left bottom
+        mtxPresetList[500].list, // 7 : right bottom
+        mtxPresetList[319].list, // 8 : right top
+        mtxPresetList[511].list, // 9 : horizontal center line
+        mtxPresetList[511].list, // 10 : vertical center line
+        mtxPresetList[7].list, // 11 : top line
+        mtxPresetList[351].list, // 12 : left line
+        mtxPresetList[504].list, // 13 : bottom line
+        mtxPresetList[375].list // 14 : right line
+      ]
+
+      let mtxSetList3 = [
+        mtxPresetList[511].list, // 0 : dot
+        mtxPresetList[175].list, // 1 : top edge
+        mtxPresetList[255].list, // 2 : left edge
+        mtxPresetList[186].list, // 3 : bottom edge
+        mtxPresetList[447].list, // 4 : right edge
+        mtxPresetList[127].list, // 5 : left top
+        mtxPresetList[243].list, // 6 : left bottom
+        mtxPresetList[414].list, // 7 : right bottom
+        mtxPresetList[319].list, // 8 : right top
+        mtxPresetList[511].list, // 9 : horizontal center line
+        mtxPresetList[511].list, // 10 : vertical center line
+        mtxPresetList[186].list, // 11 : top line
+        mtxPresetList[351].list, // 12 : left line
+        mtxPresetList[506].list, // 13 : bottom line
+        mtxPresetList[375].list // 14 : right line
+      ]
+
+      let mtxSetList4 = [
+        mtxPresetList[511].list, // 0 : dot
+        mtxPresetList[175].list, // 1 : top edge
+        mtxPresetList[255].list, // 2 : left edge
+        mtxPresetList[186].list, // 3 : bottom edge
+        mtxPresetList[447].list, // 4 : right edge
+        mtxPresetList[127].list, // 5 : left top
+        mtxPresetList[243].list, // 6 : left bottom
+        mtxPresetList[414].list, // 7 : right bottom
+        mtxPresetList[319].list, // 8 : right top
+        mtxPresetList[511].list, // 9 : horizontal center line
+        mtxPresetList[511].list, // 10 : vertical center line
+        mtxPresetList[367].list, // 11 : top line
+        mtxPresetList[351].list, // 12 : left line
+        mtxPresetList[506].list, // 13 : bottom line
+        mtxPresetList[375].list // 14 : right line
+      ]
+
+      let mtxListList = [
+        mtxSetList,
+        mtxSetList1,
+        mtxSetList2,
+        mtxSetList3,
+        mtxSetList4,
+        mtxSetList4,
+        mtxSetList4,
+        mtxSetList4
+      ]
+
+
+      const rawX3MtxSetLayerList = divideRawLayer(rawInfo.raw, rawInfo.rawNum, rawInfo.row, rawInfo.column)
+      const rawInfoX3MtxSetList = []
+      sc = 60
+      for (let i=0; i<rawX3MtxSetLayerList.length; i++) {
+        // const r = i % row
+        // const c = Math.floor(i / row)
+        // const layer = rawX3MtxSetLayerList[i]
+        // const rwInfo = {
+        //   uCode: `layer-raw-info-x3-mtx-set-${i}`,
+        //   row: rawInfo.row,
+        //   column: rawInfo.column,
+        //   rawNum: rawInfo.rawNum,
+        //   raw: layer
+        // }
+        // const rwInfoX3 = expandCheckRawCornerByMtxSetX3(rwInfo, mtxSetList)
+        // rawInfoX3MtxSetList.push(rwInfoX3)
+        // drawRawInfoExp(ctx, rwInfoX3, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+
+        drawX3(ctx, i, rawInfo, row, rawX3MtxSetLayerList, rawInfoX3MtxSetList, mtxListList[i], bSet, size, sr, sc, margin)
+      }
+
+      for (const rwInfo of rawInfoX3MtxSetList) {
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+      }
+    }
+
+    function drawX3(ctx, i, rawInfo, row, layerList, rawInfoList, mtxList, bSet, size, sr, sc, margin) {
+      const r = i % row
+      const c = Math.floor(i / row)
+      const layer = layerList[i]
+      const rwInfo = {
+        uCode: `layer-raw-info-x3-mtx-set-${i}`,
+        row: rawInfo.row,
+        column: rawInfo.column,
+        rawNum: rawInfo.rawNum,
+        raw: layer
+      }
+      const rwInfoX3 = expandCheckRawCornerByMtxSetX3(rwInfo, mtxList, bSet)
+      rawInfoList.push(rwInfoX3)
+      drawRawInfoExp(ctx, rwInfoX3, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+    }
+
+  </script>
+</body>
+</html>
