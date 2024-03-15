@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test state part preset 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="lib-draw-guide.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-info.js"></script>
+  <script type="application/javascript" src="lib-raw-str.js"></script>
+  <script type="application/javascript" src="manager-preset-link-info.js"></script>
+  <script type="application/javascript" src="manager-res-info.js"></script>
+  <script type="application/javascript" src="sample-color-palettes.js"></script>
+  <script type="application/javascript" src="sample-drw-obj-link-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-color-set-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-str.js"></script>
+  <script type="application/javascript" src="sample-hit-link-info.js"></script>
+  <script type="application/javascript" src="sample-part-preset-info.js"></script>
+  <script type="application/javascript" src="stage.js"></script>
+  <script>
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      initStage('id-canvas', canvasW, canvasH * 2)
+      size = 6
+      checkParams(window)
+      initPartPresetInfoList(partPresetInfoSampleList)
+      initResInfo(drwRawInfoSampleList, drwRawColorSetInfoList, colorPalettesInfoSampleList,
+        drwObjLinkInfoSampleList, hitLinkInfoSampleList)
+
+      let maxR = Math.floor(canvasW / size) - 20
+      let margin = 5
+      let sr = margin
+      let sc = margin
+      let csz = 0
+
+      for (const partPreInfo of partPresetInfoSampleList) {
+        const partInfo = createPartInfoFromPresetInfo(partPreInfo, resInfo)
+
+        let rr = sr + partInfo.rcInfo.r + partInfo.rcInfo.rsz + margin
+
+        if (rr > maxR) {
+          sr = margin
+          sc += csz
+        }
+
+        drawPartInfo(ctx, partInfo, sr, sc, size)
+        drawRCArea(ctx, partInfo, sr, sc, size)
+        drawHitBox(ctx, partInfo, sr, sc, size)
+
+
+        sr += partInfo.rcInfo.r + partInfo.rcInfo.rsz + margin
+
+        csz = Math.max(csz, partInfo.rcInfo.c + partInfo.rcInfo.csz + margin)
+      }
+    }
+  </script>
+</body>
+</html>

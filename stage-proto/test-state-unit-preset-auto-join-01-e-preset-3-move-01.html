@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test state unit preset auto join 01 e preset 3 move 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="lib-draw-guide.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-info.js"></script>
+  <script type="application/javascript" src="lib-part-join.js"></script>
+  <script type="application/javascript" src="lib-raw-str.js"></script>
+  <script type="application/javascript" src="manager-move.js"></script>
+  <script type="application/javascript" src="manager-preset-link-info.js"></script>
+  <script type="application/javascript" src="manager-res-info.js"></script>
+  <script type="application/javascript" src="sample-calc-jrc-info.js"></script>
+  <script type="application/javascript" src="sample-color-palettes.js"></script>
+  <script type="application/javascript" src="sample-drw-obj-link-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-color-set-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-info.js"></script>
+  <script type="application/javascript" src="sample-drw-raw-str.js"></script>
+  <script type="application/javascript" src="sample-hit-link-info.js"></script>
+  <script type="application/javascript" src="sample-move-set-preset-info.js"></script>
+  <script type="application/javascript" src="sample-part-move-set-preset-link-info.js"></script>
+  <script type="application/javascript" src="sample-part-preset-info.js"></script>
+  <script type="application/javascript" src="sample-part-preset-info-01.js"></script>
+  <script type="application/javascript" src="stage.js"></script>
+  <script>
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      initStage('id-canvas', canvasW, canvasH * 2)
+      size = 6
+      checkParams(window)
+
+      initPartPresetInfoList(partPresetInfoSampleList)
+      initResInfo(drwRawInfoSampleList, drwRawColorSetInfoList, colorPalettesInfoSampleList,
+        drwObjLinkInfoSampleList, hitLinkInfoSampleList)
+
+      const partInfo = createPartInfoFromPresetInfo(sampleTempPartPresetInfoMain, resInfo)
+
+      // const moveSetPresetInfo = moveSetPresetInfoSampleList.find(info => info.uCode === 'sample-idle-t-b')
+      // const moveSetInfo0 = createMoveSetInfoFromPresetInfo(moveSetPresetInfo)
+      // const moveSetInfo1 = createMoveSetInfoFromPresetInfo(moveSetPresetInfo)
+      // partInfo.child.find(info => info.tCode === 'l').moveSetInfo = moveSetInfo0
+      // partInfo.child.find(info => info.tCode === 'r').moveSetInfo = moveSetInfo1
+      //
+      // const moveSetPresetInfo01 = moveSetPresetInfoSampleList.find(info => info.uCode === 'sample-unit-move-pattern-00')
+      // const moveSetInfo2 = createMoveSetInfoFromPresetInfo(moveSetPresetInfo01)
+      // partInfo.moveSetInfo = moveSetInfo2
+
+      setPartMoveSetByPresetList(partInfo, partMoveSetPresetLinkInfoSampleList, moveSetPresetInfoSampleList)
+
+      const unitInfo = {
+        uCode: 'sample-unit',
+        partInfo: partInfo
+      }
+
+      unitList.push(unitInfo)
+
+      moveUnit(unitInfo, 40, 80)
+
+      start()
+    }
+  </script>
+</body>
+</html>
