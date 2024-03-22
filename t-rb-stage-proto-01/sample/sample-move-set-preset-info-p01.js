@@ -1,3 +1,92 @@
+const sampleMoveSetCWIdleL = {
+  uCode: 'sample-idle-cw-l',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 10,
+      list: [
+        { dr: -1, dc: -1 },
+        { dr: 1, dc: -1 },
+        { dr: 1, dc: 1 },
+        { dr: -1, dc: 1 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetCWIdleR = {
+  uCode: 'sample-idle-cw-r',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 10,
+      list: [
+        { dr: 1, dc: -1 },
+        { dr: -1, dc: -1 },
+        { dr: -1, dc: 1 },
+        { dr: 1, dc: 1 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetIdleBK = {
+  uCode: 'sample-idle-bk',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 20,
+      list: [
+        { dr: 0, dc: -1 },
+        { dr: 0, dc: -1 },
+        { dr: 0, dc: 1 },
+        { dr: 0, dc: 1 },
+        { dr: 0, dc: -1 },
+        { dr: 0, dc: 1 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetIdleF = {
+  uCode: 'sample-idle-f',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 50,
+      list: [
+        { dr: 0, dc: -1 },
+        { dr: 0, dc: 1 },
+        { dr: 0, dc: -1 },
+        { dr: 0, dc: 1 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetIdleL = {
+  uCode: 'sample-idle-l',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 60,
+      list: [
+        { dr: -1, dc: 0 },
+        { dr: 1, dc: 0 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetIdleR = {
+  uCode: 'sample-idle-r',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 60,
+      list: [
+        { dr: 1, dc: 0 },
+        { dr: -1, dc: 0 }
+      ]
+    }
+  ]
+}
+
 const moveSetPresetInfoSampleList = [
   { // moveSetInfo
     uCode: 'sample-idle-t-b',
