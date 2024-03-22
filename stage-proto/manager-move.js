@@ -1,6 +1,5 @@
-function movePerFrameByMoveSet(partInfo, fps, isSmooth=false) {
-  const rcInfo = partInfo.rcInfo
-  const moveInfo = partInfo.moveSetInfo.moveInfo
+function movePerFrameByMoveSet(rcInfo, moveSetInfo, fps, isSmooth=false) {
+  const moveInfo = moveSetInfo.moveInfo
   const fpsScale = fps / moveInfo.fps
   // const d = Math.round(moveInfo.d * fpsScale)
   const d = moveInfo.d * fpsScale
@@ -21,7 +20,7 @@ function movePerFrameByMoveSet(partInfo, fps, isSmooth=false) {
     if (currentMove >= list.length) {
       rcInfo.r = currentM.dr + moveInfo.sr
       rcInfo.c = currentM.dc + moveInfo.sc
-      partInfo.moveSetInfo.moveInfo = null
+      moveSetInfo.moveInfo = null
       return
     }
     moveInfo.sr += currentM.dr
@@ -67,7 +66,7 @@ function setMoveInfoToPartInfo(partInfo, moveInfo) {
 function updatePartMove(partInfo, fps, isSmooth=false) {
   if (partInfo.moveSetInfo) {
     if (partInfo.moveSetInfo.moveInfo) {
-      movePerFrameByMoveSet(partInfo, fps, isSmooth)
+      movePerFrameByMoveSet(partInfo.rcInfo, partInfo.moveSetInfo, fps, isSmooth)
     } else {
       let isEnd = true
       if (partInfo.moveSetInfo.list.length > 0) {
