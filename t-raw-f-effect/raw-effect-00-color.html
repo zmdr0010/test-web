@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>raw effect 00 color</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    // 20240316131845-layer-comp-raw-front-sample-00/27/27/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    const rawInfo = {
+      uCode: '20240316131845-layer-comp-raw-front-sample-00',
+      row: 27,
+      column: 27,
+      rawNum: 4,
+      raw: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      colorList: []
+    }
+
+    const colorList = [
+      'rgb(95,15,64)',
+      'rgb(154,3,30)',
+      'rgb(116,0,184)',
+      'rgb(227,100,20)',
+      'rgb(15,76,92)'
+    ]
+
+    const colorInfoList = [
+      {
+        r: 95, g: 15, b: 64, a: 1
+      }
+    ]
+
+    const colorListList = [
+      [95,15,64],
+      [154,3,30],
+      [116,0,184],
+      [227,100,20],
+      [15,76,92]
+    ]
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      const size = 6
+
+      initRawColorList(rawInfo, colorListList)
+
+      setColorEffectH(rawInfo, colorListList, 0, rawInfo.row-1, 6, 1, 1)
+      drawRawInfo(ctx, rawInfo, 10, 10, size)
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectH(rawInfo, colorListList, 8, 18, 9, 1, 1)
+      drawRawInfo(ctx, rawInfo, 10 + rawInfo.row + 4, 10, size)
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectH(rawInfo, colorListList, 8, 18, 9, -1, 1)
+      drawRawInfo(ctx, rawInfo, 10 + (rawInfo.row + 4) * 2, 10, size)
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectH(rawInfo, colorListList, 18, 8, 9, -1, -1)
+      drawRawInfo(ctx, rawInfo, 10 + (rawInfo.row + 4) * 3, 10, size)
+
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectV(rawInfo, colorListList, 0, rawInfo.column-1, 6, 1, 1)
+      drawRawInfo(ctx, rawInfo, 10, 10 + rawInfo.column + 4, size)
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectV(rawInfo, colorListList, 8, 20, 20, 1, 1)
+      drawRawInfo(ctx, rawInfo, 10 + rawInfo.row + 4, 10 + rawInfo.column + 4, size)
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectV(rawInfo, colorListList, 8, 20, 20, -1, 1)
+      drawRawInfo(ctx, rawInfo, 10 + (rawInfo.row + 4) * 2, 10 + rawInfo.column + 4, size)
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectV(rawInfo, colorListList, 20, 8, 20, 1, -1)
+      drawRawInfo(ctx, rawInfo, 10 + (rawInfo.row + 4) * 3, 10 + rawInfo.column + 4, size)
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffectV(rawInfo, colorListList, 20, 8, 20, -1, -1)
+      drawRawInfo(ctx, rawInfo, 10 + (rawInfo.row + 4) * 4, 10 + rawInfo.column + 4, size)
+    }
+
+    function drawRawInfo(ctx, rawInfo, sr, sc, size) {
+      const list = rawInfo.raw
+      const row = rawInfo.row
+      for (let i=0; i<list.length; i++) {
+        const rw = list[i]
+        if (rw - 1 < 0) continue
+        const r = i % row
+        const c = Math.floor(i / row)
+        drawRaw(ctx, r, c, sr, sc, rawInfo.colorList[i], size)
+      }
+    }
+
+    function drawRaw(ctx, r, c, sr, sc, color, size) {
+      const x = Math.floor(size * (r + sr))
+      const y = Math.floor(size * (c + sc))
+      ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`
+      ctx.beginPath()
+      ctx.rect(x, y, size, size)
+      ctx.fill()
+    }
+
+    function initRawColorList(rawInfo, colorList) {
+      rawInfo.colorList = []
+      for (const rw of rawInfo.raw) {
+        rawInfo.colorList.push(colorList[rw])
+      }
+    }
+
+
+    // all / per raw
+    // left to right
+    // top to bottom
+    // right to left
+    // bottom to top
+    // target to horizontal
+    // target to vertical
+    // target to horizontal, vertical
+
+    // cDir : color dir (1 : to white, -1 : to black)
+    // dir : 1 : to right, -1 : to left
+    function setColorEffectH(rawInfo, colorList, from, to, dv, cDir, dir) {
+      for (let i=0; i<rawInfo.column; i++) {
+        let index = i * rawInfo.row
+        if (dir === -1) index += rawInfo.row - 1
+        setColorH(rawInfo, index, colorList, from, to, dv, cDir, dir)
+      }
+    }
+
+    function setColorH(rawInfo, index, colorList, from, to, dv, cDir, dir) {
+      // const r = index % rawInfo.row
+      const c = Math.floor(index / rawInfo.row)
+      if (dir === 1) {
+        for (let i=from; i<=to; i++) {
+          if (i >= rawInfo.raw.length) continue
+          changeColorH(rawInfo, colorList, i, c, from, dv, cDir, dir)
+        }
+      } else {
+       for (let i=from; i>=to; i--) {
+         if (i < 0) continue
+         changeColorH(rawInfo, colorList, i, c, from, dv, cDir, dir)
+       }
+      }
+    }
+
+    function changeColorH(rawInfo, colorList, i, c, from, dv, cDir, dir) {
+      const rwIndex = i + c * rawInfo.row
+      const rw = rawInfo.raw[rwIndex]
+      const d = (i - from) * dir * dv * cDir
+      const oColor = colorList[rw]
+      const color = [
+        oColor[0] + d, oColor[1] + d, oColor[2] + d
+      ]
+      rawInfo.colorList[rwIndex] = color
+    }
+
+    // cDir : color dir (1 : to white, -1 : to black)
+    // dir : 1 : to bottom, -1 : to top
+    function setColorEffectV(rawInfo, colorList, from, to, dv, cDir, dir) {
+      for (let i=0; i<rawInfo.row; i++) {
+        let index = i
+        if (dir === -1) index = rawInfo.row - 1 - i
+        setColorV(rawInfo, index, colorList, from, to, dv, cDir, dir)
+      }
+    }
+
+    function setColorV(rawInfo, index, colorList, from, to, dv, cDir, dir) {
+      const r = index
+      if (dir === 1) {
+        for (let i=from; i<=to; i++) {
+          if (i >= rawInfo.raw.length) continue
+          changeColorV(rawInfo, colorList, i, r, from, dv, cDir, dir)
+        }
+      } else {
+        for (let i=from; i>=to; i--) {
+          if (i < 0) continue
+          changeColorV(rawInfo, colorList, i, r, from, dv, cDir, dir)
+        }
+      }
+    }
+
+    function changeColorV(rawInfo, colorList, i, r, from, dv, cDir, dir) {
+      const rwIndex = r + i * rawInfo.row
+      const rw = rawInfo.raw[rwIndex]
+      const d = (i - from) * dir * dv * cDir
+      const oColor = colorList[rw]
+      const color = [
+        oColor[0] + d, oColor[1] + d, oColor[2] + d
+      ]
+      rawInfo.colorList[rwIndex] = color
+    }
+
+  </script>
+</body>
+</html>

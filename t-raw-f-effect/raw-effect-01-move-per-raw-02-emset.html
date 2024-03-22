@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>raw effect 01 move per raw 02 effect move set</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    // 20240316131845-layer-comp-raw-front-sample-00/27/27/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    const rawInfo = {
+      uCode: '20240316131845-layer-comp-raw-front-sample-00',
+      row: 27,
+      column: 27,
+      rawNum: 4,
+      raw: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      colorList: []
+    }
+    const rawInfo01 = {
+      uCode: 'rawInfo01',
+      row: 4,
+      column: 3,
+      rawNum: 4,
+      raw: [
+        1,2,2,1,
+        1,3,3,1,
+        2,4,4,2
+      ],
+      colorList: []
+    }
+
+    const colorList = [
+      'rgb(95,15,64)',
+      'rgb(154,3,30)',
+      'rgb(116,0,184)',
+      'rgb(227,100,20)',
+      'rgb(15,76,92)'
+    ]
+
+    const colorInfoList = [
+      {
+        r: 95, g: 15, b: 64, a: 1
+      }
+    ]
+
+    const colorListList = [
+      [95,15,64],
+      [154,3,30],
+      [116,0,184],
+      [227,100,20],
+      [15,76,92]
+    ]
+
+    const effectColorInfo = {
+      type: 'sub', // add / sub / change /
+      color: [200,0,0]
+    }
+
+    const tempDRCList = [
+      { d: 9, dr: 1, dc: -2 },
+      { d: 12, dr: -1, dc: -4 },
+      { d: 8, dr: 0, dc: -3 },
+      { d: 10, dr: 0, dc: -4 },
+      { d: 9, dr: 1, dc: -3 },
+      { d: 7, dr: 0, dc: -2 },
+      { d: 11, dr: -1, dc: -4 },
+      { d: 5, dr: 1, dc: -3 },
+      { d: 10, dr: 0, dc: -5 },
+      { d: 11, dr: -1, dc: -7 }
+    ]
+
+    // trw : target row
+    // tcm : target column
+    // d : dir
+    const rawEffectMoveSetList = [
+      {
+        targetInfo: {
+          type: 'area', // area / target
+          vType: 'index', // value type : index / rate
+          trw: {
+            from: 0, to: 20 // row index
+            // from: 0, to: 1 // vType = rate, from : Math.round(0 * row), to : Math.round(1 * row)
+            // from: 0.2, to: 0.9 // vType = rate, from : Math.round(0.2 * row), to : Math.round(0.9 * row)
+          },
+          tcm: {
+            from: 0, to: 20 // column index
+            // from: 0, to: 1 // vType = rate, from : Math.round(0 * column), to : Math.round(1 * column)
+            // from: 0.2, to: 0.9 // vType = rate, from : Math.round(0.2 * column), to : Math.round(0.9 * column)
+          }
+        },
+        dInfo: {
+          r: 0,
+          c: 0
+        },
+        moveSetInfo: {
+          type: 'cycle', // stay / cycle / out / etc...
+          currentMove: 0,
+          list: [
+            {
+              currentMove: 0,
+              moveCount: 0,
+              fps: 60,
+              d: 15,
+              list: [
+                {
+                  dr: 1,
+                  dc: 2
+                },
+                {
+                  dr: -1,
+                  dc: -2
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        targetInfo: {
+          type: 'target', // area / target
+          vType: 'index', // value type : index / rate
+          target: 0, // raw index
+        },
+        list: [
+          {
+            targetInfo: {
+              type: 'target', // area / target
+              vType: 'index', // value type : index / rate
+              target: 0, // raw index
+            },
+            dInfo: {
+              r: 0,
+              c: 0
+            },
+            moveSetInfo: {
+              type: 'out', // stay / cycle / out / etc...
+              currentMove: 0,
+              list: [
+                {
+                  currentMove: 0,
+                  moveCount: 0,
+                  fps: 60,
+                  d: 5,
+                  list: [
+                    {
+                      dr: -1,
+                      dc: -1
+                    },
+                    {
+                      dr: -1,
+                      dc: -1
+                    }
+                  ]
+                },
+                {
+                  currentMove: 0,
+                  moveCount: 0,
+                  fps: 60,
+                  d: 5,
+                  list: [
+                    {
+                      dr: 0,
+                      dc: -1
+                    },
+                    {
+                      dr: 0,
+                      dc: -1
+                    }
+                  ]
+                },
+                {
+                  currentMove: 0,
+                  moveCount: 0,
+                  fps: 60,
+                  d: 9,
+                  list: [
+                    {
+                      dr: -1,
+                      dc: -2
+                    },
+                    {
+                      dr: -1,
+                      dc: -2
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            targetInfo: {
+              type: 'target', // area / target
+              vType: 'index', // value type : index / rate
+              target: 1, // raw index
+            },
+            dInfo: {
+              r: 0,
+              c: 0
+            },
+            moveSetInfo: {
+              type: 'out', // stay / cycle / out / etc...
+              currentMove: 0,
+              list: [
+                {
+                  currentMove: 0,
+                  moveCount: 0,
+                  fps: 60,
+                  d: 6,
+                  list: [
+                    {
+                      dr: 0,
+                      dc: -1
+                    },
+                    {
+                      dr: 0,
+                      dc: -1
+                    }
+                  ]
+                },
+                {
+                  currentMove: 0,
+                  moveCount: 0,
+                  fps: 60,
+                  d: 7,
+                  list: [
+                    {
+                      dr: 0,
+                      dc: -1
+                    },
+                    {
+                      dr: 0,
+                      dc: -1
+                    }
+                  ]
+                },
+                {
+                  currentMove: 0,
+                  moveCount: 0,
+                  fps: 60,
+                  d: 9,
+                  list: [
+                    {
+                      dr: -1,
+                      dc: -2
+                    },
+                    {
+                      dr: -1,
+                      dc: -2
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+
+    let canvas
+    let ctx
+    let size = 6
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      // const size = 6
+
+      initRawColorList(rawInfo, colorListList)
+      initRawColorList(rawInfo01, colorListList)
+
+      drawRawInfo(ctx, rawInfo, 10, 10, size)
+      drawRawInfo(ctx, rawInfo01, 20, 70, size)
+
+      console.log(rawInfo)
+
+      requestAnimationFrame(drawAni)
+    }
+
+    function drawAni() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      updateEffectMoveSetByFrame(rawEffectMoveSetList[0], 60)
+      // updateEffectMoveSetByFrame(rawEffectMoveSetList[1], 60)
+
+      for (const emMoveSet of rawEffectMoveSetList[1].list) {
+        updateEffectMoveSetByFrame(emMoveSet, 60)
+      }
+
+      drawRawInfo(ctx, rawInfo, 20, 50, size)
+      drawRawInfo(ctx, rawInfo01, 20, 70, size)
+
+      drawRawInfoByEffectMoveSet(ctx, rawInfo, 100, 60, size, rawEffectMoveSetList[0])
+      drawRawInfoByEffectMoveSet(ctx, rawInfo01, 90, 60, size, rawEffectMoveSetList[1])
+
+      requestAnimationFrame(drawAni)
+    }
+
+    function initRawColorList(rawInfo, colorList) {
+      rawInfo.colorList = []
+      for (const rw of rawInfo.raw) {
+        rawInfo.colorList.push(colorList[rw])
+      }
+    }
+
+    function updateEffectMoveSetByFrame(emSet, fps) {
+      const moveInfo = emSet.moveSetInfo.list[emSet.moveSetInfo.currentMove]
+      if (!moveInfo) return
+      const dInfo = emSet.dInfo
+      const fpsScale = fps / moveInfo.fps
+      const d = moveInfo.d * fpsScale
+      let moveCount = moveInfo.moveCount
+      let currentMove = moveInfo.currentMove
+      let currentM = moveInfo.list[currentMove]
+      if (moveCount === 0 && currentMove === 0) {
+        moveInfo.sr = dInfo.r
+        moveInfo.sc = dInfo.c
+        // currentMove++
+        // currentM = moveInfo.list[currentMove]
+      }
+      moveCount++
+      if (moveCount > d) {
+        moveCount = 0
+        currentMove++
+        if (currentMove >= moveInfo.list.length) {
+          dInfo.r = currentM.dr + moveInfo.sr
+          dInfo.c = currentM.dc + moveInfo.sc
+          emSet.moveSetInfo.currentMove++
+          if (emSet.moveSetInfo.currentMove >= emSet.moveSetInfo.list.length) {
+            if (emSet.moveSetInfo.type === 'out') {
+              dInfo.r = -100000
+              dInfo.c = -100000
+              return
+            }
+            emSet.moveSetInfo.currentMove = 0
+          }
+          currentMove = 0
+        }
+        moveInfo.sr += currentM.dr
+        moveInfo.sc += currentM.dc
+        currentM = moveInfo.list[currentMove]
+      }
+      const dr = currentM.dr
+      const dc = currentM.dc
+      const rate = moveCount / d
+      // rcInfo.r = dr * rate + moveInfo.sr
+      // rcInfo.c = dc * rate + moveInfo.sc
+      dInfo.r = Math.round(dr * rate + moveInfo.sr)
+      dInfo.c = Math.round(dc * rate + moveInfo.sc)
+
+      moveInfo.moveCount = moveCount
+      moveInfo.currentMove = currentMove
+    }
+
+    function drawRawInfoByEffectMoveSet(ctx, rawInfo, sr, sc, size, emSet) {
+      const list = rawInfo.raw
+      const row = rawInfo.row
+      const mList = []
+      for (let i=0; i<list.length; i++) {
+        const rw = list[i]
+        if (rw - 1 < 0) continue
+        const r = i % row
+        const c = Math.floor(i / row)
+        let mr = r
+        let mc = c
+        let hasMove = false
+
+        if (emSet.targetInfo.type === 'area') {
+          if (r >= emSet.targetInfo.trw.from && r <= emSet.targetInfo.trw.to
+            && c >= emSet.targetInfo.tcm.from && c <= emSet.targetInfo.tcm.to) {
+            mr += emSet.dInfo.r
+            mc += emSet.dInfo.c
+            mList.push({
+              r: mr,
+              c: mc,
+              color: rawInfo.colorList[i]
+            })
+            hasMove = true
+          }
+        }
+        if (emSet.targetInfo.type === 'target') {
+          const t = emSet.list.find(m => m.targetInfo.target === i)
+          if (t) {
+            if (i === t.targetInfo.target) {
+              mr += t.dInfo.r
+              mc += t.dInfo.c
+              mList.push({
+                r: mr,
+                c: mc,
+                color: rawInfo.colorList[i]
+              })
+              hasMove = true
+            }
+          }
+        }
+
+        if (!hasMove) {
+          drawRaw(ctx, mr, mc, sr, sc, rawInfo.colorList[i], size)
+        }
+      }
+
+      for (const m of mList) {
+        if (m.r <= -100000 && m.c <= -100000) continue
+        drawRaw(ctx, m.r, m.c, sr, sc, m.color, size)
+      }
+    }
+
+    function drawRawInfo(ctx, rawInfo, sr, sc, size) {
+      const list = rawInfo.raw
+      const row = rawInfo.row
+      for (let i=0; i<list.length; i++) {
+        const rw = list[i]
+        if (rw - 1 < 0) continue
+        const r = i % row
+        const c = Math.floor(i / row)
+        drawRaw(ctx, r, c, sr, sc, rawInfo.colorList[i], size)
+      }
+    }
+
+    function drawRaw(ctx, r, c, sr, sc, color, size) {
+      const x = Math.floor(size * (r + sr))
+      const y = Math.floor(size * (c + sc))
+      ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`
+      ctx.beginPath()
+      ctx.rect(x, y, size, size)
+      ctx.fill()
+    }
+  </script>
+</body>
+</html>

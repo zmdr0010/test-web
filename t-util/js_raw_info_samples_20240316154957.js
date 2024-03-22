@@ -1,0 +1,875 @@
+const js_layer_raw_info_raw_front_sample_00 = {
+ uCode: "layer-raw-info-raw-front-sample-00",
+ row: 9,
+ column: 9,
+ rawNum: 4,
+ layers: [0,3.2226921263929116e+23,517519645847491440000,517519614553526100000,148583322955672450000]
+}
+const js_layer_raw_info_raw_front_sample_01 = {
+ uCode: "layer-raw-info-raw-front-sample-01",
+ row: 5,
+ column: 8,
+ rawNum: 7,
+ layers: [0,617904847310,617887021518,613580880324,138754500,138416580,138412164,138412032]
+}
+const js_layer_raw_info_raw_front_sample_02 = {
+ uCode: "layer-raw-info-raw-front-sample-02",
+ row: 5,
+ column: 7,
+ rawNum: 4,
+ layers: [0,11792759236,138557892,138557568,4325376]
+}
+const js_layer_raw_info_raw_front_sample_03 = {
+ uCode: "layer-raw-info-raw-front-sample-03",
+ row: 7,
+ column: 11,
+ rawNum: 6,
+ layers: [0,4.06426799451864e+22,185919976924586100000,185919976898011000000,185919975729708600000,185919975729708140000,185919975037102720000]
+}
+const js_layer_raw_info_raw_body_sample_00 = {
+ uCode: "layer-raw-info-raw-body-sample-00",
+ row: 7,
+ column: 8,
+ rawNum: 4,
+ layers: [0,19668063996022280,19379934594076170,88925167160840,88925167157248]
+}
+const js_layer_raw_info_raw_body_sample_01 = {
+ uCode: "layer-raw-info-raw-body-sample-01",
+ row: 9,
+ column: 9,
+ rawNum: 5,
+ layers: [0,5.879254037452339e+23,3.986571707857238e+23,7.57064484562471e+22,7.570644845624703e+22,7.570644845624703e+22]
+}
+const js_layer_raw_info_raw_body_sample_02 = {
+ uCode: "layer-raw-info-raw-body-sample-02",
+ row: 5,
+ column: 7,
+ rawNum: 5,
+ layers: [0,34359720398,30064738638,30063853582,149028878,149028864]
+}
+const js_layer_raw_info_raw_body_sample_03 = {
+ uCode: "layer-raw-info-raw-body-sample-03",
+ row: 5,
+ column: 11,
+ rawNum: 5,
+ layers: [0,36009502363859396,31505891648846276,31505891647816130,31505891647815680,145277403004928]
+}
+const js_layer_raw_info_raw_left_sample_00 = {
+ uCode: "layer-raw-info-raw-left-sample-00",
+ row: 6,
+ column: 5,
+ rawNum: 4,
+ layers: [0,268435454,268435422,34087070,34087042]
+}
+const js_layer_raw_info_raw_right_sample_00 = {
+ uCode: "layer-raw-info-raw-right-sample-00",
+ row: 6,
+ column: 5,
+ rawNum: 4,
+ layers: [0,1023410143,1023410142,272696350,272696336]
+}
+const js_layer_raw_info_raw_back_sample_00 = {
+ uCode: "layer-raw-info-raw-back-sample-00",
+ row: 7,
+ column: 7,
+ rawNum: 4,
+ layers: [0,124124286418878,36154093076360,277157511048,16909312]
+}
+const js_layer_raw_info_raw_front_sample_04 = {
+ uCode: "layer-raw-info-raw-front-sample-04",
+ row: 7,
+ column: 9,
+ rawNum: 7,
+ layers: [0,3061596672667672600,3061596672667664400,2469373321668313000,124124076703744,124107374985216,962072674304,274877906944]
+}
+const js_layer_raw_info_raw_front_sample_05 = {
+ uCode: "layer-raw-info-raw-front-sample-05",
+ row: 7,
+ column: 10,
+ rawNum: 6,
+ layers: [0,391884374101463140000,391884250956030800000,75820352490954540000,75820352490816600000,964220616704,458752]
+}
+const js_layer_raw_info_raw_front_sample_06 = {
+ uCode: "layer-raw-info-raw-front-sample-06",
+ row: 5,
+ column: 9,
+ rawNum: 7,
+ layers: [0,11491669934062,11491535585248,141738147808,141738129536,4208768,14464,128]
+}
+const js_layer_raw_info_raw_front_sample_07 = {
+ uCode: "layer-raw-info-raw-front-sample-07",
+ row: 7,
+ column: 9,
+ rawNum: 7,
+ layers: [0,1457038594477641200,1457003407958068700,4503874637382656,4503874564129792,4503874505409536,274878039040,132096]
+}
+const js_layer_raw_info_raw_body_sample_04 = {
+ uCode: "layer-raw-info-raw-body-sample-04",
+ row: 9,
+ column: 7,
+ rawNum: 5,
+ layers: [0,2242757430058286000,1428943654485060,1411230705253444,1411230705253376,1411230700929024]
+}
+const js_layer_raw_info_raw_body_sample_05 = {
+ uCode: "layer-raw-info-raw-body-sample-05",
+ row: 7,
+ column: 8,
+ rawNum: 6,
+ layers: [0,16039675624922908,16039675624918528,16036247228091904,15886438751014400,15886438751010816,15797783067885568]
+}
+const js_layer_raw_info_raw_body_sample_06 = {
+ uCode: "layer-raw-info-raw-body-sample-06",
+ row: 7,
+ column: 9,
+ rawNum: 5,
+ layers: [0,2053078479989575200,4977901246546944,438842369180672,2206663680,459776]
+}
+const js_layer_raw_info_raw_body_sample_07 = {
+ uCode: "layer-raw-info-raw-body-sample-07",
+ row: 9,
+ column: 9,
+ rawNum: 5,
+ layers: [0,2.6679984416729747e+23,1.5725578755015175e+21,1.5725578577886356e+21,369945659231728300000,369945095165605600000]
+}
+const js_layer_raw_info_raw_left_sample_01 = {
+ uCode: "layer-raw-info-raw-left-sample-01",
+ row: 9,
+ column: 5,
+ rawNum: 4,
+ layers: [0,4346506903548,275483069884,275415829564,275415829508]
+}
+const js_layer_raw_info_raw_right_sample_01 = {
+ uCode: "layer-raw-info-raw-right-sample-01",
+ row: 9,
+ column: 5,
+ rawNum: 4,
+ layers: [0,34702933098111,4406653583995,4406653321336,4406653321280]
+}
+const js_layer_raw_info_raw_left_sample_02 = {
+ uCode: "layer-raw-info-raw-left-sample-02",
+ row: 6,
+ column: 6,
+ rawNum: 5,
+ layers: [0,7776239615,3272356351,2198614430,2198614402,17043456]
+}
+const js_layer_raw_info_raw_right_sample_02 = {
+ uCode: "layer-raw-info-raw-right-sample-02",
+ row: 6,
+ column: 6,
+ rawNum: 5,
+ layers: [0,61152690175,52357697087,17997956638,17997956624,545390592]
+}
+const js_layer_raw_info_raw_left_sample_03 = {
+ uCode: "layer-raw-info-raw-left-sample-03",
+ row: 9,
+ column: 6,
+ rawNum: 4,
+ layers: [0,248438088269823,105759678138339,105759678137859,70506452091904]
+}
+const js_layer_raw_info_raw_right_sample_03 = {
+ uCode: "layer-raw-info-raw-right-sample-03",
+ row: 9,
+ column: 6,
+ rawNum: 4,
+ layers: [0,15796751873081344,13537238801645968,13537238801645952,4512412933881856]
+}
+const js_layer_raw_info_raw_left_sample_04 = {
+ uCode: "layer-raw-info-raw-left-sample-04",
+ row: 10,
+ column: 5,
+ rawNum: 7,
+ layers: [0,140187732541439,109129753432059,106928580593659,105827994174456,105827994174208,105827994173440,105553116266496]
+}
+const js_layer_raw_info_raw_right_sample_04 = {
+ uCode: "layer-raw-info-raw-right-sample-04",
+ row: 10,
+ column: 5,
+ rawNum: 7,
+ layers: [0,1118202251706367,871640796496767,589890673181567,26390426550399,26390426550275,26390426550272,26388279066624]
+}
+const js_layer_raw_info_raw_back_sample_01 = {
+ uCode: "layer-raw-info-raw-back-sample-01",
+ row: 10,
+ column: 10,
+ rawNum: 5,
+ layers: [0,1.4869847850289126e+29,5.9566334945867e+28,5.80853432195722e+25,5.808534321906318e+25,235479766544469260000]
+}
+const js_layer_raw_info_raw_back_sample_02 = {
+ uCode: "layer-raw-info-raw-back-sample-02",
+ row: 8,
+ column: 8,
+ rawNum: 4,
+ layers: [0,4359202964317896000,2629678870407625700,2622823674129890300,2622823674114742300]
+}
+const js_layer_raw_info_raw_back_sample_03 = {
+ uCode: "layer-raw-info-raw-back-sample-03",
+ row: 9,
+ column: 8,
+ rawNum: 5,
+ layers: [0,517526594699881600000,517233781421759000000,517233776722196800000,517233212672731800000,3802668485058560]
+}
+const js_layer_raw_info_raw_body_sample_08 = {
+ uCode: "layer-raw-info-raw-body-sample-08",
+ row: 7,
+ column: 10,
+ rawNum: 6,
+ layers: [0,262794045456323180000,262794045447196380000,262757014874419040000,262757014594100800000,262752387161976340000,2206334976]
+}
+const js_layer_raw_info_raw_body_sample_09 = {
+ uCode: "layer-raw-info-raw-body-sample-09",
+ row: 7,
+ column: 9,
+ rawNum: 6,
+ layers: [0,2053078480127524900,2052953470158831600,2052665346166359000,15762881106674750,282410878014,282410876928]
+}
+const js_layer_raw_info_raw_body_sample_10 = {
+ uCode: "layer-raw-info-raw-body-sample-10",
+ row: 9,
+ column: 11,
+ rawNum: 9,
+ layers: [0,1.5412111703939061e+29,1.5412018081178864e+29,1.5411888922835157e+29,1.3558973239702556e+26,1.3558873504406272e+26,1.3558873504406272e+26,1013956875403657200,4587608919244800,2147483648]
+}
+const js_layer_raw_info_raw_body_sample_11 = {
+ uCode: "layer-raw-info-raw-body-sample-11",
+ row: 7,
+ column: 9,
+ rawNum: 6,
+ layers: [0,2089670227099910100,72057594037911550,48413695994216450,11383123216564224,36163217915904,282410876928]
+}
+const js_layer_raw_info_raw_right_sample_05 = {
+ uCode: "layer-raw-info-raw-right-sample-05",
+ row: 6,
+ column: 9,
+ rawNum: 7,
+ layers: [0,16030670136541148,16027040000782556,264441304985820,558514319580,558480232540,558479966236,558479966208]
+}
+const js_layer_raw_info_raw_left_sample_05 = {
+ uCode: "layer-raw-info-raw-left-sample-05",
+ row: 6,
+ column: 9,
+ rawNum: 7,
+ layers: [0,2037342969790414,2036575055842318,66250218867726,279521201166,279248504846,279239983118,279239983104]
+}
+const js_layer_raw_info_raw_right_sample_06 = {
+ uCode: "layer-raw-info-raw-right-sample-06",
+ row: 5,
+ column: 9,
+ rawNum: 6,
+ layers: [0,27381456699276,27359288856460,971009789836,347180940,347180032,276824064]
+}
+const js_layer_raw_info_raw_left_sample_06 = {
+ uCode: "layer-raw-info-raw-left-sample-06",
+ row: 5,
+ column: 9,
+ rawNum: 6,
+ layers: [0,3547106114790,3541564154086,243029270758,363618534,363618304,69206016]
+}
+const js_layer_raw_info_raw_right_sample_07 = {
+ uCode: "layer-raw-info-raw-right-sample-07",
+ row: 5,
+ column: 10,
+ rawNum: 7,
+ layers: [0,456262965787084,455340790419916,33128325353932,142976520652,141868143052,141868138508,141868138496]
+}
+const js_layer_raw_info_raw_left_sample_07 = {
+ uCode: "layer-raw-info-raw-left-sample-07",
+ row: 5,
+ column: 10,
+ rawNum: 7,
+ layers: [0,228148662746566,227758509134278,16652276601286,159602184646,141868143046,141868138502,141868138496]
+}
+const js_layer_raw_info_raw_right_sample_08 = {
+ uCode: "layer-raw-info-raw-right-sample-08",
+ row: 6,
+ column: 10,
+ rawNum: 8,
+ layers: [0,880721800755937000,880718170620182300,264443469250328,560678584088,558497013528,558479970072,558479966232,558479966208]
+}
+const js_layer_raw_info_raw_left_sample_08 = {
+ uCode: "layer-raw-info-raw-left-sample-08",
+ row: 6,
+ column: 10,
+ rawNum: 8,
+ layers: [0,56080556214973384,56079788301026250,66267935605702,297237939142,279785374662,279239984070,279239983110,279239983104]
+}
+const js_layer_raw_info_raw_right_sample_09 = {
+ uCode: "layer-raw-info-raw-right-sample-09",
+ row: 6,
+ column: 10,
+ rawNum: 8,
+ layers: [0,304261048452507400,304257418316769000,264443469260568,560678594328,558497007384,558479968024,558479966232,558479966208]
+}
+const js_layer_raw_info_raw_left_sample_09 = {
+ uCode: "layer-raw-info-raw-left-sample-09",
+ row: 6,
+ column: 10,
+ rawNum: 8,
+ layers: [0,38066157705360264,38065389791445896,66267935507334,297237840774,279785243526,279239984006,279239983110,279239983104]
+}
+const js_layer_raw_info_raw_right_sample_10 = {
+ uCode: "layer-raw-info-raw-right-sample-10",
+ row: 5,
+ column: 10,
+ rawNum: 7,
+ layers: [0,737736868757384,737708050780040,3234283425672,4468019080,4433380232,4433380224,4433379328]
+}
+const js_layer_raw_info_raw_left_sample_10 = {
+ uCode: "layer-raw-info-raw-left-sample-10",
+ row: 5,
+ column: 10,
+ rawNum: 7,
+ layers: [0,192947110804706,192934918512866,9316476674274,4987576546,4433379554,4433379552,4433379328]
+}
+const js_layer_raw_info_raw_back_sample_04 = {
+ uCode: "layer-raw-info-raw-back-sample-04",
+ row: 14,
+ column: 11,
+ rawNum: 9,
+ layers: [0,6.691081177059653e+44,8.5761750046632905e+40,8.5761750046632905e+40,8.575639061877734e+40,8.575639061877734e+40,8.575215353720069e+40,9.970731241958313e+35,72638488291705360000,270590803968]
+}
+const js_layer_raw_info_raw_back_sample_05 = {
+ uCode: "layer-raw-info-raw-back-sample-05",
+ row: 8,
+ column: 9,
+ rawNum: 6,
+ layers: [0,1.1159196485933858e+21,1.1141834844456761e+21,1.1115792382219431e+21,1.1068046444235837e+21,1010580480,15360]
+}
+const js_layer_raw_info_raw_back_sample_06 = {
+ uCode: "layer-raw-info-raw-back-sample-06",
+ row: 9,
+ column: 10,
+ rawNum: 7,
+ layers: [0,1.3598641352347611e+26,5.8672172663764216e+23,3.9745813244138216e+23,7.57064484856567e+22,7.570644845900117e+22,1974180648058880,7520387072]
+}
+const js_layer_raw_info_raw_body_sample_12 = {
+ uCode: "layer-raw-info-raw-body-sample-12",
+ row: 7,
+ column: 9,
+ rawNum: 8,
+ layers: [0,2052792607104294700,592262933417123600,592258844608257800,592258826950942500,592258812413484800,592258812413476900,277042167808,2164260864]
+}
+const js_layer_raw_info_raw_body_sample_13 = {
+ uCode: "layer-raw-info-raw-body-sample-13",
+ row: 9,
+ column: 9,
+ rawNum: 6,
+ layers: [0,5.8792077404481704e+23,5.87920774044817e+23,5.879207580046083e+23,5.87920758001845e+23,5.1064705884669956e+23,1101659111424]
+}
+const js_layer_raw_info_raw_body_sample_14 = {
+ uCode: "layer-raw-info-raw-body-sample-14",
+ row: 7,
+ column: 9,
+ rawNum: 8,
+ layers: [0,2053078480127516400,2053076220032028200,592498167833923100,592346771310480900,592346771196677600,592346771196347400,16909312,1024]
+}
+const js_layer_raw_info_raw_body_sample_15 = {
+ uCode: "layer-raw-info-raw-body-sample-15",
+ row: 9,
+ column: 9,
+ rawNum: 8,
+ layers: [0,5.867217266376423e+23,5.867217266376423e+23,5.867217266199294e+23,5.86721719637054e+23,5.867217196370539e+23,2.649693201062418e+23,1101663313920,4202496]
+}
+const js_layer_raw_info_raw_right_sample_11 = {
+ uCode: "layer-raw-info-raw-right-sample-11",
+ row: 10,
+ column: 8,
+ rawNum: 7,
+ layers: [0,2.2722814642145886e+23,1.5163338920739712e+23,222513850389121470000,222513848187946530000,222482309783505080000,222478930983196030000,222478930982389940000]
+}
+const js_layer_raw_info_raw_left_sample_11 = {
+ uCode: "layer-raw-info-raw-left-sample-11",
+ row: 10,
+ column: 8,
+ rawNum: 7,
+ layers: [0,1.4202840015251748e+22,4.739660305438748e+21,14987979559888552000,14987697809899717000,14735284918275280000,13870030289305080000,13870030289301930000]
+}
+const js_layer_raw_info_raw_right_sample_12 = {
+ uCode: "layer-raw-info-raw-right-sample-12",
+ row: 8,
+ column: 7,
+ rawNum: 7,
+ layers: [0,33917734693632960,27149089371308990,27149080747819456,27145777900994750,53811392594112,53811379962048,53811379961856]
+}
+const js_layer_raw_info_raw_left_sample_12 = {
+ uCode: "layer-raw-info-raw-left-sample-12",
+ row: 8,
+ column: 7,
+ rawNum: 7,
+ layers: [0,8724624766394115,1916241800315651,1915965848650499,1704307700204291,13258816684803,13258816487427,13258816487424]
+}
+const js_layer_raw_info_raw_right_sample_13 = {
+ uCode: "layer-raw-info-raw-right-sample-13",
+ row: 8,
+ column: 7,
+ rawNum: 6,
+ layers: [0,31806672368300930,31806672368300930,4609152710078721,4537817860403457,3302855115009,8421376]
+}
+const js_layer_raw_info_raw_left_sample_13 = {
+ uCode: "layer-raw-info-raw-left-sample-13",
+ row: 8,
+ column: 7,
+ rawNum: 6,
+ layers: [0,4222124650647425,4222124650647425,2527776158486400,2525546818408320,211658144317824,65792]
+}
+const js_layer_raw_info_raw_right_sample_14 = {
+ uCode: "layer-raw-info-raw-right-sample-14",
+ row: 9,
+ column: 8,
+ rawNum: 10,
+ layers: [0,262848088651851630000,152059291527931230000,148584733611909450000,148584733577482600000,148584733577482470000,148584733577448850000,148584733577448850000,208740344320,206578180608,206561346048]
+}
+const js_layer_raw_info_raw_left_sample_14 = {
+ uCode: "layer-raw-info-raw-left-sample-14",
+ row: 9,
+ column: 8,
+ rawNum: 10,
+ layers: [0,1.0376113397476527e+21,148693097097027520000,148584763934061230000,148584763933926750000,148584763933926750000,148584763933926230000,148584763933926230000,26442049140736,26439886977024,26439885914112]
+}
+const js_layer_raw_info_raw_back_sample_07 = {
+ uCode: "layer-raw-info-raw-back-sample-07",
+ row: 11,
+ column: 12,
+ rawNum: 8,
+ layers: [0,2.9806915072655383e+38,3.2207967073267432e+35,3.2197313602890245e+35,3.2197313602890245e+35,5.0730799743149435e+31,2.370122746920207e+21,2.36521902965137e+21,2.3652190296509e+21]
+}
+const js_layer_raw_info_raw_back_sample_08 = {
+ uCode: "layer-raw-info-raw-back-sample-08",
+ row: 9,
+ column: 8,
+ rawNum: 7,
+ layers: [0,518746999830154800000,2238165766287357700,2238165766219767800,2235196645932802000,1411230757036032,2214076416,2162171904]
+}
+const js_layer_raw_info_raw_back_sample_09 = {
+ uCode: "layer-raw-info-raw-back-sample-09",
+ row: 7,
+ column: 8,
+ rawNum: 7,
+ layers: [0,4627723776409579,4627723776081899,4627021972553707,4627021971981320,123147449926656,2147615744,132096]
+}
+const js_layer_raw_info_raw_back_sample_10 = {
+ uCode: "layer-raw-info-raw-back-sample-10",
+ row: 10,
+ column: 11,
+ rawNum: 8,
+ layers: [0,6.099592698456752e+31,1.4869817361250832e+29,1.4861088987760945e+29,1.4861088987737968e+29,1.4861088987737926e+29,5.808516313362488e+25,54096023626186750,51539607552]
+}
+const js_layer_raw_info_raw_front_sample_08 = {
+ uCode: "layer-raw-info-raw-front-sample-08",
+ row: 7,
+ column: 7,
+ rawNum: 11,
+ layers: [0,153931627880220,153926259171072,151675427872512,964488584960,964351205120,964279344896,964279336960,962131853312,962089451520,274894684160,16777216]
+}
+const js_layer_raw_info_raw_body_sample_16 = {
+ uCode: "layer-raw-info-raw-body-sample-16",
+ row: 9,
+ column: 9,
+ rawNum: 8,
+ layers: [0,5.8792076498473794e+23,5.875511095198872e+23,2.6643018868475127e+23,2.6522880386523453e+23,2.6460038578771757e+23,147862747017444920000,288794427768502300,4257792]
+}
+const js_layer_raw_info_raw_back_sample_11 = {
+ uCode: "layer-raw-info-raw-back-sample-11",
+ row: 9,
+ column: 10,
+ rawNum: 11,
+ layers: [0,1.3598641351888448e+26,1.3598641351888448e+26,3.8762332369564225e+25,3.87613319579574e+25,3.876133195415749e+25,3.87613319541485e+25,3.876133195414849e+25,3.876133195414107e+25,3.876133195414106e+25,3.876133195414106e+25,1101663313920]
+}
+const js_layer_raw_info_raw_right_sample_15 = {
+ uCode: "layer-raw-info-raw-right-sample-15",
+ row: 5,
+ column: 8,
+ rawNum: 6,
+ layers: [0,142237237230,142218836974,484916206,15154158,1006,448]
+}
+const js_layer_raw_info_raw_left_sample_15 = {
+ uCode: "layer-raw-info-raw-left-sample-15",
+ row: 5,
+ column: 8,
+ rawNum: 6,
+ layers: [0,142237237230,142218836974,484916206,15154158,1006,448]
+}
+const js_layer_raw_info_raw_left_sample_16 = {
+ uCode: "layer-raw-info-raw-left-sample-16",
+ row: 9,
+ column: 6,
+ rawNum: 8,
+ layers: [0,1767430581707808,75206877570080,75189597037600,70782943814688,70782943757344,70782943757312,70781870015488,70506452091904]
+}
+const js_layer_raw_info_raw_right_sample_16 = {
+ uCode: "layer-raw-info-raw-right-sample-16",
+ row: 9,
+ column: 6,
+ rawNum: 8,
+ layers: [0,5380803613505544,4517099575523336,4517099306301448,4516823890475016,4516823890460680,4516823890460672,4516819595493376,4512412933881856]
+}
+const js_layer_raw_info_raw_right_sample_17 = {
+ uCode: "layer-raw-info-raw-right-sample-17",
+ row: 4,
+ column: 11,
+ rawNum: 7,
+ layers: [0,2351360374642,2350206105456,13743896432,858994544,17897328,17895536,17895424]
+}
+const js_layer_raw_info_raw_left_sample_17 = {
+ uCode: "layer-raw-info-raw-left-sample-17",
+ row: 4,
+ column: 11,
+ rawNum: 7,
+ layers: [0,4728473779940,4727899999968,54975581920,3435974368,143167200,143163616,143163392]
+}
+const js_layer_raw_info_raw_back_sample_12 = {
+ uCode: "layer-raw-info-raw-back-sample-12",
+ row: 9,
+ column: 13,
+ rawNum: 12,
+ layers: [0,1.8251787463200711e+34,5.271045316863642e+33,5.202592184451318e+33,5.202507839793614e+33,5.202507523643519e+33,5.202507523643515e+33,5.202507523643145e+33,5.202507523643145e+33,5.202507523643145e+33,5.202507523643145e+33,4.961458023737017e+28,564051616735232]
+}
+const js_layer_raw_info_raw_big_front_sample_00 = {
+ uCode: "layer-raw-info-raw-big-front-sample-00",
+ row: 10,
+ column: 16,
+ rawNum: 7,
+ layers: [0,7.286078550704007e+47,7.286078550704007e+47,7.286078550704007e+47,3.6001781879397808e+47,3.6001781879397808e+47,5.672379212268055e+22,54096023676518400]
+}
+const js_layer_raw_info_raw_big_front_sample_01 = {
+ uCode: "layer-raw-info-raw-big-front-sample-01",
+ row: 12,
+ column: 16,
+ rawNum: 6,
+ layers: [0,1.5635271722071143e+57,1.5633340665131168e+57,1.5633340665131168e+57,1.857363987324744e+27,581214318206814400000,470506825569723100000]
+}
+const js_layer_raw_info_raw_big_front_sample_02 = {
+ uCode: "layer-raw-info-raw-big-front-sample-02",
+ row: 14,
+ column: 18,
+ rawNum: 7,
+ layers: [0,4.4527263760916317e+74,5.304028512684146e+61,5.304028512684146e+61,5.304028512684146e+61,5.304028512684146e+61,1.6334550594052828e+40,6.085094285776029e+31]
+}
+const js_layer_raw_info_raw_big_front_sample_03 = {
+ uCode: "layer-raw-info-raw-big-front-sample-03",
+ row: 10,
+ column: 18,
+ rawNum: 7,
+ layers: [0,3.775062329409224e+53,3.775062329409224e+53,3.7750604435961636e+53,3.7750604435961636e+53,3.7750604435961636e+53,3.7750604435961636e+53,5.672379212262896e+22]
+}
+const js_layer_raw_info_raw_big_left_sample_00 = {
+ uCode: "layer-raw-info-raw-big-left-sample-00",
+ row: 10,
+ column: 8,
+ rawNum: 6,
+ layers: [0,1.77817960329776e+22,1.77817960329776e+22,1.77817960329776e+22,1.7780641982271325e+22,216666395121811460,216666326201008130]
+}
+const js_layer_raw_info_raw_big_left_sample_01 = {
+ uCode: "layer-raw-info-raw-big-left-sample-01",
+ row: 16,
+ column: 12,
+ rawNum: 6,
+ layers: [0,2.8736483677144674e+53,2.8736483677144674e+53,2.8736483677144674e+53,2.873648367045435e+53,3.987988242996958e+36,3.9879882420684886e+36]
+}
+const js_layer_raw_info_raw_big_left_sample_02 = {
+ uCode: "layer-raw-info-raw-big-left-sample-02",
+ row: 10,
+ column: 10,
+ rawNum: 6,
+ layers: [0,3.7175213457970425e+27,3.7175213457970425e+27,3.7175213457970425e+27,7.090524505011766e+22,504896771273523200,504826333742759940]
+}
+const js_layer_raw_info_raw_big_left_sample_03 = {
+ uCode: "layer-raw-info-raw-big-left-sample-03",
+ row: 14,
+ column: 12,
+ rawNum: 7,
+ layers: [0,2.2840145749406154e+46,2.2840145749406154e+46,2.2840145749406154e+46,1.395072960979652e+42,1.0211587184560498e+39,6.086580267286115e+31,6.086456450613905e+31]
+}
+const js_layer_raw_info_raw_big_left_sample_04 = {
+ uCode: "layer-raw-info-raw-big-left-sample-04",
+ row: 18,
+ column: 16,
+ rawNum: 8,
+ layers: [0,5.691463429645715e+81,5.691463429645715e+81,5.691463429645715e+81,5.691463429645715e+81,5.691434481623404e+81,3.3128508841755155e+71,3.3255419177558226e+35,2.433898437023913e+32]
+}
+const js_layer_raw_info_raw_big_bd_bk_sample_00 = {
+ uCode: "layer-raw-info-raw-big-bd-bk-sample-00",
+ row: 14,
+ column: 20,
+ rawNum: 9,
+ layers: [0,1.1953443347312701e+83,1.1953443347312701e+83,1.4472465743173533e+75,8.49243378226517e+73,8.48138357350787e+73,8.48138357350787e+73,8.48138357350787e+73,8.48138357350787e+73,8.48138357350787e+73]
+}
+const js_layer_raw_info_raw_big_bd_bk_sample_01 = {
+ uCode: "layer-raw-info-raw-big-bd-bk-sample-01",
+ row: 14,
+ column: 22,
+ rawNum: 9,
+ layers: [0,3.2085275322734075e+91,2.276912846150846e+82,2.276912846150846e+82,2.2769126651042256e+82,2.2769126651042256e+82,2.2769125288720018e+82,2.2769124928261217e+82,8.48138357350787e+73,4.3847725372696417e+48]
+}
+const js_layer_raw_info_raw_big_bd_bk_sample_02 = {
+ uCode: "layer-raw-info-raw-big-bd-bk-sample-02",
+ row: 18,
+ column: 22,
+ rawNum: 14,
+ layers: [0,2.4823648314644887e+117,2.4823648314644887e+117,2.4823648314644887e+117,2.4823648314644887e+117,4.72825878184079e+116,4.7282587804431796e+116,4.7282587804431796e+116,4.7282587804431796e+116,4.7282587804431796e+116,4.7282587804431796e+116,4.7282587804431796e+116,4.728258780443178e+116,1.0012477425449522e+95,3.0853328145879125e+62]
+}
+const js_layer_raw_info_raw_big_f_bd_bk_sample_00 = {
+ uCode: "layer-raw-info-raw-big-f-bd-bk-sample-00",
+ row: 22,
+ column: 34,
+ rawNum: 19,
+ layers: [0,1.7418522250211673e+223,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,6.164225433790359e+208,3.503955229741873e+195,1.0917389523509206e+130,6.2058174555141256e+116,1.1977568851955507e+110,9.548607049694164e+89,2.171102190830778e+76,3.9876849380929245e+36,2.266736452209514e+23]
+}
+const js_layer_raw_info_raw_big_left_sample_05 = {
+ uCode: "layer-raw-info-raw-big-left-sample-05",
+ row: 14,
+ column: 12,
+ rawNum: 8,
+ layers: [0,1.096478858531629e+48,2.8572821278558164e+44,2.8468263139015208e+44,3.4813010888665436e+41,8.67773003554242e+40,8.677729986864637e+40,8.677729986863647e+40,8.677729986863647e+40]
+}
+const js_layer_raw_info_raw_big_left_sample_06 = {
+ uCode: "layer-raw-info-raw-big-left-sample-06",
+ row: 14,
+ column: 14,
+ rawNum: 6,
+ layers: [0,3.432999560734467e+56,3.4329995452060123e+56,3.5541812659768735e+44,1.3937965710137036e+42,3.483747020911917e+41,8.702986868453991e+40]
+}
+const js_layer_raw_info_raw_big_right_sample_07 = {
+ uCode: "layer-raw-info-raw-big-right-sample-07",
+ row: 18,
+ column: 22,
+ rawNum: 8,
+ layers: [0,9.456517560888506e+117,2.1501898203426753e+105,2.1501898203426753e+105,2.1501898203426753e+105,2.1501898203426753e+105,2.1501898203426753e+105,1.7201578729186944e+105,1.7201567792891602e+105]
+}
+const js_layer_raw_info_raw_big_left_sample_08 = {
+ uCode: "layer-raw-info-raw-big-left-sample-08",
+ row: 16,
+ column: 16,
+ rawNum: 7,
+ layers: [0,8.684539208687604e+76,8.684539208687604e+76,2.894846402446529e+76,7.533115942903304e+58,7.533115942903304e+58,7.533115942901592e+58,7.532656180208488e+58]
+}
+const js_layer_raw_info_raw_big_body_sample_00 = {
+ uCode: "layer-raw-info-raw-big-body-sample-00",
+ row: 22,
+ column: 20,
+ rawNum: 9,
+ layers: [0,2.2094732773692093e+130,2.2094732773656788e+130,2.209473277365489e+130,2.209473277365489e+130,2.209471422793374e+130,5.1987582793850256e+129,1.1820604677169443e+116,3.48733303637031e+77,136902098688]
+}
+const js_layer_raw_info_raw_big_back_sample_00 = {
+ uCode: "layer-raw-info-raw-big-back-sample-00",
+ row: 30,
+ column: 14,
+ rawNum: 7,
+ layers: [0,1.0576249957875158e+124,1.0576249957875158e+124,1.0576249957875158e+124,1.0576249948024356e+124,2.641641627743128e+123,6.507269695664899e+122,8.087984007677714e+67]
+}
+const js_layer_raw_info_raw_big_back_sample_01 = {
+ uCode: "layer-raw-info-raw-big-back-sample-01",
+ row: 22,
+ column: 22,
+ rawNum: 11,
+ layers: [0,7.79675363987758e+143,7.796751778258569e+143,7.796751778258569e+143,7.796751778258569e+143,7.796751778258569e+143,7.796751778258569e+143,7.796751778258569e+143,7.796751778258569e+143,1.9206074761692638e+143,1.9206074761692638e+143,6.719235828524072e+102]
+}
+const js_layer_raw_info_20240119153113_f = {
+ uCode: "layer-raw-info-20240119153113_f",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,3.556384306613766e+31,1.9847207251637106e+28,1.2161746648543543e+24,1.2160268026713885e+24,1101673820284,4223100]
+}
+const js_layer_raw_info_20240119152833_f = {
+ uCode: "layer-raw-info-20240119152833_f",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,7.874814217934426e+31,6.9460306861823195e+28,369948059208234100000,2401075192723580,2162227324,8248]
+}
+const js_layer_raw_info_0240119152518_f = {
+ uCode: "layer-raw-info-0240119152518_f",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,1.6130730093899592e+32,1.61173437783624e+32,3.551406279787402e+31,3.551406279787402e+31,3.55140627972456e+31,290201802714417150]
+}
+const js_layer_raw_info_20240119152131_f = {
+ uCode: "layer-raw-info-20240119152131_f",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,3.56480217715868e+31,1.538049651963782e+29,6.962504252497234e+28,6.962504252262588e+28,4.977905129807968e+28,1116169314304]
+}
+const js_layer_raw_info_20240119151651_f = {
+ uCode: "layer-raw-info-20240119151651_f",
+ row: 9,
+ column: 12,
+ rawNum: 4,
+ layers: [0,3.556367743500393e+31,1.994302704208956e+28,1.9942705290405596e+28,1.9845802330177094e+28]
+}
+const js_layer_raw_info_20240119155318_l = {
+ uCode: "layer-raw-info-20240119155318_l",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,4.4752284976489207e+30,1.9052260593654338e+30,1.9052260593608064e+30,1.9051970449154493e+30,1.240428791111804e+27,1.2404287910034712e+27]
+}
+const js_layer_raw_info_20240119155121_l = {
+ uCode: "layer-raw-info-20240119155121_l",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,2.0282409603651661e+31,2.0282408391175987e+31,8.819110304226486e+27,2.4511946881176396e+24,2.4320838609749764e+24,2.4320834284885367e+24]
+}
+const js_layer_raw_info_20240119154558_l = {
+ uCode: "layer-raw-info-20240119154558_l",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,1.9726882802096536e+31,1.972672714934856e+31,4.4455177817459184e+30,4.445517781154462e+30,6.350705269035051e+29,27796463535003795000]
+}
+const js_layer_raw_info_20240119154214_l = {
+ uCode: "layer-raw-info-20240119154214_l",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,9.585678000270701e+30,1.3348076384336417e+30,1.2753284125498718e+30,1.2752508892927843e+30,1.2750952365471088e+30,2.432083428488674e+24]
+}
+const js_layer_raw_info_2024011915498_l = {
+ uCode: "layer-raw-info-2024011915498_l",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,4.455382615843097e+30,1.9052066785430752e+30,1.9052066785429302e+30,1.9052066785429302e+30,1.905196988210014e+30,4.731607904558507e+21]
+}
+const js_layer_raw_info_20240119155318_l_h_reverse = {
+ uCode: "layer-raw-info-20240119155318_l_h_reverse",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,2.8456895434981707e+32,2.438654470590124e+32,2.4386544705901235e+32,2.4386521494481172e+32,3.175338909527687e+29,3.175338909492942e+29]
+}
+const js_layer_raw_info_20240119155121_l_h_reverse = {
+ uCode: "layer-raw-info-20240119155121_l_h_reverse",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,3.15011174156715e+32,3.1501117415196483e+32,5.558181479274979e+29,6.210902235716092e+26,6.207875493937152e+26,6.207875485267635e+26]
+}
+const js_layer_raw_info_20240119154558_l_h_reverse = {
+ uCode: "layer-raw-info-20240119154558_l_h_reverse",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,3.1500250131816272e+32,3.1500249161839423e+32,2.8450953319005076e+32,2.845095331900138e+32,1.6257712005435593e+32,3.54986109731636e+21]
+}
+const js_layer_raw_info_20240119154214_l_h_reverse = {
+ uCode: "layer-raw-info-20240119154214_l_h_reverse",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,3.048612965163369e+32,8.139826414485433e+31,8.13684374514745e+31,8.136841807077166e+31,8.136840837100322e+31,6.207875485267723e+26]
+}
+const js_layer_raw_info_2024011915498_l_h_reverse = {
+ uCode: "layer-raw-info-2024011915498_l_h_reverse",
+ row: 9,
+ column: 12,
+ rawNum: 6,
+ layers: [0,2.8454910858564485e+32,2.438653695362009e+32,2.4386536953620033e+32,2.4386536953620033e+32,2.4386521449087367e+32,1.2112916235669254e+24]
+}
+const js_layer_raw_info_20240119162153_bk = {
+ uCode: "layer-raw-info-20240119162153_bk",
+ row: 9,
+ column: 9,
+ rawNum: 6,
+ layers: [0,2.4178516392292583e+24,5.879207650024334e+23,5.8792076497577784e+23,1.8941217752197203e+23,1.8941217751921782e+23,1.8941217751921782e+23]
+}
+const js_layer_raw_info_20240119162015_bk = {
+ uCode: "layer-raw-info-20240119162015_bk",
+ row: 9,
+ column: 9,
+ rawNum: 6,
+ layers: [0,2.6560081484488997e+23,2.6497004965306082e+23,2.649700426552703e+23,2.649700420912042e+23,2.646000969932898e+23,7.555786372591432e+22]
+}
+const js_layer_raw_info_20240119161616_bk = {
+ uCode: "layer-raw-info-20240119161616_bk",
+ row: 9,
+ column: 9,
+ rawNum: 6,
+ layers: [0,5.8672173568002585e+23,2.6497004506146607e+23,2.6497004265526117e+23,290204556810285100,1411230705143808,2147483648]
+}
+const js_layer_raw_info_20240119161425_bk = {
+ uCode: "layer-raw-info-20240119161425_bk",
+ row: 9,
+ column: 9,
+ rawNum: 6,
+ layers: [0,2.4178516301691617e+24,2.4166502453496534e+24,2.4166490179705903e+24,2.4160218286720842e+24,2.6497004265250703e+23,2.6496975385807926e+23]
+}
+const js_layer_raw_info_2024011916187_bk = {
+ uCode: "layer-raw-info-2024011916187_bk",
+ row: 9,
+ column: 9,
+ rawNum: 6,
+ layers: [0,5.8792076497578696e+23,149812109404864050000,149812104717433600000,288793326109356100,288793326105133060,288793326105133060]
+}
+const js_layer_raw_info_20240119161037_bd = {
+ uCode: "layer-raw-info-20240119161037_bd",
+ row: 15,
+ column: 15,
+ rawNum: 6,
+ layers: [0,5.3919893334300513e+67,5.095261385698879e+66,5.095261385698879e+66,6.428438755990996e+60,7.231220980382558e+38,7.23122097642103e+38]
+}
+const js_layer_raw_info_20240119155525_bd = {
+ uCode: "layer-raw-info-20240119155525_bd",
+ row: 15,
+ column: 15,
+ rawNum: 6,
+ layers: [0,6.7272338307080395e+66,7.472888428276261e+61,2.2497819198581675e+61,7.76491740293516e+47,4.2537113291825195e+38,1.5847325050652788e+29]
+}
+const js_layer_raw_info_2024011916611_bd = {
+ uCode: "layer-raw-info-2024011916611_bd",
+ row: 15,
+ column: 15,
+ rawNum: 6,
+ layers: [0,6.7270279229298524e+66,6.727027918184526e+66,3.3436877582958893e+66,2.1063101177587036e+65,4.904135393105895e+56,1.5846116187552103e+29]
+}
+const js_layer_raw_info_2024011916320_bd = {
+ uCode: "layer-raw-info-2024011916320_bd",
+ row: 15,
+ column: 15,
+ rawNum: 6,
+ layers: [0,4.112003781828972e+62,2.7322421830575796e+61,2.7322421830575796e+61,2.731927084950287e+61,1.3940666822796945e+43,4.253931991102879e+38]
+}
+const js_layer_raw_info_2024011915595_bd = {
+ uCode: "layer-raw-info-2024011915595_bd",
+ row: 15,
+ column: 15,
+ rawNum: 6,
+ layers: [0,6.7272338307080395e+66,3.3438705593606845e+66,2.1067440153070853e+65,2.106310112854718e+65,1.8269328002283094e+47,2.2069381156561544e+34]
+}
+const js_layer_raw_info_20240122143329_mis_00_00 = {
+ uCode: "layer-raw-info-20240122143329-mis-00-00",
+ row: 1,
+ column: 5,
+ rawNum: 4,
+ layers: [0,31,28,24,16]
+}
+const js_layer_raw_info_20240122143329_mis_00_01 = {
+ uCode: "layer-raw-info-20240122143329-mis-00-01",
+ row: 2,
+ column: 5,
+ rawNum: 4,
+ layers: [0,1023,1008,960,768]
+}
+const js_layer_raw_info_20240122143329_mis_00_02 = {
+ uCode: "layer-raw-info-20240122143329-mis-00-02",
+ row: 3,
+ column: 5,
+ rawNum: 4,
+ layers: [0,32767,32704,32256,28672]
+}
+const js_layer_raw_info_20240122143329_mis_00_03 = {
+ uCode: "layer-raw-info-20240122143329-mis-00-03",
+ row: 4,
+ column: 5,
+ rawNum: 4,
+ layers: [0,1048575,1048320,1044480,983040]
+}
+const js_layer_raw_info_20240122143329_mis_00_04 = {
+ uCode: "layer-raw-info-20240122143329-mis-00-04",
+ row: 5,
+ column: 5,
+ rawNum: 4,
+ layers: [0,33554431,33553408,33521664,32505856]
+}

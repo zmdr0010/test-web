@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>stage proto 01 01 unit</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="lib/lib-draw-guide-p01.js"></script>
+  <script type="application/javascript" src="lib/lib-drw-raw-info-p01.js"></script>
+  <script type="application/javascript" src="lib/lib-drw-raw-layer-p01.js"></script>
+  <script type="application/javascript" src="lib/lib-drw-raw-reverse-p01.js"></script>
+  <script type="application/javascript" src="lib/lib-drw-raw-skin-p01.js"></script>
+  <script type="application/javascript" src="lib/lib-part-join-p01.js"></script>
+  <script type="application/javascript" src="lib/lib-raw-str-p01.js"></script>
+  <script type="application/javascript" src="manager/manager-move-p01.js"></script>
+  <script type="application/javascript" src="manager/manager-mtx-preset-x3-p01.js"></script>
+  <script type="application/javascript" src="manager/manager-preset-link-info-p01.js"></script>
+  <script type="application/javascript" src="manager/manager-res-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-arms-preset-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-calc-jrc-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-drw-raw-color-set-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-hit-link-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-layer-raw-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-move-set-preset-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-mtx-preset-x3-b-set-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-mtx-preset-x3-skin-part-indices-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-part-move-set-preset-link-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-part-preset-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-unit-preset-info-p01.js"></script>
+  <script type="application/javascript" src="stage-p01.js"></script>
+  <script>
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      initStage('id-canvas', canvasW, canvasH * 2)
+      size = 4
+
+      const paramInfo = {
+        mtxNum: 0,
+        bSetNum: -1,
+        colorSetUCode: 'sample-color-set-info-00'
+      }
+
+      checkParams(window, paramInfo)
+
+      const mtxNum = paramInfo.mtxNum
+      const bSetNum = paramInfo.bSetNum
+      const colorSetUCode = paramInfo.colorSetUCode
+      const fList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01F, 'f', mtxNum, bSetNum, colorSetUCode)
+      const lList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01L, 'l', mtxNum, bSetNum, colorSetUCode)
+      const bkList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BK, 'bk', mtxNum, bSetNum, colorSetUCode)
+      const bdList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BD, 'bd', mtxNum, bSetNum, colorSetUCode)
+      const partPresetInfoList = fList.concat(lList, bkList, bdList)
+      console.log(partPresetInfoList.length)
+      initPartPresetInfoList(partPresetInfoList)
+      const layerRawInfoList = sampleLayerRawInfoListP01F.concat(sampleLayerRawInfoListP01L,
+        sampleLayerRawInfoListP01BK, sampleLayerRawInfoListP01BD)
+      initResInfo(layerRawInfoList, [calcJrcInfoSample, calcJrcInfoSample01],
+        drwRawColorSetInfoListP01, hitLinkInfoSampleListP01, [], [])
+
+      let partList = sampleUnitPresetListP01[0].partList
+
+      let info = {
+        f: { index: 0, mtxNum: 12, bSetNum: -1, colorSetUCode: 'sample-color-set-info-01'},
+        l: { index: 10, mtxNum: 5, bSetNum: -1, colorSetUCode: 'sample-color-set-info-02'},
+        // jrcType : cw (cannon wing)
+        // 5, 6, 7, 8, 9, 10, 15, 24
+        // l: { index: 5, mtxNum: 1, bSetNum: -1, colorSetUCode: 'sample-color-set-info-02', jrcType: 'cw'},
+        bk: { index: 11, mtxNum: 1, bSetNum: -1, colorSetUCode: 'sample-color-set-info-04'},
+        bd: { index: 19, mtxNum: 1, bSetNum: -1, colorSetUCode: 'sample-color-set-info-03'}
+      }
+
+      partList = getSimpleUnitPresetInfoP01FromInfo(info)
+
+      const presetInfo = getSimpleUnitPresetInfoP01('simple-unit-00', partList)
+      const partInfo = createPartInfoFromPresetInfo(presetInfo, resInfo)
+      console.log(partInfo)
+
+      let calcJrcInfo = calcJrcInfoSample03
+      if (partInfo.jrcType && partInfo.jrcType === 'cw') calcJrcInfo = calcJrcInfoSample02
+      moveAutoJoin(partInfo, calcJrcInfo)
+
+      let sr = 10
+      let sc = 10
+
+      drawPartInfo(ctx, partInfo, sr, sc, size)
+      drawRCArea(ctx, partInfo, sr, sc, size)
+      drawHitBox(ctx, partInfo, sr, sc, size)
+
+      sr = 80
+
+      reversePartInfoVertical(partInfo, partInfo.rcInfo.csz)
+
+      drawPartInfo(ctx, partInfo, sr, sc, size)
+      drawRCArea(ctx, partInfo, sr, sc, size)
+      drawHitBox(ctx, partInfo, sr, sc, size)
+    }
+  </script>
+</body>
+</html>

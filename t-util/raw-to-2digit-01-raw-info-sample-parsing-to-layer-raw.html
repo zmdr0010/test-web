@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>raw to 2digit 01 raw info sample parsing to layer raw</title>
+</head>
+<body onload="init()">
+  <button onclick="onClickParsing()">parsing</button>
+
+  <script type="application/javascript" src="../stage-proto/sample-drw-raw-info.js"></script>
+  <script type="application/javascript" src="../stage-proto/lib-raw-str.js"></script>
+  <script type="application/javascript" src="../t-raw-expand/lib-drw-raw-layer.js"></script>
+  <script>
+    function init() {
+      // const layerRawInfo = parsingRawInfoToLayerRawInfo(rbxLabSampleDrwRawInfo01)
+      // console.log(layerRawInfo)
+      // const compRawInfo = parsingLayerRawInfoToRawInfo(layerRawInfo)
+      // console.log(compRawInfo)
+
+      const rawInfo = drwRawInfoSampleList[0]
+      const layerRawInfo = parsingRawInfoToLayerRawInfo(rawInfo)
+      const compRawInfo = parsingLayerRawInfoToRawInfo(layerRawInfo)
+      console.log(compRawInfo)
+    }
+
+    function onClickParsing() {
+      let result = ''
+      for (const rawInfo of drwRawInfoSampleList) {
+        const layerRawInfo = parsingRawInfoToLayerRawInfo(rawInfo)
+        console.log(layerRawInfo)
+        let jsStrName = `js-${layerRawInfo.uCode}`
+        jsStrName = jsStrName.replaceAll('-', '_')
+        const jsStr = startParsingObjToJs(jsStrName, layerRawInfo)
+        // saveString(jsStr, jsStrName, 'js')
+        result += jsStr + '\n'
+      }
+      console.log(result)
+      saveString(result, `js_raw_info_samples_${generateSimpleUCode()}`, 'js')
+    }
+  </script>
+</body>
+</html>

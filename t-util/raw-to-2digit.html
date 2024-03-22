@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>raw to 2digit</title>
+</head>
+<body onload="init()">
+
+  <script type="application/javascript" src="../t-raw-expand/lib-drw-raw-layer.js"></script>
+  <script>
+    function init() {
+      const rbxLabSampleDrwRawInfo01 = {
+        uCode: 'rbx-lab-sample-drw-raw-info-01',
+        row: 5,
+        column: 8,
+        rawNum: 7,
+        raw: [3,0,0,0,3,3,3,2,3,3,0,3,7,3,0,1,2,7,2,1,2,4,2,4,2,0,4,5,4,0,0,5,6,5,0,0,2,6,2,0],
+      }
+
+      const layerList = divideRawLayerToRawInfoList(rbxLabSampleDrwRawInfo01)
+      const digitLayerList = []
+      for (const layer of layerList) {
+        let digitList = []
+        for (const rw of layer.raw) {
+          if (rw > 0) {
+            digitList.push(1)
+          } else {
+            digitList.push(0)
+          }
+        }
+        const jStr = digitList.join('')
+        console.log(jStr)
+        const num = parseInt(jStr, 2)
+        console.log(num)
+        digitLayerList.push({
+          uCode: layer.uCode,
+          row: layer.row,
+          column: layer.column,
+          rawNum: layer.rawNum,
+          rawDigit: num
+        })
+      }
+
+      console.log('----------------------------')
+      let count = 0
+      let compRaw = []
+      for (const dLayer of digitLayerList) {
+        const length = dLayer.row * dLayer.column
+        console.log(dLayer.rawDigit)
+        const str = dLayer.rawDigit.toString(2)
+        console.log(str)
+        const d = length - str.length
+        console.log(`length : ${length}, str length : ${str.length}, d: ${d}`)
+        let jStr = str
+        if (d > 0) {
+          let add = ''
+          for (let i=0; i<d; i++) {
+            add += '0'
+          }
+          jStr = add.concat(str)
+          console.log(`${jStr}, length : ${jStr.length}`)
+        }
+        let rawStrList = jStr.split('')
+        console.log(rawStrList)
+        let raw = []
+        // for (const rst of rawStrList) {
+        //   raw.push(Number(rst))
+        // }
+        for (let i=0; i<rawStrList.length; i++) {
+          const strRw = Number(rawStrList[i]) * count
+          raw.push(strRw)
+          if (compRaw.length-1 < i) {
+            compRaw.push(strRw)
+          } else {
+            compRaw[i] = Math.max(compRaw[i], strRw)
+          }
+        }
+        console.log(raw)
+        count++
+      }
+      console.log(compRaw)
+
+      const layerRawInfo = parsingRawInfoToLayerRawInfo(rbxLabSampleDrwRawInfo01)
+      console.log(layerRawInfo)
+      const compRawInfo = parsingLayerRawInfoToRawInfo(layerRawInfo)
+      console.log(compRawInfo)
+
+      const js_layer_raw_info_raw_front_sample_00 = {
+        uCode: "layer-raw-info-raw-front-sample-00",
+        row: 9,
+        column: 9,
+        rawNum: 4,
+        // layers: [0,3.2226921263929116e+23,517519645847491440000,517519614553526100000,148583322955672450000]
+        layers: [0n, 322269212639291189033016n, 517519645847491473408n, 517519614553526108160n, 148583322955672453120n]
+      }
+      const compRawInfo01 = parsingLayerRawInfoToRawInfo(js_layer_raw_info_raw_front_sample_00)
+      console.log(compRawInfo01)
+
+      // let stRRR = '001000100001111100011111110111111111111111111011111110001111100001111100000111000'
+      // let stRRRNum = parseInt(stRRR, 2)
+      // let stLocal = stRRRNum.toLocaleString('fullwide', {useGrouping: false})
+      // console.log(stRRRNum)
+      // console.log(stLocal)
+      // console.log(parseInt('1000100001111100011111110111111111111111111011111110001111100001111100000111000', 2))
+      // console.log(parseInt('1000100001111100011111110111111111111111111011111110001111100001111100000111000', 2).toString(2))
+      // console.log(stRRR)
+      // console.log(stRRRNum.toString(2))
+      // console.log(stRRRNum >= Number.MAX_VALUE)
+
+      let str = ""
+      for (let i=0; i<70; i++) {
+        str += "1"
+        console.log(i)
+        console.log(parseInt(str, 2))
+        console.log(parseInt(str, 2).toString(2))
+        const bi = BigInt('0b' + str)
+        console.log(bi)
+        console.log(bi.toString(2))
+      }
+
+      const bInt = BigInt(3.2226921263929116e+23)
+      console.log(bInt)
+      console.log(bInt.toString(2))
+
+      const bInt1 = BigInt(322269212639291189033016)
+      console.log(bInt1)
+      console.log(bInt1.toString(2))
+
+      // 322269212639291189033016n
+      const bInt2 = BigInt(322269212639291189033016n)
+      console.log(bInt2)
+      console.log(bInt2.toString(2))
+
+      const bInt3 = BigInt('322269212639291189033016')
+      console.log(bInt3)
+      console.log(bInt3.toString(2))
+    }
+  </script>
+</body>
+</html>

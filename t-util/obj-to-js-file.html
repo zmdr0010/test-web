@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>obj to js file</title>
+</head>
+<body onload="init()">
+
+  <script>
+    function init() {
+      const rbxLabSampleDrwRawInfo01 = {
+        uCode: 'rbx-lab-sample-drw-raw-info-01',
+        row: 5,
+        column: 8,
+        rawNum: 7,
+        raw: [3,0,0,0,3,3,3,2,3,3,0,3,7,3,0,1,2,7,2,1,2,4,2,4,2,0,4,5,4,0,0,5,6,5,0,0,2,6,2,0],
+        test: null,
+        test1: {},
+        test2: {
+          ttt: 'ttt',
+          abc: 0,
+          list: [
+            {
+              test: 'test'
+            },
+            {
+              test: 'test1'
+            }
+          ]
+        },
+        test3: [],
+        test4: [[1,2,3], [2,3,4]]
+      }
+
+      for (const [key, value] of Object.entries(rbxLabSampleDrwRawInfo01)) {
+        console.log(`key : ${key}, value : ${value}, ${Array.isArray(value)}, ${Object.prototype.isPrototypeOf(value)}, ${value === null}`)
+      }
+
+      const jsStr = startParsingObjToJsStr('testJs', rbxLabSampleDrwRawInfo01)
+      console.log(jsStr)
+      // saveString(jsStr, 'testJs', 'js')
+    }
+
+    function startParsingObjToJsStr(name, obj) {
+      let result = `const ${name} = `
+      result += parsingObjToJsStr(obj)
+      return result
+    }
+
+    function parsingObjToJsStr(obj, prev='') {
+      let result = '{\n'
+      let hasKey = false
+      for (const [key, value] of Object.entries(obj)) {
+        hasKey = true
+        result += prev + ' ' + key + ': '
+        if (Object.prototype.isPrototypeOf(value)) {
+          if (Array.isArray(value)) {
+            result += '['
+            if (value.length > 0) {
+              if (Object.prototype.isPrototypeOf(value[0])) {
+                if (Array.isArray(value[0])) {
+                  for (const v of value) {
+                    result += '[' + v + '],'
+                  }
+                  result = result.slice(0, result.length-1)
+                } else {
+                  for (const v of value) {
+                    result += parsingObjToJsStr(v, prev + ' ') + ','
+                  }
+                  result = result.slice(0, result.length-1)
+                }
+              } else {
+                result += value
+              }
+            }
+
+            result += '],\n'
+          } else {
+            result += parsingObjToJsStr(value, prev + ' ') + ',\n'
+          }
+        } else if (typeof value === 'string') {
+          result += '\"' + value + '\",\n'
+        }
+        else {
+          result += value + ',\n'
+        }
+      }
+      if (hasKey) result = result.slice(0, result.length-2) + '\n'
+      result += prev + '}'
+      return result
+    }
+
+    function saveString(str, name, extension='txt') {
+      const link = document.createElement("a")
+      const file = new Blob([str], {type:'text/plain'})
+      link.href = URL.createObjectURL(file)
+      link.download = `${name}.${extension}`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    }
+  </script>
+</body>
+</html>

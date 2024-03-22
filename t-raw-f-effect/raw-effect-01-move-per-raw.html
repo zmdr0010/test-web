@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>raw effect 01 move per raw</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    // 20240316131845-layer-comp-raw-front-sample-00/27/27/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    const rawInfo = {
+      uCode: '20240316131845-layer-comp-raw-front-sample-00',
+      row: 27,
+      column: 27,
+      rawNum: 4,
+      raw: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      colorList: []
+    }
+
+    const colorList = [
+      'rgb(95,15,64)',
+      'rgb(154,3,30)',
+      'rgb(116,0,184)',
+      'rgb(227,100,20)',
+      'rgb(15,76,92)'
+    ]
+
+    const colorInfoList = [
+      {
+        r: 95, g: 15, b: 64, a: 1
+      }
+    ]
+
+    const colorListList = [
+      [95,15,64],
+      [154,3,30],
+      [116,0,184],
+      [227,100,20],
+      [15,76,92]
+    ]
+
+    // trw : target row
+    // tcm : target column
+    // d : dir
+    const rawMoveSetList = [
+      {
+        type: 'area', // area / target
+        trw: {
+          from: 0, to: 20
+        },
+        tcm: {
+          from: 0, to: 20
+        },
+        d: {
+          r: -2,
+          c: 2
+        }
+      },
+      {
+        type: 'area', // area / target
+        trw: {
+          from: 0, to: 20
+        },
+        tcm: {
+          from: 0, to: 20
+        },
+        d: {
+          r: 0,
+          c: 2
+        }
+      },
+      {
+        type: 'target', // area / target
+        // target: 60, // raw index
+        // d: {
+        //   r: -3,
+        //   c: -4
+        // },
+        list: [
+          {
+            target: 60, // raw index
+            d: {
+              r: -3,
+              c: -4
+            }
+          },
+          {
+            target: 61, // raw index
+            d: {
+              r: -1,
+              c: -5
+            }
+          },
+          {
+            target: 62, // raw index
+            d: {
+              r: 3,
+              c: -4
+            }
+          }
+        ]
+      }
+    ]
+
+    function init() {
+      const canvas = document.getElementById('id-canvas')
+      const ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      const size = 6
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffect(rawInfo, colorListList, 0, rawInfo.row-1, 6, true, 1, 1)
+      drawRawInfo(ctx, rawInfo, 10, 10, size)
+
+      drawRawInfoByRawMoveSet(ctx, rawInfo, 10 + rawInfo.row + 4, 10, size, rawMoveSetList[0])
+      drawRawInfoByRawMoveSet(ctx, rawInfo, 10 + (rawInfo.row + 4) * 2, 10, size, rawMoveSetList[1])
+      drawRawInfoByRawMoveSet(ctx, rawInfo, 10 + (rawInfo.row + 4) * 3, 10, size, rawMoveSetList[2])
+    }
+
+    function drawRawInfoByRawMoveSet(ctx, rawInfo, sr, sc, size, moveSet) {
+      const list = rawInfo.raw
+      const row = rawInfo.row
+      const mList = []
+      for (let i=0; i<list.length; i++) {
+        const rw = list[i]
+        if (rw - 1 < 0) continue
+        const r = i % row
+        const c = Math.floor(i / row)
+        let mr = r
+        let mc = c
+        let hasMove = false
+
+        if (moveSet.type === 'area') {
+          if (r >= moveSet.trw.from && r <= moveSet.trw.to
+            && c >= moveSet.tcm.from && c <= moveSet.tcm.to) {
+            mr += moveSet.d.r
+            mc += moveSet.d.c
+            mList.push({
+              r: mr,
+              c: mc,
+              color: rawInfo.colorList[i]
+            })
+            hasMove = true
+          }
+        }
+        if (moveSet.type === 'target') {
+          const t = moveSet.list.find(m => m.target === i)
+          if (t) {
+            if (i === t.target) {
+              mr += t.d.r
+              mc += t.d.c
+              mList.push({
+                r: mr,
+                c: mc,
+                color: rawInfo.colorList[i]
+              })
+              hasMove = true
+            }
+          }
+        }
+
+        if (!hasMove) {
+          drawRaw(ctx, mr, mc, sr, sc, rawInfo.colorList[i], size)
+        }
+      }
+
+      for (const m of mList) {
+        drawRaw(ctx, m.r, m.c, sr, sc, m.color, size)
+      }
+    }
+
+    function drawRawInfo(ctx, rawInfo, sr, sc, size) {
+      const list = rawInfo.raw
+      const row = rawInfo.row
+      for (let i=0; i<list.length; i++) {
+        const rw = list[i]
+        if (rw - 1 < 0) continue
+        const r = i % row
+        const c = Math.floor(i / row)
+        drawRaw(ctx, r, c, sr, sc, rawInfo.colorList[i], size)
+      }
+    }
+
+    function drawRaw(ctx, r, c, sr, sc, color, size) {
+      const x = Math.floor(size * (r + sr))
+      const y = Math.floor(size * (c + sc))
+      ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`
+      ctx.beginPath()
+      ctx.rect(x, y, size, size)
+      ctx.fill()
+    }
+
+    function initRawColorList(rawInfo, colorList) {
+      rawInfo.colorList = []
+      for (const rw of rawInfo.raw) {
+        rawInfo.colorList.push(colorList[rw])
+      }
+    }
+
+
+    // all / per raw
+    // left to right
+    // top to bottom
+    // right to left
+    // bottom to top
+    // target to horizontal
+    // target to vertical
+    // target to horizontal, vertical
+
+    // isH = true
+    // cDir : color dir (1 : to white, -1 : to black)
+    // dir : 1 : to right, -1 : to left
+    // isH = false
+    // cDir : color dir (1 : to white, -1 : to black)
+    // dir : 1 : to bottom, -1 : to top
+    function setColorEffect(rawInfo, colorList, from, to, dv, isH, cDir, dir) {
+      if (isH) {
+        for (let i=0; i<rawInfo.column; i++) {
+          let index = i * rawInfo.row
+          if (dir === -1) index += rawInfo.row - 1
+          setColor(rawInfo, index, colorList, from, to, dv, isH, cDir, dir)
+        }
+      } else {
+        for (let i=0; i<rawInfo.row; i++) {
+          let index = i
+          if (dir === -1) index = rawInfo.row - 1 - i
+          setColor(rawInfo, index, colorList, from, to, dv, isH, cDir, dir)
+        }
+      }
+    }
+
+    function setColor(rawInfo, index, colorList, from, to, dv, isH, cDir, dir) {
+      let r = index
+      let c = Math.floor(index / rawInfo.row)
+      if (dir === 1) {
+        for (let i=from; i<=to; i++) {
+          if (i >= rawInfo.raw.length) continue
+          if (!isH) c = i
+          if (isH) r = i
+          changeColor(rawInfo, colorList, i, r, c, from, dv, cDir, dir)
+        }
+      } else {
+        for (let i=from; i>=to; i--) {
+          if (i < 0) continue
+          if (!isH) c = i
+          if (isH) r = i
+          changeColor(rawInfo, colorList, i, r, c, from, dv, cDir, dir)
+        }
+      }
+    }
+
+    function changeColor(rawInfo, colorList, i, r, c, from, dv, cDir, dir) {
+      const rwIndex = r + c * rawInfo.row
+      const rw = rawInfo.raw[rwIndex]
+      const d = (i - from) * dir * dv * cDir
+      const oColor = colorList[rw]
+      const color = [
+        oColor[0] + d, oColor[1] + d, oColor[2] + d
+      ]
+      rawInfo.colorList[rwIndex] = color
+    }
+  </script>
+</body>
+</html>

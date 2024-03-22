@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>raw effect 01 move per raw 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <canvas id="id-canvas"></canvas>
+
+  <script>
+    // 20240316131845-layer-comp-raw-front-sample-00/27/27/4/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    const rawInfo = {
+      uCode: '20240316131845-layer-comp-raw-front-sample-00',
+      row: 27,
+      column: 27,
+      rawNum: 4,
+      raw: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,3,3,0,0,0,3,3,3,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,4,4,4,3,3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,4,4,4,4,4,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,3,3,4,3,4,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,4,4,4,3,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,3,3,3,4,4,4,3,3,3,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,3,3,3,1,1,1,3,3,3,1,1,1,1,1,1,2,2,1,0,0,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,0,0,0,0,0,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,0,0,0,0,0,0,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,1,1,1,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,1,1,1,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      colorList: []
+    }
+    const rawInfo01 = {
+      uCode: 'rawInfo01',
+      row: 5,
+      column: 10,
+      rawNum: 4,
+      raw: [
+        0,0,1,0,0,
+        0,0,1,0,0,
+        0,1,2,1,0,
+        0,2,2,2,0,
+        0,2,2,2,0,
+        0,2,3,2,0,
+        0,2,3,2,0,
+        0,3,3,3,0,
+        3,3,4,3,3,
+        3,4,4,4,3
+      ],
+      colorList: []
+    }
+
+    const colorList = [
+      'rgb(95,15,64)',
+      'rgb(154,3,30)',
+      'rgb(116,0,184)',
+      'rgb(227,100,20)',
+      'rgb(15,76,92)'
+    ]
+
+    const colorInfoList = [
+      {
+        r: 95, g: 15, b: 64, a: 1
+      }
+    ]
+
+    const colorListList = [
+      [95,15,64],
+      [154,3,30],
+      [116,0,184],
+      [227,100,20],
+      [15,76,92]
+    ]
+
+    // trw : target row
+    // tcm : target column
+    // d : dir
+    const rawMoveSetList = [
+      {
+        type: 'area', // area / target
+        trw: {
+          from: 0, to: 20
+        },
+        tcm: {
+          from: 0, to: 20
+        },
+        d: {
+          r: -2,
+          c: 2
+        }
+      },
+      {
+        type: 'area', // area / target
+        trw: {
+          from: 0, to: 20
+        },
+        tcm: {
+          from: 0, to: 20
+        },
+        d: {
+          r: 0,
+          c: 2
+        }
+      },
+      {
+        type: 'target', // area / target
+        // target: 60, // raw index
+        // d: {
+        //   r: -3,
+        //   c: -4
+        // },
+        list: [
+          {
+            target: 60, // raw index
+            d: {
+              r: -3,
+              c: -4
+            }
+          },
+          {
+            target: 61, // raw index
+            d: {
+              r: -1,
+              c: -5
+            }
+          },
+          {
+            target: 62, // raw index
+            d: {
+              r: 3,
+              c: -4
+            }
+          }
+        ]
+      }
+    ]
+
+    const rawEffectInfoList = [
+      // {
+      //   drwObj: '20240316131845-layer-comp-raw-front-sample-00', // rawInfo uCode
+      //   targetInfo: {
+      //     type: 'area', // area / target
+      //     trw: {
+      //       from: 0, to: 20
+      //     },
+      //     tcm: {
+      //       from: 0, to: 20
+      //     },
+      //     // type: 'target', // area / target
+      //     // target: 60, // raw index
+      //   },
+      //   moveSetInfo: {
+      //     type: 'out', // stay / cycle / out / etc...
+      //     currentMove: 0,
+      //     list: [
+      //       {
+      //         currentMove: 0,
+      //         moveCount: 0,
+      //         fps: 60,
+      //         d: 30,
+      //         list: [
+      //           {
+      //             dr: -3,
+      //             dc: -4
+      //           },
+      //           {
+      //             dr: -1,
+      //             dc: -5
+      //           },
+      //           {
+      //             dr: 3,
+      //             dc: -4
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   }
+      // }
+    ]
+
+    const rawEffectInfoList01 = [
+      {
+        drwObj: '20240316131845-layer-comp-raw-front-sample-00', // rawInfo uCode
+        targetInfo: {
+          type: 'area', // area / target
+          trw: {
+            from: 0, to: 20
+          },
+          tcm: {
+            from: 0, to: 20
+          },
+          // type: 'target', // area / target
+          // target: 60, // raw index
+        },
+        moveSetInfo: {
+          type: 'cycle', // stay / cycle / out / etc...
+          currentMove: 0,
+          list: [
+            {
+              currentMove: 0,
+              moveCount: 0,
+              fps: 60,
+              d: 30,
+              list: [
+                // {
+                //   dr: 0,
+                //   dc: 0
+                // },
+                {
+                  dr: 1,
+                  dc: 2
+                },
+                {
+                  dr: -1,
+                  dc: -2
+                },
+                // {
+                //   dr: 0,
+                //   dc: 0
+                // }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+
+    const effectColorInfo = {
+      type: 'sub', // add / sub / change /
+      color: [200,0,0]
+    }
+
+    const tempDRCList = [
+      { d: 9, dr: 1, dc: -2 },
+      { d: 12, dr: -1, dc: -4 },
+      { d: 8, dr: 0, dc: -3 },
+      { d: 10, dr: 0, dc: -4 },
+      { d: 9, dr: 1, dc: -3 },
+      { d: 7, dr: 0, dc: -2 },
+      { d: 11, dr: -1, dc: -4 },
+      { d: 5, dr: 1, dc: -3 },
+      { d: 10, dr: 0, dc: -5 },
+      { d: 11, dr: -1, dc: -7 }
+    ]
+
+    let canvas
+    let ctx
+    let size = 6
+
+    let areaEffectList = []
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH
+
+      // const size = 6
+
+      initRawColorList(rawInfo, colorListList)
+      setColorEffect(rawInfo, colorListList, 0, rawInfo.row-1, 6, true, 1, 1)
+      drawRawInfo(ctx, rawInfo, 10, 10, size)
+
+      drawRawInfoByRawMoveSet(ctx, rawInfo, 10 + rawInfo.row + 4, 10, size, rawMoveSetList[0])
+      drawRawInfoByRawMoveSet(ctx, rawInfo, 10 + (rawInfo.row + 4) * 2, 10, size, rawMoveSetList[1])
+      drawRawInfoByRawMoveSet(ctx, rawInfo, 10 + (rawInfo.row + 4) * 3, 10, size, rawMoveSetList[2])
+
+      initRawColorList(rawInfo01, colorListList)
+      drawRawInfo(ctx, rawInfo01, 20, 70, size)
+
+      createEffectSet(rawInfo01)
+
+      // for (let i=0; i<120; i++) {
+      //   drawEffectListByFrame(ctx, rawEffectInfoList, 60, 20, 70, size)
+      // }
+
+      console.log(rawInfo)
+      areaEffectList = createEffectSetByArea(rawEffectInfoList01[0], rawInfo)
+
+      requestAnimationFrame(drawAni)
+    }
+
+    function drawAni() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      drawRawInfo(ctx, rawInfo, 20, 50, size)
+      drawRawInfo(ctx, rawInfo01, 20, 70, size)
+      drawEffectListByFrame(ctx, rawEffectInfoList, 60, 20, 110, size, effectColorInfo)
+
+      drawEffectListByFrame(ctx, areaEffectList, 60, 100, 60, size)
+
+      requestAnimationFrame(drawAni)
+    }
+
+    function createEffectSetByArea(oEffectInfo, rawInfo) {
+      const r0 = oEffectInfo.targetInfo.trw.from
+      const r1 = oEffectInfo.targetInfo.trw.to
+      const c0 = oEffectInfo.targetInfo.tcm.from
+      const c1 = oEffectInfo.targetInfo.tcm.to
+      const list = []
+
+      for (let i=0; i< rawInfo.raw.length; i++) {
+        const rw = rawInfo.raw[i]
+        if (rw === 0) continue
+        const r = i % rawInfo.row
+        const c = Math.floor(i / rawInfo.row)
+        let mvList = []
+        if (r >= r0 && r <= r1 && c >= c0 && c <= c1) {
+          mvList = oEffectInfo.moveSetInfo.list[0].list
+        } else {
+          mvList = [ {dr: 0, dc: 0}, {dr:0, dc:0} ]
+        }
+        const effectInfo = {
+          drwObj: rawInfo,
+          targetInfo: {
+            type: 'target', // area / target
+            target: i, // raw index
+          },
+          moveSetInfo: {
+            type: oEffectInfo.moveSetInfo.type, // stay / cycle / out / etc...
+            currentMove: 0,
+            list: [
+              {
+                currentMove: 0,
+                moveCount: 0,
+                fps: 60,
+                d: 15,
+                sr: 0,
+                sc: 0,
+                list: mvList
+                // list: oEffectInfo.moveSetInfo.list[0].list
+                // list: [ {dr: 0, dc: 0}, {dr:0, dc:0} ]
+              }
+            ]
+          },
+          rcInfo: {
+            r: r,
+            c: c
+          }
+        }
+        list.push(effectInfo)
+      }
+      return list
+    }
+
+    function createEffectSet(rawInfo) {
+      const centerR = Math.round(rawInfo.row * 0.5)
+      for (let i=0; i<rawInfo.raw.length; i++) {
+        const rw = rawInfo.raw[i]
+        if (rw === 0) continue
+        const r = i % rawInfo.row
+        const c = Math.floor(i / rawInfo.row)
+        const cr = r - centerR
+
+        const effectInfo = {
+          drwObj: rawInfo,
+          targetInfo: {
+            type: 'target', // area / target
+            target: i, // raw index
+          },
+          moveSetInfo: {
+            type: 'out', // stay / cycle / out / etc...
+            currentMove: 0,
+            list: [
+              {
+                currentMove: 0,
+                moveCount: 0,
+                fps: 60,
+                d: 30,
+                sr: 0,
+                sc: 0,
+                list: []
+              }
+            ]
+          },
+          rcInfo: {
+            r: r,
+            c: rawInfo.column - 1 - c
+          }
+        }
+
+        const temp = tempDRCList[(r * 2 + c * 3) % (rawInfo.row * 2)]
+        for (let j=0; j<5; j++) {
+          // const dr = cr * (j + 2) + 1
+          // const dr = 0
+          // const dc = (c + 1) * (j + 2) * -1
+          // const dc = (i+1) * 0.2 * -1
+          const dr = temp.dr
+          const dc = temp.dc
+          effectInfo.moveSetInfo.list[0].list.push({ dr: dr, dc: dc })
+          effectInfo.rcInfo.c -= rawInfo.column
+        }
+
+        effectInfo.moveSetInfo.list[0].d = temp.d
+
+        // const od = i % 2
+        // if (od === 1)
+          rawEffectInfoList.push(effectInfo)
+      }
+    }
+
+    function drawEffectListByFrame(ctx, effectInfoList, fps, sr, sc, size, effectColor=null) {
+      for (const effectInfo of effectInfoList) {
+        const rw = effectInfo.drwObj.raw[effectInfo.targetInfo.target]
+        let color = effectInfo.drwObj.colorList[effectInfo.targetInfo.target]
+        console.log(`color : ${color}, target : ${effectInfo.targetInfo.target}`)
+        const moveInfo = effectInfo.moveSetInfo.list[0]
+        const rcInfo = effectInfo.rcInfo
+        const fpsScale = fps / moveInfo.fps
+        const d = moveInfo.d * fpsScale
+        let moveCount = moveInfo.moveCount
+        let currentMove = moveInfo.currentMove
+        let currentM = moveInfo.list[currentMove]
+        if (moveCount === 0 && currentMove === 0) {
+          moveInfo.sr = rcInfo.r
+          moveInfo.sc = rcInfo.c
+          // currentMove++
+          // currentM = moveInfo.list[currentMove]
+        }
+        moveCount++
+        if (moveCount > d) {
+          moveCount = 0
+          currentMove++
+          if (currentMove >= moveInfo.list.length) {
+            rcInfo.r = currentM.dr + moveInfo.sr
+            rcInfo.c = currentM.dc + moveInfo.sc
+            if (effectInfo.moveSetInfo.type === 'out') return
+            currentMove = 0
+          }
+          moveInfo.sr += currentM.dr
+          moveInfo.sc += currentM.dc
+          currentM = moveInfo.list[currentMove]
+        }
+        const dr = currentM.dr
+        const dc = currentM.dc
+        const rate = moveCount / d
+        // rcInfo.r = dr * rate + moveInfo.sr
+        // rcInfo.c = dc * rate + moveInfo.sc
+        rcInfo.r = Math.round(dr * rate + moveInfo.sr)
+        rcInfo.c = Math.round(dc * rate + moveInfo.sc)
+
+        moveInfo.moveCount = moveCount
+        moveInfo.currentMove = currentMove
+
+        if (effectColor) {
+          if (effectColor.type === 'add') {
+            color = [color[0] + effectColor.color[0], color[1] + effectColor.color[1], color[2] + effectColor.color[2]]
+          }
+          if (effectColor.type === 'sub') {
+            color = [color[0] - effectColor.color[0], color[1] - effectColor.color[1], color[2] - effectColor.color[2]]
+          }
+          if (effectColor.type === 'change') {
+            color = [effectColor.color[0], effectColor.color[1], effectColor.color[2]]
+          }
+        }
+        drawRaw(ctx, rcInfo.r, rcInfo.c, sr, sc, color, size)
+      }
+    }
+
+    function drawRawInfoByRawMoveSet(ctx, rawInfo, sr, sc, size, moveSet) {
+      const list = rawInfo.raw
+      const row = rawInfo.row
+      const mList = []
+      for (let i=0; i<list.length; i++) {
+        const rw = list[i]
+        if (rw - 1 < 0) continue
+        const r = i % row
+        const c = Math.floor(i / row)
+        let mr = r
+        let mc = c
+        let hasMove = false
+
+        if (moveSet.type === 'area') {
+          if (r >= moveSet.trw.from && r <= moveSet.trw.to
+            && c >= moveSet.tcm.from && c <= moveSet.tcm.to) {
+            mr += moveSet.d.r
+            mc += moveSet.d.c
+            mList.push({
+              r: mr,
+              c: mc,
+              color: rawInfo.colorList[i]
+            })
+            hasMove = true
+          }
+        }
+        if (moveSet.type === 'target') {
+          const t = moveSet.list.find(m => m.target === i)
+          if (t) {
+            if (i === t.target) {
+              mr += t.d.r
+              mc += t.d.c
+              mList.push({
+                r: mr,
+                c: mc,
+                color: rawInfo.colorList[i]
+              })
+              hasMove = true
+            }
+          }
+        }
+
+        if (!hasMove) {
+          drawRaw(ctx, mr, mc, sr, sc, rawInfo.colorList[i], size)
+        }
+      }
+
+      for (const m of mList) {
+        drawRaw(ctx, m.r, m.c, sr, sc, m.color, size)
+      }
+    }
+
+    function drawRawInfo(ctx, rawInfo, sr, sc, size) {
+      const list = rawInfo.raw
+      const row = rawInfo.row
+      for (let i=0; i<list.length; i++) {
+        const rw = list[i]
+        if (rw - 1 < 0) continue
+        const r = i % row
+        const c = Math.floor(i / row)
+        drawRaw(ctx, r, c, sr, sc, rawInfo.colorList[i], size)
+      }
+    }
+
+    function drawRaw(ctx, r, c, sr, sc, color, size) {
+      const x = Math.floor(size * (r + sr))
+      const y = Math.floor(size * (c + sc))
+      ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`
+      ctx.beginPath()
+      ctx.rect(x, y, size, size)
+      ctx.fill()
+    }
+
+    function initRawColorList(rawInfo, colorList) {
+      rawInfo.colorList = []
+      for (const rw of rawInfo.raw) {
+        rawInfo.colorList.push(colorList[rw])
+      }
+    }
+
+
+    // all / per raw
+    // left to right
+    // top to bottom
+    // right to left
+    // bottom to top
+    // target to horizontal
+    // target to vertical
+    // target to horizontal, vertical
+
+    // isH = true
+    // cDir : color dir (1 : to white, -1 : to black)
+    // dir : 1 : to right, -1 : to left
+    // isH = false
+    // cDir : color dir (1 : to white, -1 : to black)
+    // dir : 1 : to bottom, -1 : to top
+    function setColorEffect(rawInfo, colorList, from, to, dv, isH, cDir, dir) {
+      if (isH) {
+        for (let i=0; i<rawInfo.column; i++) {
+          let index = i * rawInfo.row
+          if (dir === -1) index += rawInfo.row - 1
+          setColor(rawInfo, index, colorList, from, to, dv, isH, cDir, dir)
+        }
+      } else {
+        for (let i=0; i<rawInfo.row; i++) {
+          let index = i
+          if (dir === -1) index = rawInfo.row - 1 - i
+          setColor(rawInfo, index, colorList, from, to, dv, isH, cDir, dir)
+        }
+      }
+    }
+
+    function setColor(rawInfo, index, colorList, from, to, dv, isH, cDir, dir) {
+      let r = index
+      let c = Math.floor(index / rawInfo.row)
+      if (dir === 1) {
+        for (let i=from; i<=to; i++) {
+          if (i >= rawInfo.raw.length) continue
+          if (!isH) c = i
+          if (isH) r = i
+          changeColor(rawInfo, colorList, i, r, c, from, dv, cDir, dir)
+        }
+      } else {
+        for (let i=from; i>=to; i--) {
+          if (i < 0) continue
+          if (!isH) c = i
+          if (isH) r = i
+          changeColor(rawInfo, colorList, i, r, c, from, dv, cDir, dir)
+        }
+      }
+    }
+
+    function changeColor(rawInfo, colorList, i, r, c, from, dv, cDir, dir) {
+      const rwIndex = r + c * rawInfo.row
+      const rw = rawInfo.raw[rwIndex]
+      const d = (i - from) * dir * dv * cDir
+      const oColor = colorList[rw]
+      const color = [
+        oColor[0] + d, oColor[1] + d, oColor[2] + d
+      ]
+      rawInfo.colorList[rwIndex] = color
+    }
+  </script>
+</body>
+</html>

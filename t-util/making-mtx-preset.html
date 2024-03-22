@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>making mtx preset</title>
+</head>
+<body onload="init()">
+
+  <script>
+    function init() {
+      // [0] let dot = 511
+      // [1] let topEdge = 46
+      // [2] let leftEdge = 46
+      // [3] let bottomEdge = 16
+      // [4] let rightEdge = leftEdge
+      // [5] let leftTop = 22
+      // [6] let leftBottom = 35
+      // [7] let rightBottom = leftBottom
+      // [8] let rightTop = leftTop
+      // [9] let hCLine = 12
+      // [10] let vCLine = 8
+      // [11] let topLine = 7
+      // [12] let leftLine = 12
+      // [13] let bottomLine = 14
+      // [14] let rightLine = leftLine
+
+      const topEdgeIndices = [511, 63, 7, 146, 18, 2, 23, 151, 191] // 9
+      const leftEdgeIndices = [511, 251, 89, 121, 56, 7, 448, 79] // 8
+      const bottomEdgeIndices = [511, 504, 448, 560, 509, 466, 464] // 7
+      const leftTopIndices = [511, 95, 63, 7, 223, 255, 127] // 7
+      const leftBottomIndices = [511, 473, 504, 448, 507, 505, 475] // 7
+      const hCLineIndices = [511, 56, 63, 504, 495, 186, 471, 381] // 8
+      const vCLineIndices = [511, 146, 495, 186, 471, 381] // 6
+      const topLineIndices = [] // topEdge
+      const leftLineIndices = [] // leftEdge
+      const bottomLineIndices = [] // bottomEdge
+    }
+  </script>
+</body>
+</html>
