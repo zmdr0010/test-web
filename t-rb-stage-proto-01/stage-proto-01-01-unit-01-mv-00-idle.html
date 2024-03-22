@@ -36,8 +36,8 @@
   <script type="application/javascript" src="sample/sample-move-set-preset-info-p01.js"></script>
   <script type="application/javascript" src="sample/sample-mtx-preset-x3-b-set-p01.js"></script>
   <script type="application/javascript" src="sample/sample-mtx-preset-x3-skin-part-indices-p01.js"></script>
-  <script type="application/javascript" src="sample/sample-part-move-set-preset-link-info-p01.js"></script>
   <script type="application/javascript" src="sample/sample-part-preset-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-unit-info-p01.js"></script>
   <script type="application/javascript" src="sample/sample-unit-preset-info-p01.js"></script>
   <script type="application/javascript" src="stage-p01.js"></script>
   <script>
@@ -46,7 +46,7 @@
       let canvasH = window.innerHeight - 8 * 2
 
       initStage('id-canvas', canvasW, canvasH * 2)
-      size = 4
+      size = 2
 
       const paramInfo = {
         mtxNum: 0,
@@ -71,42 +71,37 @@
       initResInfo(layerRawInfoList, [calcJrcInfoSample, calcJrcInfoSample01],
         drwRawColorSetInfoListP01, hitLinkInfoSampleListP01, [], [])
 
-      let partList = sampleUnitPresetListP01[0].partList
-
-      let info = {
-        f: { index: 0, mtxNum: 12, bSetNum: -1, colorSetUCode: 'sample-color-set-info-01'},
-        l: { index: 10, mtxNum: 5, bSetNum: -1, colorSetUCode: 'sample-color-set-info-02'},
-        // jrcType : cw (cannon wing)
-        // 5, 6, 7, 8, 9, 10, 15, 24
-        // l: { index: 5, mtxNum: 1, bSetNum: -1, colorSetUCode: 'sample-color-set-info-02', jrcType: 'cw'},
-        bk: { index: 11, mtxNum: 1, bSetNum: -1, colorSetUCode: 'sample-color-set-info-04'},
-        bd: { index: 19, mtxNum: 1, bSetNum: -1, colorSetUCode: 'sample-color-set-info-03'}
-      }
-
-      partList = getSimpleUnitPresetInfoP01FromInfo(info)
-
-      const presetInfo = getSimpleUnitPresetInfoP01('simple-unit-00', partList)
-      const partInfo = createPartInfoFromPresetInfo(presetInfo, resInfo)
-      console.log(partInfo)
-
-      let calcJrcInfo = calcJrcInfoSample03
-      if (partInfo.jrcType && partInfo.jrcType === 'cw') calcJrcInfo = calcJrcInfoSample02
-      moveAutoJoin(partInfo, calcJrcInfo)
+      const unit = getUnit00()
+      const unit01 = getUnit01()
+      const enemy = getEnemy00()
 
       let sr = 10
       let sc = 10
 
-      drawPartInfo(ctx, partInfo, sr, sc, size)
+      unit.partInfo.rcInfo.r = sr
+      unit.partInfo.rcInfo.c = sc
+
+      // drawPartInfo(ctx, unit.partInfo, sr, sc, size)
       // drawRCArea(ctx, partInfo, sr, sc, size)
       // drawHitBox(ctx, partInfo, sr, sc, size)
 
       sr = 80
 
-      reversePartInfoVertical(partInfo, partInfo.rcInfo.csz)
+      enemy.partInfo.rcInfo.r = sr
+      enemy.partInfo.rcInfo.c = sc
 
-      drawPartInfo(ctx, partInfo, sr, sc, size)
+      // drawPartInfo(ctx, enemy.partInfo, sr, sc, size)
       // drawRCArea(ctx, partInfo, sr, sc, size)
       // drawHitBox(ctx, partInfo, sr, sc, size)
+
+      unit01.partInfo.rcInfo.r = 150
+      unit01.partInfo.rcInfo.c = sc
+
+      unitList.push(unit)
+      unitList.push(enemy)
+      unitList.push(unit01)
+
+      start()
     }
   </script>
 </body>
