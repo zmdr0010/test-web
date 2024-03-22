@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test mtx u preset 03 03 edit mtx search</title>
+  <title>Test mtx u preset 04</title>
 
   <style>
     canvas {
@@ -16,7 +16,7 @@
 </head>
 <body onload="init()">
   <div style="margin:8px">
-    <label for="id-input-raw-index">rawIndex (0-124):</label>
+    <label id="id-label-raw-index" for="id-input-raw-index">rawIndex (0-124):</label>
     <input type="number" id="id-input-raw-index" name="raw-num" min="0" max="124" value="0" />
     <label for="id-input-size">size :</label>
     <input type="number" id="id-input-size" name="size" min="1" value="6" />
@@ -105,6 +105,7 @@
   <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin.js"></script>
   <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-part-indices.js"></script>
   <script type="application/javascript" src="../stage-proto/sample-drw-raw-info.js"></script>
+  <script type="application/javascript" src="../sample-00/sample-layer-raw-info-00-select.js"></script>
   <script>
     let size = 6
     let rawIndex = 0 // max : 124 (length : 125)
@@ -118,6 +119,10 @@
     let canvas
     let ctx
     let rawInfoX3MtxSetList = []
+    let rawInfoList = []
+    let colorList = []
+    let layerRawInfoList = []
+    let presetIndicesList = []
 
     function init() {
       canvas = document.getElementById('id-canvas')
@@ -127,6 +132,41 @@
       let canvasH = window.innerHeight - 8 * 2
       canvas.width = canvasW
       canvas.height = canvasH * 5
+
+      rawInfoList = []
+      colorList = rbxLabSamplePalettesInfo00.list
+      layerRawInfoList = sampleLayerRawInfoList00Select
+      // presetIndicesList = mtxPresetX3IndicesList
+      // length : 24
+      console.log(`mtxPresetX3IndicesList.length : ${mtxPresetX3IndicesList.length}`)
+
+      for (const indices of mtxPresetX3IndicesList) {
+        for (const indices2 of mtxPresetX3IndicesList) {
+          if (indices !== indices2) {
+            let isSame = true
+            for (let i=0; i<indices.length; i++) {
+              const id0 = indices[i]
+              const id2 = indices2[i]
+              if (id0 !== id2) isSame = false
+            }
+            const index = mtxPresetX3IndicesList.indexOf(indices)
+            const index2 = mtxPresetX3IndicesList.indexOf(indices2)
+            if (isSame) console.log(`${isSame}, i : ${index}, i2 : ${index2}`)
+          }
+        }
+      }
+
+      let presetIndex = 0
+      for (let i=0; i<30; i++) {
+        presetIndicesList.push(mtxPresetX3IndicesList[presetIndex])
+      }
+
+      for (const layerRawInfo of layerRawInfoList) {
+        rawInfoList.push(parsingLayerRawInfoToRawInfo(layerRawInfo))
+      }
+
+      const rawIndexLabel = document.getElementById('id-label-raw-index')
+      rawIndexLabel.textContent = `rawIndex (0-${rawInfoList.length-1})`
 
       // let size = 6
       // let rawIndex = 6
@@ -161,78 +201,7 @@
       // rawInfo = drwRawInfoSampleList[rawIndex]
       // if (isSample) rawInfo = mtxPresetX3SampleRawInfo02
       bSet = getMtxPresetX3SampleList()[mtxPresetX3BSetIndexList[0]].list
-
-      console.log(drwRawInfoSampleList.length)
-
-      // let topEdge = 46
-      // let leftEdge = 46
-      // let bottomEdge = 16
-      // let rightEdge = leftEdge
-      // let leftTop = 22
-      // let leftBottom = 35
-      // let rightBottom = leftBottom
-      // let rightTop = leftTop
-      // let hCLine = 12
-      // let vCLine = 8
-      // let topLine = 7
-      // let leftLine = 12
-      // let bottomLine = 14
-      // let rightLine = leftLine
-
-      // let mtx01 = [
-      //   mtxPresetX3SampleList[511].list, // 0 : dot
-      //   mtxPresetX3SampleList[presetTopEdge[topEdge]].list, // 1 : top edge
-      //   mtxPresetX3SampleList[presetLeftEdge[leftEdge]].list, // 2 : left edge
-      //   mtxPresetX3SampleList[presetBottomEdge[bottomEdge]].list, // 3 : bottom edge
-      //   mtxPresetX3SampleList[presetRightEdge[rightEdge]].list, // 4 : right edge
-      //   mtxPresetX3SampleList[presetLeftTop[leftTop]].list, // 5 : left top
-      //   mtxPresetX3SampleList[presetLeftBottom[leftBottom]].list, // 6 : left bottom
-      //   mtxPresetX3SampleList[presetRightBottom[rightBottom]].list, // 7 : right bottom
-      //   mtxPresetX3SampleList[presetRightTop[rightTop]].list, // 8 : right top
-      //   mtxPresetX3SampleList[presetHCLine[hCLine]].list, // 9 : horizontal center line
-      //   mtxPresetX3SampleList[presetVCLine[vCLine]].list, // 10 : vertical center line
-      //   mtxPresetX3SampleList[presetTopLine[topLine]].list, // 11 : top line
-      //   mtxPresetX3SampleList[presetLeftLine[leftLine]].list, // 12 : left line
-      //   mtxPresetX3SampleList[presetBottomLine[bottomLine]].list, // 13 : bottom line
-      //   mtxPresetX3SampleList[presetRightLine[rightLine]].list // 14 : right line
-      // ]
-
-      // let mtxIndices01 = [511, 47, 46, 490, 0, 22, 35, 0, 0, 469, 135, 7, 12, 506, 0]
-      // let mtxIndices01 = [511, 146, 121, 509, 0, 427, 473, 0, 0, 381, 466, 23, 89, 469, 0]
-      // let mtxIndices01 = [511, 146, 121, 189, 0, 443, 473, 0, 0, 383, 466, 23, 89, 506, 0]
-      // let mtxIndices01 = [511, 151, 249, 466, 0, 95, 473, 0, 0, 383, 365, 7, 73, 448, 0]
-      // let mtxIndices01 = [511, 63, 249, 509, 0, 95, 473, 0, 0, 383, 511, 383, 479, 504, 0]
-      // let mtxIndices01 = [189, 175, 413, 509, 0, 111, 234, 0, 0, 383, 490, 453, 409, 343, 0]
-      // let mtx01 = getMtx(getMtxPresetX3SampleList(), mtxIndices01)
-
-      // mtxListList = [
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[5]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[3]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[4]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0]),
-      //   getMtxSet(getMtxPresetX3SampleList(), mtxPresetX3IndicesList[0])
-      // ]
-
+      // console.log(drwRawInfoSampleList.length)
       draw()
     }
 
@@ -242,7 +211,7 @@
       const layer = layerList[i]
       const rwInfoX3 = expandCheckRawCornerByMtxSetX3(layer, mtxList, bSet)
       rawInfoList.push(rwInfoX3)
-      drawRawInfoExp(ctx, rwInfoX3, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+      drawRawInfoExp(ctx, rwInfoX3, sr + margin * r, sc + margin * c, size, colorList)
     }
 
     function draw() {
@@ -257,11 +226,11 @@
         const r = i % row
         const c = Math.floor(i / row)
         const layer = layerList[i]
-        drawRawInfoExp(ctx, layer, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+        drawRawInfoExp(ctx, layer, sr + margin * r, sc + margin * c, size, colorList)
       }
 
       for (const rwInfo of layerList) {
-        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, colorList)
       }
 
       const rawInfoX3 = expandRawSimple(rawInfo, 3)
@@ -272,11 +241,11 @@
         const r = i % row
         const c = Math.floor(i / row)
         const layer = rawX3LayerList[i]
-        drawRawInfoExp(ctx, layer, sr + margin * r, sc + margin * c, size, rbxLabSamplePalettesInfo00.list)
+        drawRawInfoExp(ctx, layer, sr + margin * r, sc + margin * c, size, colorList)
       }
 
       for (const rwInfo of rawX3LayerList) {
-        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, colorList)
       }
 
       const rawX3MtxSetLayerList = divideRawLayerToRawInfoList(rawInfo)
@@ -288,13 +257,14 @@
       }
 
       for (const rwInfo of rawInfoX3MtxSetList) {
-        drawRawInfoExp(ctx, rwInfo, sr, sc, size, rbxLabSamplePalettesInfo00.list)
+        drawRawInfoExp(ctx, rwInfo, sr, sc, size, colorList)
       }
     }
 
     function changeRawInfo(index) {
       rawIndex = index
-      rawInfo = drwRawInfoSampleList[rawIndex]
+      rawInfo = rawInfoList[rawIndex]
+      console.log(rawInfo)
 
       const mtxPresetList = getMtxPresetX3SampleList()
       // mtxListList = []
@@ -305,9 +275,9 @@
           mtxListList[i] = getMtxSet(mtxPresetList, indicesList)
         } else {
           console.log(`add mtx : ${i}`)
-          const index = i % mtxPresetX3IndicesList.length
-          mtxListList.push(getMtxSet(mtxPresetList, mtxPresetX3IndicesList[index]))
-          createMtxLayerDiv(i, mtxPresetX3IndicesList[index])
+          const index = i % presetIndicesList.length
+          mtxListList.push(getMtxSet(mtxPresetList, presetIndicesList[index]))
+          createMtxLayerDiv(i, presetIndicesList[index])
         }
       }
     }
@@ -409,6 +379,11 @@
       compRawInfo.uCode = `${generateSimpleUCode()}-layer-comp-${rawInfo.uCode}`
       const str = parsingRawInfoToRawStr(compRawInfo)
       saveString(str, compRawInfo.uCode)
+
+      let jsStrName = `js-${compRawInfo.uCode}`
+      jsStrName = jsStrName.replaceAll('-', '_')
+      const jsStr = startParsingObjToJS(jsStrName, compRawInfo)
+      saveString(jsStr, jsStrName, 'js')
     }
 
     function onClickSearchIndex() {
@@ -452,6 +427,53 @@
 
     function parsingRawInfoToRawStr(info) {
       return `${info.uCode}/${info.row}/${info.column}/${info.rawNum}/${info.raw.join()}`
+    }
+
+    function startParsingObjToJS(name, obj) {
+      let result = `const ${name} = `
+      result += parsingObjToJS(obj)
+      return result
+    }
+
+    function parsingObjToJS(obj, prev='') {
+      let result = '{\n'
+      let hasKey = false
+      for (const [key, value] of Object.entries(obj)) {
+        hasKey = true
+        result += prev + ' ' + key + ': '
+        if (Object.prototype.isPrototypeOf(value)) {
+          if (Array.isArray(value)) {
+            result += '['
+            if (value.length > 0) {
+              if (Object.prototype.isPrototypeOf(value[0])) {
+                if (Array.isArray(value[0])) {
+                  for (const v of value) {
+                    result += '[' + v + ']'
+                  }
+                  result = result.slice(0, result.length-1)
+                } else {
+                  for (const v of value) {
+                    result += parsingObjToJS(v, prev + ' ') + ','
+                  }
+                  result = result.slice(0, result.length-1)
+                }
+              } else {
+                result += value
+              }
+            }
+            result += '],\n'
+          } else {
+            result += parsingObjToJS(value, prev + ' ') + ',\n'
+          }
+        } else if (typeof  value === 'string') {
+          result += '\"' + value + '\",\n'
+        } else {
+          result += value + ',\n'
+        }
+      }
+      if (hasKey) result = result.slice(0, result.length-2) + '\n'
+      result += prev + '}'
+      return result
     }
   </script>
 </body>

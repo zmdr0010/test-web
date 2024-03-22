@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test mtx u preset 05 00 layer mtx set same 03</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      background-color: beige;
+      /*background-color: grey;*/
+    }
+  </style>
+</head>
+<body onload="init()">
+  <div style="margin:8px">
+    <label id="id-label-raw-index" for="id-input-raw-index">rawIndex (0-124):</label>
+    <input type="number" id="id-input-raw-index" name="raw-num" min="0" max="124" value="0" />
+    <label for="id-input-size">size :</label>
+    <input type="number" id="id-input-size" name="size" min="1" value="4" />
+  </div>
+  <div style="margin: 4px">
+    <button onclick="onClickReDraw()">re draw</button>
+  </div>
+
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../sample-00/sample-00.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-info-color-expand.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-layer.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-reverse.js"></script>
+  <script type="application/javascript" src="lib-drw-raw-skin.js"></script>
+  <script type="application/javascript" src="../sample-mtx/manager-mtx-preset-x3.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-b-set.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-part-indices.js"></script>
+  <script type="application/javascript" src="../stage-proto/sample-drw-raw-info.js"></script>
+  <script type="application/javascript" src="../sample-00/sample-layer-raw-info-00-select.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-01.js"></script>
+  <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-part-indices-02.js"></script>
+  <script>
+    let size = 4
+    let rawIndex = 0 // max : 124 (length : 125)
+    let marginX1 = 10
+    let marginX3 = 30
+    let scX1 = 30
+    let scX3 = 70
+    let rawInfo
+    let bSet
+    let mtxListList = []
+    let canvas
+    let ctx
+    let rawInfoX3MtxSetList = []
+    let rawInfoList = []
+    let colorList = []
+    let layerRawInfoList = []
+    let originPresetIndicesList = []
+    let presetIndicesList = []
+
+    function init() {
+      canvas = document.getElementById('id-canvas')
+      ctx = canvas.getContext('2d')
+
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+      canvas.width = canvasW
+      canvas.height = canvasH * 5
+
+      rawInfoList = []
+      colorList = rbxLabSamplePalettesInfo00.list
+      layerRawInfoList = sampleLayerRawInfoList00Select
+      // presetIndicesList = mtxPresetX3IndicesList
+      // length : 60
+      originPresetIndicesList = getMtxIndicesList0002(12 * 5) // 12 topEdge length
+      console.log(`originPresetIndicesList.length : ${originPresetIndicesList.length}`)
+
+      // let presetIndex = 0
+      // for (let i=0; i<30; i++) {
+      //   presetIndicesList.push(originPresetIndicesList[presetIndex])
+      // }
+
+      for (const layerRawInfo of layerRawInfoList) {
+        rawInfoList.push(parsingLayerRawInfoToRawInfo(layerRawInfo))
+      }
+
+      const rawIndexLabel = document.getElementById('id-label-raw-index')
+      rawIndexLabel.textContent = `rawIndex (0-${rawInfoList.length-1})`
+
+      // let size = 6
+      // let rawIndex = 6
+      // let marginX1 = 10
+      // let marginX3 = 30
+      // let scX1 = 30
+      // let scX3 = 70
+
+      const url = new URL(window.location)
+      const searchParams = new URLSearchParams(url.search)
+      let pSize = searchParams.get('size')
+      if (pSize) size = pSize
+      let pRawIndex = searchParams.get('rawIndex')
+      if (pRawIndex) rawIndex = pRawIndex
+
+      // let isSample = true
+      // let pIsSample = searchParams.get('isSample')
+      // if (pIsSample) isSample = (pIsSample === 'true') ? true : false
+
+      let pMarginX1 = searchParams.get('marginX1')
+      if (pMarginX1) marginX1 = pMarginX1
+      let pMarginX3 = searchParams.get('marginX3')
+      if (pMarginX3) marginX3 = pMarginX3
+      let pScX1 = searchParams.get('scX1')
+      if (pScX1) scX1 = pScX1
+      let pScX3 = searchParams.get('scX3')
+      if (pScX3) scX3 = pScX3
+
+      changeRawInfo(rawIndex)
+      // rawInfo = drwRawInfoSampleList[rawIndex]
+      // if (isSample) rawInfo = mtxPresetX3SampleRawInfo02
+      bSet = getMtxPresetX3SampleList()[mtxPresetX3BSetIndexList[0]].list
+      // console.log(drwRawInfoSampleList.length)
+      draw()
+    }
+
+    function drawX3(ctx, i, rawInfo, row, layerList, rawInfoList, mtxList, bSet, size, sr, sc, margin) {
+      const r = i % row
+      const c = Math.floor(i / row)
+      const layer = layerList[i]
+      const rwInfoX3 = expandCheckRawCornerByMtxSetX3(layer, mtxList, bSet)
+      rawInfoList.push(rwInfoX3)
+      drawRawInfoExp(ctx, rwInfoX3, sr + margin * r, sc + margin * c, size, colorList)
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const rawX3MtxSetLayerList = divideRawLayerToRawInfoList(rawInfo)
+      rawInfoX3MtxSetList = []
+      // for (let i=0; i<rawX3MtxSetLayerList.length; i++) {
+      //   const rwInfoX3 = expandCheckRawCornerByMtxSetX3(rawX3MtxSetLayerList[i], mtxListList[i], bSet)
+      //   rawInfoX3MtxSetList.push(rwInfoX3)
+      // }
+      // const compRawInfo = compRawInfoLayers(rawInfoX3MtxSetList)
+      // drawRawInfoExp(ctx, compRawInfo, 10, 10, size, colorList)
+
+      let sr = 10
+      let sc = 10
+      let margin = 10
+      let row = 10
+      let mr = sr
+      let mc = sc
+      let prevC = 0
+      let compC = 0
+
+      const mtxPresetList = getMtxPresetX3SampleList()
+      for (let i=0; i<originPresetIndicesList.length; i++) {
+        const indices = originPresetIndicesList[i]
+        const mtxSet = getMtxSet(mtxPresetList, indices)
+        const layerList = []
+        for (let j=0; j<rawX3MtxSetLayerList.length; j++) {
+          const layerX3 = expandCheckRawCornerByMtxSetX3(rawX3MtxSetLayerList[j], mtxSet, bSet)
+          layerList.push(layerX3)
+        }
+        const comp = compRawInfoLayers(layerList)
+
+        drawRawInfoExp(ctx, comp, mr, mc, size, colorList)
+
+        const rr = i % row
+        const cc = Math.floor((i+1) / row)
+        compC = Math.max(compC, comp.column)
+        if (rr === row-1) {
+          mr = sr
+        } else {
+          mr += margin + comp.row
+        }
+        if (cc !== prevC) {
+          mc += margin + compC
+          prevC = cc
+        }
+      }
+    }
+
+    function changeRawInfo(index) {
+      rawIndex = index
+      rawInfo = rawInfoList[rawIndex]
+      console.log(rawInfo)
+    }
+
+    function onClickReDraw() {
+      console.log('onClickReDraw')
+      const sizeInput = document.getElementById('id-input-size')
+      const rawIndexInput = document.getElementById('id-input-raw-index')
+
+      size = Number(sizeInput.value)
+      changeRawInfo(Number(rawIndexInput.value))
+
+      draw()
+    }
+  </script>
+</body>
+</html>

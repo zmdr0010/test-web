@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test mtx u preset 03 03 edit mtx search</title>
+  <title>Test mtx u preset 03 03 edit mtx search save js layer raw</title>
 
   <style>
     canvas {
@@ -16,7 +16,7 @@
 </head>
 <body onload="init()">
   <div style="margin:8px">
-    <label for="id-input-raw-index">rawIndex (0-124):</label>
+    <label id="id-label-raw-index" for="id-input-raw-index">rawIndex (0-124):</label>
     <input type="number" id="id-input-raw-index" name="raw-num" min="0" max="124" value="0" />
     <label for="id-input-size">size :</label>
     <input type="number" id="id-input-size" name="size" min="1" value="6" />
@@ -105,6 +105,7 @@
   <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin.js"></script>
   <script type="application/javascript" src="../sample-mtx/sample-mtx-preset-x3-skin-part-indices.js"></script>
   <script type="application/javascript" src="../stage-proto/sample-drw-raw-info.js"></script>
+  <script type="application/javascript" src="../sample-00/sample-layer-raw-info-00-select.js"></script>
   <script>
     let size = 6
     let rawIndex = 0 // max : 124 (length : 125)
@@ -118,6 +119,7 @@
     let canvas
     let ctx
     let rawInfoX3MtxSetList = []
+    let rawInfoList = []
 
     function init() {
       canvas = document.getElementById('id-canvas')
@@ -127,6 +129,15 @@
       let canvasH = window.innerHeight - 8 * 2
       canvas.width = canvasW
       canvas.height = canvasH * 5
+
+      rawInfoList = []
+
+      for (const layerRawInfo of sampleLayerRawInfoList00Select) {
+        rawInfoList.push(parsingLayerRawInfoToRawInfo(layerRawInfo))
+      }
+
+      const rawIndexLabel = document.getElementById('id-label-raw-index')
+      rawIndexLabel.textContent = `rawIndex (0-${rawInfoList.length-1})`
 
       // let size = 6
       // let rawIndex = 6
@@ -294,7 +305,8 @@
 
     function changeRawInfo(index) {
       rawIndex = index
-      rawInfo = drwRawInfoSampleList[rawIndex]
+      rawInfo = rawInfoList[rawIndex]
+      console.log(rawInfo)
 
       const mtxPresetList = getMtxPresetX3SampleList()
       // mtxListList = []
@@ -409,6 +421,11 @@
       compRawInfo.uCode = `${generateSimpleUCode()}-layer-comp-${rawInfo.uCode}`
       const str = parsingRawInfoToRawStr(compRawInfo)
       saveString(str, compRawInfo.uCode)
+
+      let jsStrName = `js-${compRawInfo.uCode}`
+      jsStrName = jsStrName.replaceAll('-', '_')
+      const jsStr = startParsingObjToJS(jsStrName, compRawInfo)
+      saveString(jsStr, jsStrName, 'js')
     }
 
     function onClickSearchIndex() {
@@ -452,6 +469,53 @@
 
     function parsingRawInfoToRawStr(info) {
       return `${info.uCode}/${info.row}/${info.column}/${info.rawNum}/${info.raw.join()}`
+    }
+
+    function startParsingObjToJS(name, obj) {
+      let result = `const ${name} = `
+      result += parsingObjToJS(obj)
+      return result
+    }
+
+    function parsingObjToJS(obj, prev='') {
+      let result = '{\n'
+      let hasKey = false
+      for (const [key, value] of Object.entries(obj)) {
+        hasKey = true
+        result += prev + ' ' + key + ': '
+        if (Object.prototype.isPrototypeOf(value)) {
+          if (Array.isArray(value)) {
+            result += '['
+            if (value.length > 0) {
+              if (Object.prototype.isPrototypeOf(value[0])) {
+                if (Array.isArray(value[0])) {
+                  for (const v of value) {
+                    result += '[' + v + ']'
+                  }
+                  result = result.slice(0, result.length-1)
+                } else {
+                  for (const v of value) {
+                    result += parsingObjToJS(v, prev + ' ') + ','
+                  }
+                  result = result.slice(0, result.length-1)
+                }
+              } else {
+                result += value
+              }
+            }
+            result += '],\n'
+          } else {
+            result += parsingObjToJS(value, prev + ' ') + ',\n'
+          }
+        } else if (typeof  value === 'string') {
+          result += '\"' + value + '\",\n'
+        } else {
+          result += value + ',\n'
+        }
+      }
+      if (hasKey) result = result.slice(0, result.length-2) + '\n'
+      result += prev + '}'
+      return result
     }
   </script>
 </body>

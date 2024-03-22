@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test mtx u preset 03 03 edit mtx search</title>
+  <title>Test mtx u preset 03 03 edit mtx search save js</title>
 
   <style>
     canvas {
@@ -409,6 +409,11 @@
       compRawInfo.uCode = `${generateSimpleUCode()}-layer-comp-${rawInfo.uCode}`
       const str = parsingRawInfoToRawStr(compRawInfo)
       saveString(str, compRawInfo.uCode)
+
+      let jsStrName = `js-${compRawInfo.uCode}`
+      jsStrName = jsStrName.replaceAll('-', '_')
+      const jsStr = startParsingObjToJS(jsStrName, compRawInfo)
+      saveString(jsStr, jsStrName, 'js')
     }
 
     function onClickSearchIndex() {
@@ -452,6 +457,53 @@
 
     function parsingRawInfoToRawStr(info) {
       return `${info.uCode}/${info.row}/${info.column}/${info.rawNum}/${info.raw.join()}`
+    }
+
+    function startParsingObjToJS(name, obj) {
+      let result = `const ${name} = `
+      result += parsingObjToJS(obj)
+      return result
+    }
+
+    function parsingObjToJS(obj, prev='') {
+      let result = '{\n'
+      let hasKey = false
+      for (const [key, value] of Object.entries(obj)) {
+        hasKey = true
+        result += prev + ' ' + key + ': '
+        if (Object.prototype.isPrototypeOf(value)) {
+          if (Array.isArray(value)) {
+            result += '['
+            if (value.length > 0) {
+              if (Object.prototype.isPrototypeOf(value[0])) {
+                if (Array.isArray(value[0])) {
+                  for (const v of value) {
+                    result += '[' + v + ']'
+                  }
+                  result = result.slice(0, result.length-1)
+                } else {
+                  for (const v of value) {
+                    result += parsingObjToJS(v, prev + ' ') + ','
+                  }
+                  result = result.slice(0, result.length-1)
+                }
+              } else {
+                result += value
+              }
+            }
+            result += '],\n'
+          } else {
+            result += parsingObjToJS(value, prev + ' ') + ',\n'
+          }
+        } else if (typeof  value === 'string') {
+          result += '\"' + value + '\",\n'
+        } else {
+          result += value + ',\n'
+        }
+      }
+      if (hasKey) result = result.slice(0, result.length-2) + '\n'
+      result += prev + '}'
+      return result
     }
   </script>
 </body>
