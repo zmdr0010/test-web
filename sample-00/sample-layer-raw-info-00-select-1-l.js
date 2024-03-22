@@ -1,0 +1,226 @@
+const sampleLayerRawInfoList00SelectL = []
+
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-00",
+  row: 6,
+  column: 5,
+  rawNum: 4,
+  layers: ["0","268435454","268435422","34087070","34087042"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-01",
+  row: 9,
+  column: 5,
+  rawNum: 4,
+  layers: ["0","4346506903548","275483069884","275415829564","275415829508"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-02",
+  row: 6,
+  column: 6,
+  rawNum: 5,
+  layers: ["0","7776239615","3272356351","2198614430","2198614402","17043456"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-03",
+  row: 9,
+  column: 6,
+  rawNum: 4,
+  layers: ["0","248438088269823","105759678138339","105759678137859","70506452091904"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-04",
+  row: 10,
+  column: 5,
+  rawNum: 7,
+  layers: ["0","140187732541439","109129753432059","106928580593659","105827994174456","105827994174208","105827994173440","105553116266496"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-05",
+  row: 6,
+  column: 9,
+  rawNum: 7,
+  layers: ["0","2037342969790414","2036575055842318","66250218867726","279521201166","279248504846","279239983118","279239983104"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-06",
+  row: 5,
+  column: 9,
+  rawNum: 6,
+  layers: ["0","3547106114790","3541564154086","243029270758","363618534","363618304","69206016"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-07",
+  row: 5,
+  column: 10,
+  rawNum: 7,
+  layers: ["0","228148662746566","227758509134278","16652276601286","159602184646","141868143046","141868138502","141868138496"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-08",
+  row: 6,
+  column: 10,
+  rawNum: 8,
+  layers: ["0","56080556214973382","56079788301026246","66267935605702","297237939142","279785374662","279239984070","279239983110","279239983104"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-09",
+  row: 6,
+  column: 10,
+  rawNum: 8,
+  layers: ["0","38066157705360262","38065389791445894","66267935507334","297237840774","279785243526","279239984006","279239983110","279239983104"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-10",
+  row: 5,
+  column: 10,
+  rawNum: 7,
+  layers: ["0","192947110804706","192934918512866","9316476674274","4987576546","4433379554","4433379552","4433379328"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-11",
+  row: 10,
+  column: 8,
+  rawNum: 7,
+  layers: ["0","14202840015251747437571","4739660305438747458560","14987979559888550912","14987697809899715584","14735284918275279872","13870030289305078784","13870030289301929984"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-12",
+  row: 8,
+  column: 7,
+  rawNum: 7,
+  layers: ["0","8724624766394115","1916241800315651","1915965848650499","1704307700204291","13258816684803","13258816487427","13258816487424"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-13",
+  row: 8,
+  column: 7,
+  rawNum: 6,
+  layers: ["0","4222124650647425","4222124650647425","2527776158486400","2525546818408320","211658144317824","65792"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-14",
+  row: 9,
+  column: 8,
+  rawNum: 10,
+  layers: ["0","1037611339747652681219","148693097097027534339","148584763934061248003","148584763933926768131","148584763933926767618","148584763933926242306","148584763933926242304","26442049140736","26439886977024","26439885914112"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-15",
+  row: 5,
+  column: 8,
+  rawNum: 6,
+  layers: ["0","142237237230","142218836974","484916206","15154158","1006","448"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-16",
+  row: 9,
+  column: 6,
+  rawNum: 8,
+  layers: ["0","1767430581707808","75206877570080","75189597037600","70782943814688","70782943757344","70782943757312","70781870015488","70506452091904"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-00",
+  row: 10,
+  column: 8,
+  rawNum: 6,
+  layers: ["0","17781796032977598676223","17781796032977598676223","17781796032977598152704","17780641982271325208576","216666395121811456","216666326201008128"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-02",
+  row: 10,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","3717521345797042501714967807","3717521345797042501714967807","3717521345797042501713920000","70905245050117659033600","504896771273523200","504826333742759936"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-20240119155318_l_max_10",
+  row: 9,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","17071641913028414434713095","7267860639058814236892679","7267860639041161905571329","7267749957715794526994945","4731860317656722702336","4731860317243466317824"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-20240119155121_l_max_10",
+  row: 9,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","77371252455318623337872927","77368884338770156120182279","299863338337546232663559","4787489625229764595207","4750163790966750449159","4750162946266673447425"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-20240119154558_l_max_10",
+  row: 9,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","75255632271010631648034319","75252083569585834161868295","16958895980677000911914503","16958304524057239034267137","2422712627601505236812289","27796463535003795456"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-20240119154214_l_max_10",
+  row: 9,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","36566459656794361873563199","5091887048468176524279346","4864991808127867904052738","4864696080371033772592642","4864102312267718537776642","9277662004427620864"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-2024011915498_l_max_10",
+  row: 9,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","16995935881974236940599295","7267786707089860931157759","7267786707088205196049983","7267786707088204116008479","7267749741401725170621983","18049651736057375"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-left-sample-17-max-10",
+  row: 4,
+  column: 10,
+  rawNum: 7,
+  layers: ["0","295529610980","295493750496","3435974368","214748896","8949472","8945888","8945664"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-01-max-10",
+  row: 10,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","3722290870876451952155164671","3722290870876451952155164671","3722290870876451952155163648","3722287325639444284620922880","54308161708867584","54308110118879232"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-03-max-10",
+  row: 10,
+  column: 10,
+  rawNum: 7,
+  layers: ["0","1241575098250604922512866559","1241575098250604922512866559","1241575098250604922511818752","1217207325995389263282176","4736269373092554342400","54308161691058176","54290517931851776"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-04-max-10",
+  row: 10,
+  column: 10,
+  rawNum: 8,
+  layers: ["0","3722300343351872871024558079","3722300343351449833388900351","3722300343351449833388899328","3722300343351449833388899328","1246410820047716940781708288","7260673197052814196465664","524288","0"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-05-max-10",
+  row: 10,
+  column: 10,
+  rawNum: 8,
+  layers: ["0","29864094521939620589792706608","124519359419461417044017152","124517586513290708446609408","1207152912598531552837632","300458547887559671808000","300015826029790642569216","300015681773865078358016","300015681773729661059072"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-06-max-10",
+  row: 10,
+  column: 10,
+  rawNum: 6,
+  layers: ["0","29783246427161271683768135692","29739725097654863421063036928","149935134985655613915136","1180590775261789683712","589430132968320401408","294065949453737525248"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-right-sample-07-max-10", // left
+  row: 10,
+  column: 10,
+  rawNum: 8,
+  layers: ["0","138792542109586923795607842936","7858017827494539338838128","7858017827494539338809344","7858017827494536105000960","7858017827494531759603712","7858017827494531289841664","5436620918610368212762624","5436619801717660624879616"]
+})
+sampleLayerRawInfoList00SelectL.push({
+  uCode: "layer-raw-info-raw-big-left-sample-08-max-10",
+  row: 10,
+  column: 10,
+  rawNum: 7,
+  layers: ["0","951825917240353661207126933632","951824707132789503116600934400","317070044260819159533463011328","2424951364790642943197184","2424951364790522667335680","2424951346758531971809280","2420215136201603098345472"]
+})
