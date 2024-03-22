@@ -53,10 +53,16 @@ function copyMoveInfo(moveInfo) {
     sc: (moveInfo.sc) ? moveInfo.sc : 0,
     fps: moveInfo.fps,
     d: moveInfo.d,
-    currentMove: moveInfo.currentMove,
-    moveCount: moveInfo.moveCount,
+    currentMove: 0,
+    moveCount: 0,
     list: list
   }
+}
+
+function initMoveSetInfoToPartInfo(partInfo, moveSetInfo) {
+  partInfo.moveSetInfo = moveSetInfo
+  partInfo.moveSetInfo.moveInfo = copyMoveInfo(partInfo.moveSetInfo.list[0])
+  partInfo.moveSetInfo.currentMove = 0
 }
 
 function setMoveInfoToPartInfo(partInfo, moveInfo) {
