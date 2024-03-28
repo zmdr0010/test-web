@@ -34,20 +34,48 @@ function drawRawInfoAll(ctx, rawInfo, sr, sc, size, colorList, zeroColor) {
   }
 }
 
-function drawDrwObj(ctx, drwObj, sr, sc, size) {
+// cColorList : change color list
+function drawDrwObj(ctx, drwObj, sr, sc, size, cColorList=[]) {
   const r = sr + drwObj.rcInfo.r
   const c = sc + drwObj.rcInfo.c
-  drawRawInfo(ctx, drwObj.rawInfo, r, c, size, drwObj.colorList)
+  if (cColorList.length > 0) {
+    drawRawInfo(ctx, drwObj.rawInfo, r, c, size, cColorList)
+  } else {
+    drawRawInfo(ctx, drwObj.rawInfo, r, c, size, drwObj.colorList)
+  }
+
   for (const co of drwObj.child) {
-    drawDrwObj(ctx, co, r + co.rcInfo.r, c + co.rcInfo.c, size)
+    drawDrwObj(ctx, co, r + co.rcInfo.r, c + co.rcInfo.c, size, cColorList)
   }
 }
 
 function drawPartInfo(ctx, partInfo, sr, sc, size) {
+  if (partInfo.state === 'out') return
   const r = sr + partInfo.rcInfo.r
   const c = sc + partInfo.rcInfo.c
   if (partInfo.drwObj) drawDrwObj(ctx, partInfo.drwObj, r, c, size)
   for (const cp of partInfo.child) {
     drawPartInfo(ctx, cp, r, c, size)
+  }
+}
+
+function drawPartInfoEffectColorChange(ctx, partInfo, sr, sc, size) {
+  if (partInfo.state === 'out') return
+  const r = sr + partInfo.rcInfo.r
+  const c = sc + partInfo.rcInfo.c
+  if (partInfo.effectInfo && partInfo.effectInfo.list.length > 0) {
+    const ePart = partInfo.effectInfo.list[0]
+    console.log(ePart)
+    const moveInfo = ePart.moveSetInfo.list[ePart.moveSetInfo.currentMove]
+    const mdInfo = moveInfo.list[moveInfo.currentMove]
+    const colorList = mdInfo.colorList
+    console.log(moveInfo)
+    console.log(colorList)
+    if (partInfo.drwObj) drawDrwObj(ctx, partInfo.drwObj, r, c, size, colorList)
+  } else {
+    if (partInfo.drwObj) drawDrwObj(ctx, partInfo.drwObj, r, c, size) // for target changing color
+  }
+  for (const cp of partInfo.child) {
+    drawPartInfoEffectColorChange(ctx, cp, r, c, size)
   }
 }

@@ -1,4 +1,5 @@
 function drawRCArea(ctx, partInfo, sr, sc, size, color='green') {
+  if (partInfo.state === 'out') return
   const r = sr + partInfo.rcInfo.r
   const c = sc + partInfo.rcInfo.c
   const x = r * size
@@ -12,6 +13,7 @@ function drawRCArea(ctx, partInfo, sr, sc, size, color='green') {
 }
 
 function drawHitBox(ctx, partInfo, sr, sc, size, color='red') {
+  if (partInfo.state === 'out') return
   if (partInfo.hitInfo) {
     for (const hit of partInfo.hitInfo.hitBox) {
       const l = hit[0]
