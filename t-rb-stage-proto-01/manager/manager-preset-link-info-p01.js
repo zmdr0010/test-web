@@ -25,7 +25,7 @@ function createPartInfoFromPresetPartInfo(prePartInfo, resInfo) {
   let uCode = prePartInfo.uCode
   let tCode = prePartInfo.tCode
   let jrcType = prePartInfo.jrcType
-  let rcInfo = prePartInfo.rcInfo
+  let rcInfo = copyRcInfo(prePartInfo.rcInfo)
   let drwObj = null
   let moveSetInfo = null
   let hitInfo = null
@@ -44,10 +44,10 @@ function createPartInfoFromPresetPartInfo(prePartInfo, resInfo) {
   }
   if (prePartInfo.moveSetLink && prePartInfo.moveSetLink.length > 0) {
     // set moveSetInfo
-    const mPresetLinkInfo = resInfo.mvsPresetLinkList.find(info => info.uCode === prePartInfo.moveSetLink)
-    const mPresetInfo = resInfo.mvsPresetList.find(info => info.uCode === mPresetLinkInfo.moveSetPresetLink)
+    const mPresetInfo = resInfo.mvsPresetList.find(info => info.uCode === prePartInfo.moveSetLink)
     moveSetInfo = createMoveSetInfoFromPresetInfo(mPresetInfo)
   }
+  if (prePartInfo.movePresetInfo) moveSetInfo = createMoveSetInfoFromPresetInfo(prePartInfo.movePresetInfo)
   if (prePartInfo.effectLink && prePartInfo.effectLink.length > 0) {
     // set effectInfo
   }
@@ -105,6 +105,7 @@ function createPartInfoFromPresetPartInfo(prePartInfo, resInfo) {
     hitInfo: hitInfo,
     effectInfo: effectInfo,
     armsInfo: armsInfo,
+    state: 'normal',
     child: child
   }
 }
@@ -115,25 +116,24 @@ function getDrwObjInfoFromInfo(drwObjInfo, resInfo) {
   const colorSetInfo = resInfo.colorSetInfoList.find(i => i.uCode === drwObjInfo.colorSetInfo.uCode)
   let colorList = []
   if (colorSetInfo) {
-    for (let i=0; i<rawInfo.rawNum; i++) {
-      const rRate = i / rawInfo.rawNum
-      const cRate = (colorSetInfo.list.length - 1) * rRate
-      const cIndex = Math.floor(cRate)
-      const c = colorSetInfo.list[cIndex]
-      const c1 = colorSetInfo.list[cIndex + 1]
-      let r = c[0] + Math.round((c1[0] - c[0]) * (cRate - cIndex))
-      let g = c[1] + Math.round((c1[1] - c[1]) * (cRate - cIndex))
-      let b = c[2] + Math.round((c1[2] - c[2]) * (cRate - cIndex))
-      if (r > 255) r = 255
-      if (g > 255) g = 255
-      if (b > 255) b = 255
-      colorList.push([r, g, b])
-    }
-
-
-    for (const color of colorSetInfo.list) {
-      colorList.push(color)
-    }
+    // for (let i=0; i<rawInfo.rawNum; i++) {
+    //   const rRate = i / rawInfo.rawNum
+    //   const cRate = (colorSetInfo.list.length - 1) * rRate
+    //   const cIndex = Math.floor(cRate)
+    //   const c = colorSetInfo.list[cIndex]
+    //   const c1 = colorSetInfo.list[cIndex + 1]
+    //   let r = c[0] + Math.round((c1[0] - c[0]) * (cRate - cIndex))
+    //   let g = c[1] + Math.round((c1[1] - c[1]) * (cRate - cIndex))
+    //   let b = c[2] + Math.round((c1[2] - c[2]) * (cRate - cIndex))
+    //   if (r > 255) r = 255
+    //   if (g > 255) g = 255
+    //   if (b > 255) b = 255
+    //   colorList.push([r, g, b])
+    // }
+    colorList = createColorList(colorSetInfo, rawInfo.rawNum)
+    // for (const color of colorSetInfo.list) {
+    //   colorList.push(color)
+    // }
   }
 
   if (drwObjInfo.rawType === 'layers') rawInfo = parsingLayerRawInfoToRawInfo(rawInfo)
@@ -148,7 +148,6 @@ function getDrwObjInfoFromInfo(drwObjInfo, resInfo) {
     const mtxSet = getMtxSet(mtxPresetList, indices)
 
     if (drwObjInfo.rawType === 'layers') {
-
       const layerList = divideRawLayerToRawInfoList(rawInfo)
       const layerListX3 = []
       for (const layer of layerList) {
@@ -161,7 +160,7 @@ function getDrwObjInfoFromInfo(drwObjInfo, resInfo) {
     }
   }
 
-  let rcInfo = drwObjInfo.rcInfo
+  let rcInfo = copyRcInfo(drwObjInfo.rcInfo)
   let isRCszCalculating = false
   let r = rcInfo.r
   let c = rcInfo.c
@@ -295,7 +294,7 @@ function setPartMoveSetByPresetList(partInfo, mvsPresetLinkList, mvsPresetList) 
   }
 }
 
-function createArmsInfoByPreset(presetInfo, resInfo, partPresetInfoList) {
+function createArmsInfoByPreset(presetInfo, resInfo) {
   const aUCode = presetInfo.uCode
   const aTCode = presetInfo.tCode
   const actInfo = {
@@ -303,11 +302,14 @@ function createArmsInfoByPreset(presetInfo, resInfo, partPresetInfoList) {
     frame: presetInfo.actInfo.frame,
     frameMax: presetInfo.actInfo.frameMax,
     count: presetInfo.actInfo.count,
-    countMax: presetInfo.actInfo.countMax
+    countMax: presetInfo.actInfo.countMax,
+    reverseInfo: presetInfo.actInfo.reverseInfo,
+    hitType: presetInfo.actInfo.hitType,
+    hitTarget: presetInfo.actInfo.hitTarget
   }
   const actPartSetList = []
   for (const actPreset of presetInfo.actPartSetList) {
-    const partPreset = partPresetInfoList.find(info => info.uCode === actPreset.partPresetLink)
+    const partPreset = actPreset.partPresetInfo
     const partInfo = createPartInfoFromPresetInfo(partPreset, resInfo)
     const dRcInfo = {
       dr: actPreset.dRcInfo.dr,
@@ -326,28 +328,28 @@ function createArmsInfoByPreset(presetInfo, resInfo, partPresetInfoList) {
   }
 }
 
-function setPartArmsByPreset(partInfo, armsPresetLink, resInfo, partPresetInfoList) {
+function setPartArmsByPreset(partInfo, armsPresetLink, resInfo) {
   if (armsPresetLink.targetType === 'uCode') {
     if (partInfo.uCode === armsPresetLink.target) {
       if (!partInfo.armsInfo) partInfo.armsInfo = { list: [] }
-      partInfo.armsInfo.list.push(createArmsInfoByPreset(armsPresetLink, resInfo, partPresetInfoList))
+      partInfo.armsInfo.list.push(createArmsInfoByPreset(armsPresetLink, resInfo))
     }
   }
   if (armsPresetLink.targetType === 'tCode') {
     if (partInfo.tCode === armsPresetLink.target) {
       if (!partInfo.armsInfo) partInfo.armsInfo = { list: [] }
-      partInfo.armsInfo.list.push(createArmsInfoByPreset(armsPresetLink, resInfo, partPresetInfoList))
+      partInfo.armsInfo.list.push(createArmsInfoByPreset(armsPresetLink, resInfo))
     }
   }
 
   for (const childInfo of partInfo.child) {
-    setPartArmsByPreset(childInfo, armsPresetLink, resInfo, partPresetInfoList)
+    setPartArmsByPreset(childInfo, armsPresetLink, resInfo)
   }
 }
 
-function setPartArmsByPresetList(partInfo, armsPresetLinkList, resInfo, partPresetInfoList) {
+function setPartArmsByPresetList(partInfo, armsPresetLinkList, resInfo) {
   for (const armsPresetLink of armsPresetLinkList) {
-    setPartArmsByPreset(partInfo, armsPresetLink, resInfo, partPresetInfoList)
+    setPartArmsByPreset(partInfo, armsPresetLink, resInfo)
   }
 }
 
@@ -422,17 +424,21 @@ function copyPartInfo(partInfo) {
   return {
     uCode: partInfo.uCode,
     tCode: partInfo.tCode,
-    rcInfo: {
-      r: partInfo.rcInfo.r,
-      c: partInfo.rcInfo.c,
-      rsz: partInfo.rcInfo.rsz,
-      csz: partInfo.rcInfo.csz
-    },
+    rcInfo: copyRcInfo(partInfo.rcInfo),
     drwObj: partInfo.drwObj,
     moveSetInfo: moveSetInfo,
     hitInfo: partInfo.hitInfo,
     effectInfo: partInfo.effectInfo,
     armsInfo: armsInfo,
     child: child
+  }
+}
+
+function copyRcInfo(rcInfo) {
+  return {
+    r: rcInfo.r,
+    c: rcInfo.c,
+    rsz: rcInfo.rsz,
+    csz: rcInfo.csz
   }
 }

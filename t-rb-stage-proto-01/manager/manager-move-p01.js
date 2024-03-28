@@ -85,7 +85,13 @@ function updatePartMove(partInfo, fps, isSmooth=false) {
             isEnd = true
           }
         }
-        if (!isEnd) {
+        if (isEnd) {
+          if (partInfo.moveSetInfo.type === 'end') {
+            partInfo.state = 'end'
+          } else {
+            partInfo.state = 'out'
+          }
+        } else {
           setMoveInfoToPartInfo(partInfo, partInfo.moveSetInfo.list[partInfo.moveSetInfo.currentMove])
         }
       }
@@ -119,20 +125,30 @@ function updatePartAct(partInfo, sr=0, sc=0) {
       }
 
       for (const actPartSet of armInfo.actPartSetList) {
-        const asr = sr
+        let asr = sr
           + partInfo.rcInfo.r
           + actPartSet.dRcInfo.dr
           + Math.floor(partInfo.rcInfo.rsz * 0.5)
           - Math.floor(actPartSet.part.rcInfo.rsz * 0.5)
-        const asc = sc
+        let asc = sc
           + partInfo.rcInfo.c
           + actPartSet.dRcInfo.dc
           - actPartSet.part.rcInfo.csz
+        if (actInfo.reverseInfo) {
+          if (actInfo.reverseInfo.type === 'v') {
+            asc = sc + partInfo.rcInfo.c + partInfo.rcInfo.csz - actPartSet.dRcInfo.dc
+          }
+        }
         const unitInfo = {
           uCode: '',
-          partInfo: copyPartInfo(actPartSet.part)
+          partInfo: copyPartInfo(actPartSet.part),
+          hitInfo: {
+            hitFrame: 0,
+            hitState: 0,
+            type: actInfo.hitType,
+            target: actInfo.hitTarget
+          }
         }
-        console.log(unitInfo.partInfo)
         moveUnit(unitInfo, asr, asc)
         addUnit(unitInfo)
       }
@@ -146,4 +162,41 @@ function updatePartAct(partInfo, sr=0, sc=0) {
 
 function addUnit(unit) {
   unitList.push(unit)
+}
+
+function updatePartEffect(partInfo, fps, isSmooth=false) {
+  if (partInfo.effectInfo) {
+    let isOut = true
+    for (const ep of partInfo.effectInfo.list) {
+      updatePartMove(ep, fps, isSmooth)
+      if (ep.state !== 'out') isOut = false
+    }
+    if (partInfo.effectInfo.type === 'change-out' && isOut === true) {
+      partInfo.state = 'out'
+      partInfo.effectInfo = null
+    }
+  }
+  for (const child of partInfo.child) {
+    updatePartEffect(child, fps, isSmooth)
+  }
+}
+
+function checkColorEffectEnd(unit) {
+  const partInfo = unit.partInfo
+  if (!partInfo.effectInfo) return
+  let isEnd = false
+  for (const child of partInfo.child) {
+    if (child.effectInfo) {
+      const ePart = child.effectInfo.list[0]
+      if (ePart.state === 'end') {
+        isEnd = true
+        child.effectInfo = null
+        child.hitInfo.hitState = 0
+      }
+    }
+  }
+  if (isEnd) {
+    partInfo.effectInfo = null
+    unit.hitInfo.hitState = 0
+  }
 }
