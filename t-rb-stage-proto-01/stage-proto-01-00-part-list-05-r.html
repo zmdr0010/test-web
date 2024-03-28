@@ -56,11 +56,11 @@
       const mtxNum = paramInfo.mtxNum
       const bSetNum = paramInfo.bSetNum
       const colorSetUCode = paramInfo.colorSetUCode
-      const fList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01F, 'f', mtxNum, bSetNum, colorSetUCode)
-      const lList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01L, 'l', mtxNum, bSetNum, colorSetUCode)
-      const bkList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BK, 'bk', mtxNum, bSetNum, colorSetUCode)
-      const bdList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BD, 'bd', mtxNum, bSetNum, colorSetUCode)
-      const rList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01L, 'r', mtxNum, bSetNum, colorSetUCode, 'h-reverse')
+      const fList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01F, 'f', mtxNum, bSetNum, colorSetUCode)
+      const lList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01L, 'l', mtxNum, bSetNum, colorSetUCode)
+      const bkList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BK, 'bk', mtxNum, bSetNum, colorSetUCode)
+      const bdList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BD, 'bd', mtxNum, bSetNum, colorSetUCode)
+      const rList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01L, 'r', mtxNum, bSetNum, colorSetUCode, 'h-reverse')
       const partPresetInfoList = fList.concat(lList, bkList, bdList)
       // initPartPresetInfoList(partPresetInfoList)
       console.log(rList.length)

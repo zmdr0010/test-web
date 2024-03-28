@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>stage proto 01 00 part list</title>
+  <title>stage proto 01 01 unit 01 mv 01 shoot</title>
 
   <style>
     canvas {
@@ -37,6 +37,9 @@
   <script type="application/javascript" src="sample/sample-mtx-preset-x3-b-set-p01.js"></script>
   <script type="application/javascript" src="sample/sample-mtx-preset-x3-skin-part-indices-p01.js"></script>
   <script type="application/javascript" src="sample/sample-part-preset-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-unit-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-unit-preset-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-raw-info-p01.js"></script>
   <script type="application/javascript" src="stage-p01.js"></script>
   <script>
     function init() {
@@ -44,14 +47,13 @@
       let canvasH = window.innerHeight - 8 * 2
 
       initStage('id-canvas', canvasW, canvasH * 2)
-      size = 4
+      size = 2
 
       const paramInfo = {
-        mtxNum: 20,
+        mtxNum: 0,
         bSetNum: -1,
-        colorSetUCode: 'sample-color-set-info-17'
-      } // effect : 01, 02, 04, 09, 11, 12, 13, 14, 15, 16, 18, 19
-      // select : 03, 05, 06, 08, 10, 17
+        colorSetUCode: 'sample-color-set-info-00'
+      }
 
       checkParams(window, paramInfo)
 
@@ -66,35 +68,44 @@
       console.log(partPresetInfoList.length)
       initPartPresetInfoList(partPresetInfoList)
       const layerRawInfoList = sampleLayerRawInfoListP01F.concat(sampleLayerRawInfoListP01L,
-        sampleLayerRawInfoListP01BK, sampleLayerRawInfoListP01BD)
+        sampleLayerRawInfoListP01BK, sampleLayerRawInfoListP01BD, sampleRawInfoListShoot)
       initResInfo(layerRawInfoList, [calcJrcInfoSample, calcJrcInfoSample01],
         drwRawColorSetInfoListP01, hitLinkInfoSampleListP01, [], [])
 
-      let maxR = Math.floor(canvasW / size) - 20
-      let margin = 5
-      let sr = margin
-      let sc = margin
-      let csz = 0
+      // isUnitGuideOn = true
 
-      for (const partPreInfo of presetInfoManager.list) {
-        const partInfo = createPartInfoFromPresetInfo(partPreInfo, resInfo)
+      const unit = createUnit00()
+      const unit01 = createUnit01()
+      const enemy = createEnemy00()
 
-        let rr = sr + partInfo.rcInfo.r + partInfo.rcInfo.rsz + margin
+      let sr = 10
+      let sc = 240
 
-        if (rr > maxR) {
-          sr = margin
-          sc += csz
-        }
+      unit.partInfo.rcInfo.r = sr
+      unit.partInfo.rcInfo.c = sc
 
-        drawPartInfo(ctx, partInfo, sr, sc, size)
-        drawRCArea(ctx, partInfo, sr, sc, size)
-        drawHitBox(ctx, partInfo, sr, sc, size)
+      // drawPartInfo(ctx, unit.partInfo, sr, sc, size)
+      // drawRCArea(ctx, partInfo, sr, sc, size)
+      // drawHitBox(ctx, partInfo, sr, sc, size)
 
+      sr = 80
+      sc = 10
 
-        sr += partInfo.rcInfo.r + partInfo.rcInfo.rsz + margin
+      enemy.partInfo.rcInfo.r = sr
+      enemy.partInfo.rcInfo.c = sc
 
-        csz = Math.max(csz, partInfo.rcInfo.c + partInfo.rcInfo.csz + margin)
-      }
+      // drawPartInfo(ctx, enemy.partInfo, sr, sc, size)
+      // drawRCArea(ctx, partInfo, sr, sc, size)
+      // drawHitBox(ctx, partInfo, sr, sc, size)
+
+      unit01.partInfo.rcInfo.r = 150
+      unit01.partInfo.rcInfo.c = 140
+
+      unitList.push(unit)
+      unitList.push(enemy)
+      unitList.push(unit01)
+
+      start()
     }
   </script>
 </body>

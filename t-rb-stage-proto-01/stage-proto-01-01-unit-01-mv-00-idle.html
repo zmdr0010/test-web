@@ -39,6 +39,7 @@
   <script type="application/javascript" src="sample/sample-part-preset-info-p01.js"></script>
   <script type="application/javascript" src="sample/sample-unit-info-p01.js"></script>
   <script type="application/javascript" src="sample/sample-unit-preset-info-p01.js"></script>
+  <script type="application/javascript" src="sample/sample-raw-info-p01.js"></script>
   <script type="application/javascript" src="stage-p01.js"></script>
   <script>
     function init() {
@@ -59,21 +60,21 @@
       const mtxNum = paramInfo.mtxNum
       const bSetNum = paramInfo.bSetNum
       const colorSetUCode = paramInfo.colorSetUCode
-      const fList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01F, 'f', mtxNum, bSetNum, colorSetUCode)
-      const lList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01L, 'l', mtxNum, bSetNum, colorSetUCode)
-      const bkList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BK, 'bk', mtxNum, bSetNum, colorSetUCode)
-      const bdList = getSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BD, 'bd', mtxNum, bSetNum, colorSetUCode)
+      const fList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01F, 'f', mtxNum, bSetNum, colorSetUCode)
+      const lList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01L, 'l', mtxNum, bSetNum, colorSetUCode)
+      const bkList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BK, 'bk', mtxNum, bSetNum, colorSetUCode)
+      const bdList = createSimplePartPresetInfoListP01(sampleLayerRawInfoListP01BD, 'bd', mtxNum, bSetNum, colorSetUCode)
       const partPresetInfoList = fList.concat(lList, bkList, bdList)
       console.log(partPresetInfoList.length)
       initPartPresetInfoList(partPresetInfoList)
       const layerRawInfoList = sampleLayerRawInfoListP01F.concat(sampleLayerRawInfoListP01L,
-        sampleLayerRawInfoListP01BK, sampleLayerRawInfoListP01BD)
+        sampleLayerRawInfoListP01BK, sampleLayerRawInfoListP01BD, sampleRawInfoListShoot)
       initResInfo(layerRawInfoList, [calcJrcInfoSample, calcJrcInfoSample01],
         drwRawColorSetInfoListP01, hitLinkInfoSampleListP01, [], [])
 
-      const unit = getUnit00()
-      const unit01 = getUnit01()
-      const enemy = getEnemy00()
+      const unit = createUnit00(false)
+      const unit01 = createUnit01()
+      const enemy = createEnemy00(false)
 
       let sr = 10
       let sc = 10

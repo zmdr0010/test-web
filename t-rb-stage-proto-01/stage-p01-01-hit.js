@@ -52,6 +52,7 @@ function stop() {
 function aniFrame(timestamp) {
   frame++
   totalFrame++
+  // if (totalFrame === 60 * 3) isPlaying = false
   if (startTimestamp === 0) {
     startTimestamp = timestamp
     prevTimeStamp = timestamp
@@ -73,8 +74,11 @@ function update() {
   for (const unit of unitList) {
     updatePartMove(unit.partInfo, fps, isSmooth)
     updatePartAct(unit.partInfo)
+    updatePartEffect(unit.partInfo, fps, isSmooth)
+    checkColorEffectEnd(unit)
     if (unit.partInfo.state === 'out') outList.push(unit)
   }
+  updateHit(unitList)
   for (const outUnit of outList) {
     unitList.splice(unitList.indexOf(outUnit), 1)
   }
@@ -82,8 +86,18 @@ function update() {
 
 function draw() {
   for (const unit of unitList) {
-    // drawPartInfo(ctx, unit.partInfo, unit.partInfo.rcInfo.r, unit.partInfo.rcInfo.c, size)
-    drawPartInfo(ctx, unit.partInfo, 0, 0, size)
+    if (unit.partInfo.effectInfo) {
+      if (unit.partInfo.effectInfo.type === 'change-out') {
+        for (const ePartI of unit.partInfo.effectInfo.list) {
+          drawPartInfo(ctx, ePartI, 0, 0, size)
+        }
+      }
+      if (unit.partInfo.effectInfo.type === 'change-color') {
+        drawPartInfoEffectColorChange(ctx, unit.partInfo, 0, 0, size)
+      }
+    } else {
+      drawPartInfo(ctx, unit.partInfo, 0, 0, size)
+    }
 
     if (!isUnitGuideOn) continue
     drawRCArea(ctx, unit.partInfo, 0, 0, size)
