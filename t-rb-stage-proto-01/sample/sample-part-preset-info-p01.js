@@ -15,6 +15,7 @@ const partPresetInfoSampleListP01 = [ // sample
         child: []
       },
       moveSetLink: '',
+      movePresetInfo: null,
       hitLink: 'hit-link-info-obj-area',
       effectLink: '',
       armsLink: '',
@@ -23,53 +24,55 @@ const partPresetInfoSampleListP01 = [ // sample
   }
 ]
 
-function getSimplePartPresetInfoListP01(layerRawList, tCode, mtxNum, bSetNum, colorSetUCode, rawDirType='normal') {
+function createSimplePartPresetInfoListP01(layerRawList, tCode, mtxNum, bSetNum, colorSetUCode, rawDirType='normal') {
   const list = []
   for (const layer of layerRawList) {
+
     const info = {
-      uCode: `part-preset-info-${layer.uCode}`,
-      partInfo: {
-        uCode: `part-info-${layer.uCode}`,
-        tCode: tCode,
-        rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },// -1 : calculating (include drwObj and child) on init
-        drwObjInfo: { // null : no drw obj
-          uCode: layer.uCode, // drwRawInfo uCode
-          mtxInfo: { // null : origin (no mtx : direct drawing)
-            num: mtxNum, // -1 : origin (no mtx : direct drawing), 0 ~ n : mtx preset index
-            bSetNum: -1 // -1 : none, 0 ~ n : bSet preset index
-          },
-          rawType: 'layers', // raw / layers
-          rawDirType: rawDirType, // normal / h-reverse / v-reverse
-          colorSetInfo: {
-            uCode: colorSetUCode
-          },
-          rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },
-          child: []
-        },
-        moveSetLink: '',
-        hitLink: 'hit-link-info-obj-area-02',
-        effectLink: '',
-        armsLink: '',
-        child: []
-      }
+      uCode: `part-preset-info-${generateSimpleUCode()}-${layer.uCode}`,
+      partInfo: createSimplePartPresetInfoP01(layer.uCode, tCode, mtxNum, bSetNum, colorSetUCode, rawDirType)
+      // partInfo: {
+      //   uCode: `part-info-${layer.uCode}`,
+      //   tCode: tCode,
+      //   rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },// -1 : calculating (include drwObj and child) on init
+      //   drwObjInfo: { // null : no drw obj
+      //     uCode: layer.uCode, // drwRawInfo uCode
+      //     mtxInfo: { // null : origin (no mtx : direct drawing)
+      //       num: mtxNum, // -1 : origin (no mtx : direct drawing), 0 ~ n : mtx preset index
+      //       bSetNum: -1 // -1 : none, 0 ~ n : bSet preset index
+      //     },
+      //     rawType: 'layers', // raw / layers
+      //     rawDirType: rawDirType, // normal / h-reverse / v-reverse
+      //     colorSetInfo: {
+      //       uCode: colorSetUCode
+      //     },
+      //     rcInfo: { r: 0, c: 0, rsz: -1, csz: -1 },
+      //     child: []
+      //   },
+      //   moveSetLink: '',
+      //   hitLink: 'hit-link-info-obj-area-02',
+      //   effectLink: '',
+      //   armsLink: '',
+      //   child: []
+      // }
     }
     list.push(info)
   }
   return list
 }
 
-function getSimplePartPresetInfoP01(layerUCode, tCode, mtxNum, bSetNum, colorSetUCode, rawDirType='normal') {
+function createSimplePartPresetInfoP01(rawUCode, tCode, mtxNum, bSetNum, colorSetUCode, rawDirType='normal', rawType='layers') {
   const info = {
-      uCode: `part-info-${layerUCode}`,
+      uCode: `part-info-${generateSimpleUCode()}-${rawUCode}`,
       tCode: tCode,
       rcInfo: {r: 0, c: 0, rsz: -1, csz: -1},// -1 : calculating (include drwObj and child) on init
       drwObjInfo: { // null : no drw obj
-        uCode: layerUCode, // drwRawInfo uCode
+        uCode: rawUCode, // drwRawInfo uCode
         mtxInfo: { // null : origin (no mtx : direct drawing)
           num: mtxNum, // -1 : origin (no mtx : direct drawing), 0 ~ n : mtx preset index
           bSetNum: -1 // -1 : none, 0 ~ n : bSet preset index
         },
-        rawType: 'layers', // raw / layers
+        rawType: rawType, // raw / layers
         rawDirType: rawDirType, // normal / h-reverse / v-reverse
         colorSetInfo: {
           uCode: colorSetUCode
@@ -78,6 +81,7 @@ function getSimplePartPresetInfoP01(layerUCode, tCode, mtxNum, bSetNum, colorSet
         child: []
       },
       moveSetLink: '',
+      movePresetInfo: null,
       hitLink: 'hit-link-info-obj-area-02',
       effectLink: '',
       armsLink: '',

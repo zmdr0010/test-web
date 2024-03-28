@@ -86,11 +86,114 @@ const sampleMoveSetIdleR = {
     }
   ]
 }
+const sampleMoveSetShootF = {
+  uCode: 'sample-shoot-f',
+  type: 'out',
+  list: [
+    {
+      fps: 60, d: 30,
+      list: [
+        { dr: 0, dc: -50 },
+        { dr: 0, dc: -50 },
+        { dr: 0, dc: -50 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetShootLR = {
+  uCode: 'sample-shoot-l-r',
+  type: 'out',
+  list: [
+    {
+      fps: 60, d: 30,
+      list: [
+        { dr: 0, dc: -40 },
+        { dr: 0, dc: -40 },
+        { dr: 0, dc: -40 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetEnemyShootF = {
+  uCode: 'sample-enemy-shoot-f',
+  type: 'out',
+  list: [
+    {
+      fps: 60, d: 30,
+      list: [
+        { dr: 0, dc: 50 },
+        { dr: 0, dc: 50 },
+        { dr: 0, dc: 50 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetEnemyShootLR = {
+  uCode: 'sample-enemy-shoot-l-r',
+  type: 'out',
+  list: [
+    {
+      fps: 60, d: 30,
+      list: [
+        { dr: 0, dc: 40 },
+        { dr: 0, dc: 40 },
+        { dr: 0, dc: 40 }
+      ]
+    }
+  ]
+}
+const sampleMoveSetEffectAni = { // effect ani (moveSet naming change ??)
+  uCode: 'sample-effect-ani',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 30,
+      type: 'ani', // move / ani / color // default is move
+      list: [
+        { dr: 0, dc: 0, drwObj: { uCode: 'uCode', rcInfo: {}, rawInfo: {}, colorList: [], child: []} },
+        { dr: 0, dc: 0, drwObj: { uCode: 'uCode', rcInfo: {}, rawInfo: {}, colorList: [], child: []} },
+        { dr: 0, dc: 0, drwObj: { uCode: 'uCode', rcInfo: {}, rawInfo: {}, colorList: [], child: []} }
+      ]
+    }
+  ]
+}
+const sampleMoveSetEffectColor = { // effect color change
+  uCode: 'sample-effect-color',
+  type: 'cycle',
+  list: [
+    {
+      fps: 60, d: 30,
+      type: 'color', // move / ani / color // default is move
+      list: [
+        { dr: 0, dc: 0, colorList: [] },
+        { dr: 0, dc: 0, colorList: [] },
+        { dr: 0, dc: 0, colorList: [] }
+      ]
+    }
+  ]
+}
+
+// dir : [0, 0], [-1, -1], [1, 1], [0, 1], [0, -1] ...
+function createSimpleMoveSetSampleShoot(dir, d, dm, num=6) {
+  const list = []
+  const dr = dir[0] * dm // 0
+  const dc = dir[1] * dm
+  for (let i=0; i<num; i++) {
+    list.push({ dr: dr, dc: dc })
+  }
+  return {
+    uCode: `sample-move-set-shoot-${generateSimpleUCode()}`,
+    type: 'out',
+    list: [{
+      fps: 60, d: d, list: list
+    }]
+  }
+}
 
 const moveSetPresetInfoSampleList = [
   { // moveSetInfo
     uCode: 'sample-idle-t-b',
-    type: 'cycle', // stay / cycle / out / etc...
+    type: 'cycle', // stay / cycle / out / end / etc...
     // moveInfo: null,
     // currentMove: -1,
     list: [ // moveInfo list

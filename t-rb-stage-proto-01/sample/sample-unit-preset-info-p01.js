@@ -38,7 +38,7 @@ const sampleFLBKBDInfo = {
 }
 
 // jrcType : cw (cannon wing) - l index : [5, 6, 7, 8, 9, 10, 15, 24]
-function getSimpleUnitPresetInfoP01FromInfo(info) {
+function createSimpleUnitPresetInfoP01FromInfo(info) {
   const layerUCodeF = sampleLayerRawInfoListP01F[info.f.index % sampleLayerRawInfoListP01F.length].uCode
   const mtxNumF = info.f.mtxNum
   const bSetNumF = info.f.bSetNum
@@ -76,13 +76,13 @@ function getSimpleUnitPresetInfoP01FromInfo(info) {
   ]
 }
 
-function getSimpleUnitPresetInfoP01(uCode, partList) {
+function createSimpleUnitPresetInfoP01(uCode, partList) {
   const partChild = []
 
   let jrcType = ''
   for (const part of partList) {
     if (part.jrcType && part.jrcType.length > 0) jrcType = part.jrcType
-    partChild.push(getSimplePartPresetInfoP01(part.layerUCode,
+    partChild.push(createSimplePartPresetInfoP01(part.layerUCode,
       part.tCode, part.mtxNum, part.bSetNum, part.colorSetUCode, part.rawDirType))
   }
 
