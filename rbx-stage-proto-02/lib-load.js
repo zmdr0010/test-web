@@ -23,6 +23,7 @@ const jsList = [
   'mkr/frm-bhv/add-event-arms-part-act-simple-shoot.js',
   'mkr/frm-bhv/add-event-chg-color.js',
   'mkr/frm-bhv/add-event-d-rate-move.js',
+  'mkr/frm-bhv/add-event-simple-move.js',
   'mkr/frm-bhv/simple-frm-bhv-set.js',
   'mkr/frm-bhv/act-hit-effect/rbx-explosion-effect.js',
   'mkr/frm-bhv/arms-part-act/simple-arms-part-act.js',
