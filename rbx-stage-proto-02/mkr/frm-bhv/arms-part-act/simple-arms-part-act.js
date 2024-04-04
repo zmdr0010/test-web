@@ -1,4 +1,4 @@
-function createSimpleArmsPartAct(partInfo, sRcInfo, d, num) {
+function createSimpleArmsPartAct(partInfo, sRcInfo, d, num, simpleShootFunc) {
   const list = []
   for (let i=0; i<num; i++) list.push(i)
 
