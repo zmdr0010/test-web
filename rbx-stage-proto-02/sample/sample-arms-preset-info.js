@@ -16,6 +16,7 @@ const sampleArmsPresetInfo = {
       skinInfo: {
         rawUCode: '20240122143329-mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: 0, dc: 0 }
@@ -24,6 +25,7 @@ const sampleArmsPresetInfo = {
       skinInfo: {
         rawUCode: '20240122143329-mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: -4, dc: 0 }
@@ -32,6 +34,7 @@ const sampleArmsPresetInfo = {
       skinInfo: {
         rawUCode: '20240122143329-mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: 4, dc: 0 }

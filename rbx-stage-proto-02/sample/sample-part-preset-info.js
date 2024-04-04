@@ -7,6 +7,7 @@ const samplePartPresetInfo = {
     drwObjInfo: {
       uCode: 'layer-raw-info-raw-front-sample-00', // drwRawInfo uCode
       mtxInfo: { // null : origin (no mtx : direct drawing)
+        iCode: 'getMtxIndices0002', // indices get func code
         num: 0, // -1 : origin (no mtx : direct drawing), 0 ~ n : mtx preset index
         bSetNum: -1 // -1 : none, 0 ~ n : bSet preset index
       },

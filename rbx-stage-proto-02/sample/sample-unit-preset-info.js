@@ -34,18 +34,23 @@ const sampleUnitPresetInfo = {
   skinInfoList: [
     { rawUCode: 'layer-f',
       tCode: 'f', mtxNum: 0, bSetNum: -1, colorSetUCode: 'sample-color-set-info-00',
+      iCode: 'getMtxIndices0002',
       rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02' },
     { rawUCode: 'layer-l',
       tCode: 'l', mtxNum: 0, bSetNum: -1, colorSetUCode: 'sample-color-set-info-00',
+      iCode: 'getMtxIndices0002',
       rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02' },
     { rawUCode: 'layer-l',
       tCode: 'r', mtxNum: 0, bSetNum: -1, colorSetUCode: 'sample-color-set-info-00',
+      iCode: 'getMtxIndices0002',
       rawDirType: 'h-reverse', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02' },
     { rawUCode: 'layer-bk',
       tCode: 'bk', mtxNum: 0, bSetNum: -1, colorSetUCode: 'sample-color-set-info-00',
+      iCode: 'getMtxIndices0002',
       rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02' },
     { rawUCode: 'layer-bd',
       tCode: 'bd', mtxNum: 0, bSetNum: -1, colorSetUCode: 'sample-color-set-info-00',
+      iCode: 'getMtxIndices0002',
       rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02' }
   ],
   armsPresetList: [
