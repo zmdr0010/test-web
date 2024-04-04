@@ -16,6 +16,7 @@ const armsPresetInfo00ShootF = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: 0, dc: 0 }
@@ -24,6 +25,7 @@ const armsPresetInfo00ShootF = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: -4, dc: 0 }
@@ -32,6 +34,7 @@ const armsPresetInfo00ShootF = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: 4, dc: 0 }
@@ -57,6 +60,7 @@ const armsPresetInfo00ShootL = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: -8, dc: 1 }
@@ -65,6 +69,7 @@ const armsPresetInfo00ShootL = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: -12, dc: 1 }
@@ -73,6 +78,7 @@ const armsPresetInfo00ShootL = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: -4, dc: 1 }
@@ -98,6 +104,7 @@ const armsPresetInfo00ShootR = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: 7, dc: 1 }
@@ -106,6 +113,7 @@ const armsPresetInfo00ShootR = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: 11, dc: 1 }
@@ -114,6 +122,7 @@ const armsPresetInfo00ShootR = {
       skinInfo: {
         rawUCode: 'mis-00-00',
         tCode: 'act', mtxNum: 0, bSetNum: -1, colorSetUCode: 'color-set-info-00-00',
+        iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'raw', hitSetInfoUCode: 'hit-set-info-obj-area-02'
       },
       dRcInfo: { dr: 3, dc: 1 }
