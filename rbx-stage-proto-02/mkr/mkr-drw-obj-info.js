@@ -1,3 +1,7 @@
+let getMtxIndicesFunc = (mtxInfo) => {
+  return getMtxIndices0002(mtxInfo.num)
+}
+
 function createDrwObjInfo(drwObjInfo, resInfo) {
   const uCode = `${drwObjInfo.uCode}`
   let rawInfo = resInfo.rawInfoList.find(i => i.uCode === drwObjInfo.uCode)
@@ -15,7 +19,7 @@ function createDrwObjInfo(drwObjInfo, resInfo) {
     let bSet = []
     if (drwObjInfo.mtxInfo.bSetNum >= 0) bSet = getMtxPresetX3BSet(drwObjInfo.mtxInfo.bSetNum)
     const mtxPresetList = getMtxPresetX3List()
-    const indices = getMtxIndices0002(drwObjInfo.mtxInfo.num)
+    const indices = getMtxIndicesFunc(drwObjInfo.mtxInfo)
     const mtxSet = getMtxSet(mtxPresetList, indices)
 
     if (drwObjInfo.rawType === 'layers') {
