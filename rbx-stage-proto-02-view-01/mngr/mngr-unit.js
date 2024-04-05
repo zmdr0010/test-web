@@ -1,3 +1,11 @@
+let preResInfo = {
+  fList: [],
+  lList: [],
+  bkList: [],
+  bdList: [],
+  colorSetInfoList: []
+}
+
 let preSetInfo = {
   f: {
     rawIndex: 0, colorIndex: 0, mtxNum: 0, bSetNum: -1
@@ -33,13 +41,13 @@ function createEnemyPresetInfoList(length) {
     preSetInfo.l.rawIndex = i
     preSetInfo.bk.rawIndex = i
     preSetInfo.bd.rawIndex = i
-    list.push(createEnemyPresetInfoByIndex(preSetInfo))
+    list.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
   }
 
   return list
 }
 
-function createEnemyPresetInfoByIndex(preSetInfo) {
+function createEnemyPresetInfoByIndex(preSetInfo, preResInfo) {
   const setInfo = {
     hitType: 'enemy',
     hitTarget: 'friendly',
@@ -61,12 +69,12 @@ function createEnemyPresetInfoByIndex(preSetInfo) {
     bdMtxNum: preSetInfo.bd.mtxNum,
     bdBSetNum: preSetInfo.bd.bSetNum
   }
-  return createUnitPresetInfo(setInfo)
+  return createUnitPresetInfo(setInfo, preResInfo)
 }
 
 // jrcType : cw (cannon wing)
 // 5, 6, 7, 8, 9, 10, 15, 24
-function createUnitPresetInfo(setInfo) {
+function createUnitPresetInfo(setInfo, preResInfo) {
   const uCode = `u-01-${unitList.length}`
   const tCode = 'fighter-00'
   const hitType = setInfo.hitType
@@ -76,11 +84,11 @@ function createUnitPresetInfo(setInfo) {
   const reverseType = setInfo.reverseType
   let calcJrcInfoUCode = 'calc-jrc-info-03'
 
-  const fList = layerRawInfoList00F
-  const lList = layerRawInfoList00L
-  const bkList = layerRawInfoList00BK
-  const bdList = layerRawInfoList00BD
-  const colorSetInfoList = colorSetInfoList00
+  const fList = preResInfo.fList
+  const lList = preResInfo.lList
+  const bkList = preResInfo.bkList
+  const bdList = preResInfo.bdList
+  const colorSetInfoList = preResInfo.colorSetInfoList
   const fIndex = setInfo.f % fList.length
   const lIndex = setInfo.l % lList.length
   const bkIndex = setInfo.bk % bkList.length
