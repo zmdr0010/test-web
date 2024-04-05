@@ -125,6 +125,11 @@
       resInfo.hitSetInfoList = hitSetInfoList00
       resInfo.armsPresetList = [armsPresetInfo00ShootF, armsPresetInfo00ShootL, armsPresetInfo00ShootR]
 
+      preResInfo.fList = layerRawInfoList00F
+      preResInfo.lList = layerRawInfoList00L
+      preResInfo.bkList = layerRawInfoList00BK
+      preResInfo.bdList = layerRawInfoList00BD
+      preResInfo.colorSetInfoList = colorSetInfoList00
       // start()
     }
 
@@ -272,7 +277,7 @@
         preSetInfo.bd.colorIndex = bdColorIndex
       }
 
-      const preset = createEnemyPresetInfoByIndex(preSetInfo)
+      const preset = createEnemyPresetInfoByIndex(preSetInfo, preResInfo)
       const enemy = createUnit(preset, resInfo)
       moveUnit(enemy, 10, 10)
       addUnit(enemy)
