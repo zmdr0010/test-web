@@ -93,17 +93,23 @@ function createUnitPresetInfo(setInfo, preResInfo) {
   const lIndex = setInfo.l % lList.length
   const bkIndex = setInfo.bk % bkList.length
   const bdIndex = setInfo.bd % bdList.length
-  for (const i of [5,6,7,8,9,10,15,24]) {
-    if (i === lIndex) {
+  const rawF = fList[fIndex]
+  const rawL = lList[lIndex]
+  const rawBk = bkList[bkIndex]
+  const rawBd = bdList[bdIndex]
+
+  for (const u of ['layer-raw-info-raw-left-sample-05',
+    'layer-raw-info-raw-left-sample-06','layer-raw-info-raw-left-sample-07',
+    'layer-raw-info-raw-left-sample-08','layer-raw-info-raw-left-sample-09',
+    'layer-raw-info-raw-left-sample-10','layer-raw-info-raw-left-sample-15',
+    'layer-raw-info-raw-left-sample-17-max-10']) {
+    if (u === rawL.uCode) {
       wType = 'cw'
       idleType = 'idle-cw'
       calcJrcInfoUCode = 'calc-jrc-info-02'
     }
   }
-  const rawF = fList[fIndex]
-  const rawL = lList[lIndex]
-  const rawBk = bkList[bkIndex]
-  const rawBd = bdList[bdIndex]
+
   const colorSetF = colorSetInfoList[setInfo.fColor % colorSetInfoList.length]
   const colorSetL = colorSetInfoList[setInfo.lColor % colorSetInfoList.length]
   const colorSetBk = colorSetInfoList[setInfo.bkColor % colorSetInfoList.length]
