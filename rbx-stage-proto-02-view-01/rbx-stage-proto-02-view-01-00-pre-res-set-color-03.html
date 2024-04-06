@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>rbx stage proto 02 view 01 00 pre res set color list</title>
+  <title>rbx stage proto 02 view 01 00 pre res set color 03</title>
 
   <style>
     canvas {
@@ -62,20 +62,13 @@
 
       checkParams(window, paramInfo)
 
-      // 97 * 2 = 194 ::: 8
-      // num : 1309
-      // paramInfo.canvasHS = 56
-      paramInfo.canvasHS = 13
-
       initCanvas('id-canvas', canvasW, canvasH * paramInfo.canvasHS)
+
 
       updateHitFunc = updateHit00
 
-      const colorSample = colorSampleList.concat(colorSampleList01, colorSampleList02, colorSampleList03)
-      const colorSetList = createColorSetInfoList('color-set-info-crt-smp', colorSample)
+      const colorSetList = createColorSetInfoList('color-set-info-crt-smp-03', colorSampleList03)
       console.log(colorSetList)
-
-      paramInfo.num = colorSetList.length * 1
 
       resInfo.rawInfoList = layerRawInfoList00F.concat(layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
       resInfo.rawInfoList.push(rawInfo00Mis00)
@@ -198,7 +191,7 @@
       // const length = 19 * paramInfo.num
       const length = paramInfo.num
       console.log(`length : ${length}`)
-      const enemyPresetList = createEnemyPresetInfoList01(length, 1)
+      const enemyPresetList = createEnemyPresetInfoList(length)
       const row = paramInfo.row
       const mg = 100
       const sr = 10
@@ -263,25 +256,6 @@
         unitInfo.partInfo.frmBhvSetInfoList.push(
           createSimpleShoot(unitInfo.partInfo, addEventSimpleMove, [0,1], 30, 10))
       }
-    }
-
-    function createEnemyPresetInfoList01(length, row) {
-      const list = []
-      for (let i=0; i<length; i++) {
-        preSetInfo.f.rawIndex = i
-        preSetInfo.l.rawIndex = i
-        preSetInfo.bk.rawIndex = i
-        preSetInfo.bd.rawIndex = i
-
-        const colorIndex = Math.floor(i / row)
-        preSetInfo.f.colorIndex = colorIndex
-        preSetInfo.l.colorIndex = colorIndex
-        preSetInfo.bk.colorIndex = colorIndex
-        preSetInfo.bd.colorIndex = colorIndex
-        list.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
-      }
-
-      return list
     }
   </script>
 </body>
