@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>rbx stage proto 02 view 01 00 pre res set</title>
+  <title>rbx stage proto 02 view 01 00 pre res set color 02</title>
 
   <style>
     canvas {
@@ -19,6 +19,11 @@
 
   <script type="application/javascript" src="../rbx-stage-proto-02/lib-load.js"></script>
   <script type="application/javascript" src="mngr/mngr-unit.js"></script>
+  <script type="application/javascript" src="info/color-set-info-list-01.js"></script>
+  <script type="application/javascript" src="info/color-sample.js"></script>
+  <script type="application/javascript" src="info/color-sample-01.js"></script>
+  <script type="application/javascript" src="info/color-sample-02.js"></script>
+  <script type="application/javascript" src="info/color-sample-03.js"></script>
   <script>
     function loadLib() {
       startLoad('../rbx-stage-proto-02/', () => {
@@ -39,7 +44,7 @@
         bSetNum: -1,
         colorSetUCode: 'sample-color-set-info-00',
         // effect : sample-color-set-info-01, 02, 04, 09, 11, 12, 13, 14, 15, 16, 18, 19
-        colorIndex: 3, // length : 20
+        colorIndex: 0, // length : 20
         // select : 2, 3, 5, 6, 7, 8, 10, 11, 15, 16, 17, 18
         num: 97 * 2, // sum : 97, max : 321632
         row: 7,
@@ -62,10 +67,13 @@
 
       updateHitFunc = updateHit00
 
+      const colorSetList = createColorSetInfoList('color-set-info-crt-smp-02', colorSampleList02)
+      console.log(colorSetList)
+
       resInfo.rawInfoList = layerRawInfoList00F.concat(layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
       resInfo.rawInfoList.push(rawInfo00Mis00)
       resInfo.jrcInfoList = [calcJrcInfo00, calcJrcInfo01, calcJrcInfo02, calcJrcInfo03]
-      resInfo.colorSetInfoList = colorSetInfoList00
+      resInfo.colorSetInfoList = colorSetList
       resInfo.hitSetInfoList = hitSetInfoList00
       resInfo.armsPresetList = [armsPresetInfo00ShootF, armsPresetInfo00ShootL, armsPresetInfo00ShootR]
 
@@ -117,7 +125,7 @@
         preResInfo.bdList.push(layerRawInfoList00BD[i])
       }
 
-      preResInfo.colorSetInfoList = colorSetInfoList00
+      preResInfo.colorSetInfoList = colorSetList
 
       // const unit = createUnit(unitPresetInfo00Frd00, resInfo)
       // console.log(unit)
