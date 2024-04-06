@@ -62,6 +62,10 @@
 
       checkParams(window, paramInfo)
 
+      // 97 * 2 = 194 ::: 8
+      // num : 1309
+      paramInfo.canvasHS = 56
+
       initCanvas('id-canvas', canvasW, canvasH * paramInfo.canvasHS)
 
       updateHitFunc = updateHit00
@@ -69,7 +73,7 @@
       const colorSetList = createColorSetInfoList('color-set-info-crt-smp-01', colorSampleList01)
       console.log(colorSetList)
 
-      paramInfo.num = colorSetList.length
+      paramInfo.num = colorSetList.length * paramInfo.row
 
       resInfo.rawInfoList = layerRawInfoList00F.concat(layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
       resInfo.rawInfoList.push(rawInfo00Mis00)
@@ -192,7 +196,7 @@
       // const length = 19 * paramInfo.num
       const length = paramInfo.num
       console.log(`length : ${length}`)
-      const enemyPresetList = createEnemyPresetInfoList01(length)
+      const enemyPresetList = createEnemyPresetInfoList01(length, paramInfo.row)
       const row = paramInfo.row
       const mg = 100
       const sr = 10
@@ -259,17 +263,19 @@
       }
     }
 
-    function createEnemyPresetInfoList01(length) {
+    function createEnemyPresetInfoList01(length, row) {
       const list = []
       for (let i=0; i<length; i++) {
         preSetInfo.f.rawIndex = i
         preSetInfo.l.rawIndex = i
         preSetInfo.bk.rawIndex = i
         preSetInfo.bd.rawIndex = i
-        preSetInfo.f.colorIndex = i
-        preSetInfo.l.colorIndex = i
-        preSetInfo.bk.colorIndex = i
-        preSetInfo.bd.colorIndex = i
+
+        const colorIndex = Math.floor(i / row)
+        preSetInfo.f.colorIndex = colorIndex
+        preSetInfo.l.colorIndex = colorIndex
+        preSetInfo.bk.colorIndex = colorIndex
+        preSetInfo.bd.colorIndex = colorIndex
         list.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
       }
 
