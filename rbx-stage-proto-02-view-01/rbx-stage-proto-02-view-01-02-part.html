@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>rbx stage proto 02 view 01 02 part</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="loadLib()">
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../rbx-stage-proto-02/lib-load.js"></script>
+  <script type="application/javascript" src="mngr/mngr-unit.js"></script>
+  <script type="application/javascript" src="info/color-set-info-list-01.js"></script>
+  <script type="application/javascript" src="info/color-sample.js"></script>
+  <script type="application/javascript" src="info/color-sample-01.js"></script>
+  <script type="application/javascript" src="info/color-sample-02.js"></script>
+  <script type="application/javascript" src="info/color-sample-03.js"></script>
+  <script type="application/javascript" src="info/raw-index-select-list.js"></script>
+  <script>
+    function loadLib() {
+      startLoad('../rbx-stage-proto-02/', () => {
+        console.log('onLoad')
+        init()
+      })
+    }
+
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      size = 2
+
+      const paramInfo = {
+        // select : 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15
+        mtxNum: 17,
+        bSetNum: -1,
+        colorSetUCode: 'sample-color-set-info-00',
+        // effect : sample-color-set-info-01, 02, 04, 09, 11, 12, 13, 14, 15, 16, 18, 19
+        colorIndex: 0, // length : 395
+        // select : 2, 3, 5, 6, 7, 8, 10, 11, 15, 16, 17, 18
+        num: 97 * 2, // sum : 97, max : 321632
+        row: 7,
+        type: 0, // 0 : common mtxNum, color / 1 : common color, other mtxNum per part / 2 : other
+        fMtxNum: 3,
+        lMtxNum: 5,
+        bkMtxNum: 7,
+        bdMtxNum: 11,
+        fColorIndex: 8,
+        lColorIndex: 7,
+        bkColorIndex: 17,
+        bdColorIndex: 18,
+        canvasHS: 8,
+        partType: 4, // 0: unit / 1: f / 2: l / 3: bk / 4: bd
+        rawIndex: 0,
+        presetNum: 1000
+      }
+
+      checkParams(window, paramInfo)
+
+      initCanvas('id-canvas', canvasW, canvasH * paramInfo.canvasHS)
+
+
+      updateHitFunc = updateHit00
+
+      const colorSample = colorSampleList.concat(colorSampleList01, colorSampleList02, colorSampleList03)
+      const colorSetList = createColorSetInfoList('color-set-info-crt-smp', colorSample)
+      console.log(colorSetList)
+
+      resInfo.rawInfoList = layerRawInfoList00F.concat(layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
+      resInfo.rawInfoList.push(rawInfo00Mis00)
+      resInfo.jrcInfoList = [calcJrcInfo00, calcJrcInfo01, calcJrcInfo02, calcJrcInfo03]
+      resInfo.colorSetInfoList = colorSetList
+      resInfo.hitSetInfoList = hitSetInfoList00
+      resInfo.armsPresetList = [armsPresetInfo00ShootF, armsPresetInfo00ShootL, armsPresetInfo00ShootR]
+
+      setRawSelectList(preResInfo, layerRawInfoList00F, layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
+
+      preResInfo.colorSetInfoList = colorSetList
+
+      const fLength = preResInfo.fList.length // 19 : 18
+      const lLength = preResInfo.lList.length // 32
+      const bkLength = preResInfo.bkList.length // 23
+      const bdLength = preResInfo.bdList.length // 23
+      const num = fLength * lLength * bkLength * bdLength // 321632 : 304704
+      const sum = fLength + lLength + bkLength + bdLength // 97 : 96
+      console.log(`f : ${fLength}, l : ${lLength}, bk : ${bkLength}, bd : ${bdLength}, num : ${num}, sum : ${sum}`)
+
+      const colorLength = colorSetList.length // 20
+      console.log(`color length : ${colorLength}`)
+
+      if (paramInfo.type === 0) {
+        preSetInfo.f.mtxNum = paramInfo.mtxNum
+        preSetInfo.l.mtxNum = paramInfo.mtxNum
+        preSetInfo.bk.mtxNum = paramInfo.mtxNum
+        preSetInfo.bd.mtxNum = paramInfo.mtxNum
+        preSetInfo.f.colorIndex = paramInfo.colorIndex
+        preSetInfo.l.colorIndex = paramInfo.colorIndex
+        preSetInfo.bk.colorIndex = paramInfo.colorIndex
+        preSetInfo.bd.colorIndex = paramInfo.colorIndex
+
+      } else if (paramInfo.type === 1) {
+        preSetInfo.f.mtxNum = paramInfo.fMtxNum
+        preSetInfo.l.mtxNum = paramInfo.lMtxNum
+        preSetInfo.bk.mtxNum = paramInfo.bkMtxNum
+        preSetInfo.bd.mtxNum = paramInfo.bdMtxNum
+        preSetInfo.f.colorIndex = paramInfo.colorIndex
+        preSetInfo.l.colorIndex = paramInfo.colorIndex
+        preSetInfo.bk.colorIndex = paramInfo.colorIndex
+        preSetInfo.bd.colorIndex = paramInfo.colorIndex
+      } else {
+        preSetInfo.f.mtxNum = paramInfo.fMtxNum
+        preSetInfo.l.mtxNum = paramInfo.lMtxNum
+        preSetInfo.bk.mtxNum = paramInfo.bkMtxNum
+        preSetInfo.bd.mtxNum = paramInfo.bdMtxNum
+        preSetInfo.f.colorIndex = paramInfo.fColorIndex
+        preSetInfo.l.colorIndex = paramInfo.lColorIndex
+        preSetInfo.bk.colorIndex = paramInfo.bkColorIndex
+        preSetInfo.bd.colorIndex = paramInfo.bdColorIndex
+      }
+
+      // const length = 19 * paramInfo.num
+      let length = paramInfo.num
+      if (paramInfo.partType === 1) { // f
+        length = fLength
+      }
+      if (paramInfo.partType === 2) { // l
+        length = lLength
+      }
+      if (paramInfo.partType === 3) { // bk
+        length = bkLength
+      }
+      if (paramInfo.partType === 4) { // bd
+        length = bdLength
+      }
+
+      console.log(`length : ${length}`)
+      // const enemyPresetList = createEnemyPresetInfoList(length)
+      let enemyPresetList = []
+      if (paramInfo.partType === 0) {
+        enemyPresetList = createEnemyPresetInfoList(length)
+      } else {
+        let partIList = []
+        let partPreSet = null
+        if (paramInfo.partType === 1) {
+          partIList = preResInfo.fList
+          partPreSet = preSetInfo.f
+        }
+        if (paramInfo.partType === 2) {
+          partIList = preResInfo.lList
+          partPreSet = preSetInfo.l
+        }
+        if (paramInfo.partType === 3) {
+          partIList = preResInfo.bkList
+          partPreSet = preSetInfo.bk
+        }
+        if (paramInfo.partType === 4) {
+          partIList = preResInfo.bdList
+          partPreSet = preSetInfo.bd
+        }
+
+        console.log(partIList)
+        console.log(partPreSet)
+
+        // for (let i=0; i<partIList.length; i++) {
+        //   partPreSet.rawIndex = i
+        //   for (let j=0; j<13 * 5; j++) {
+        //     partPreSet.mtxNum = j
+        //     enemyPresetList.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
+        //   }
+        // }
+
+        partPreSet.rawIndex = paramInfo.rawIndex
+        // const presetNum = 13 * 30
+        const presetNum = paramInfo.presetNum
+        for (let i=0; i<presetNum; i++) {
+          partPreSet.mtxNum = i
+          enemyPresetList.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
+        }
+
+      }
+
+      let row = paramInfo.row
+      let mg = 100
+      const sr = 10
+      const sc = 10
+
+      if (paramInfo.partType > 0) {
+        row = 13
+        mg = 40
+      }
+
+      for (let i=0; i<enemyPresetList.length; i++) {
+        const preset = enemyPresetList[i]
+        const enemy = createUnit(preset, resInfo)
+        const r = i % row * mg + sr
+        const c = Math.floor(i / row) * mg + sc
+        moveUnit(enemy, r, c)
+        addUnit(enemy)
+
+        if (paramInfo.partType > 0) {
+          const partF = enemy.partInfo.child.find(p => p.tCode === 'f')
+          const partL = enemy.partInfo.child.find(p => p.tCode === 'l')
+          const partR = enemy.partInfo.child.find(p => p.tCode === 'r')
+          const partBk = enemy.partInfo.child.find(p => p.tCode === 'bk')
+          const partBd = enemy.partInfo.child.find(p => p.tCode === 'bd')
+          partF.state = 'invisible'
+          partL.state = 'invisible'
+          partR.state = 'invisible'
+          partBk.state = 'invisible'
+          partBd.state = 'invisible'
+          if (paramInfo.partType === 1) partF.state = 'normal'
+          if (paramInfo.partType === 2) partL.state = 'normal'
+          if (paramInfo.partType === 3) partBk.state = 'normal'
+          if (paramInfo.partType === 4) partBd.state = 'normal'
+        }
+      }
+
+      draw()
+    }
+
+  </script>
+</body>
+</html>
