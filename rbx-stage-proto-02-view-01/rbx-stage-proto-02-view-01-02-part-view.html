@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>rbx stage proto 02 view 01 02 part</title>
+  <title>rbx stage proto 02 view 01 02 part view</title>
 
   <style>
     canvas {
@@ -15,6 +15,19 @@
   </style>
 </head>
 <body onload="loadLib()">
+  <div style="margin:8px">
+    <label for="id-input-part-type">partType(unit:0,f:1,l:2,bk:3,bd:4):</label>
+    <input type="number" id="id-input-part-type" name="part-type" value="1" />
+    <label for="id-input-raw-index" id="id-label-raw-index">rawIndex:</label>
+    <input type="number" id="id-input-raw-index" name="raw-index" value="0" />
+    <label for="id-input-color-index" id="id-label-color-index">colorIndex :</label>
+    <input type="number" id="id-input-color-index" name="color-index" value="0" />
+    <label for="id-input-preset-num">presetNum :</label>
+    <input type="number" id="id-input-preset-num" name="preset-num" value="1000" />
+  </div>
+  <div style="margin:8px">
+    <button onclick="onClickDraw()">draw</button>
+  </div>
   <canvas id="id-canvas"></canvas>
 
   <script type="application/javascript" src="../rbx-stage-proto-02/lib-load.js"></script>
@@ -33,6 +46,11 @@
       })
     }
 
+    let fLength = 0
+    let lLength = 0
+    let bkLength = 0
+    let bdLength = 0
+
     function init() {
       let canvasW = window.innerWidth - 8 * 2
       let canvasH = window.innerHeight - 8 * 2
@@ -43,25 +61,7 @@
         // select : 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15
         mtxNum: 17,
         bSetNum: -1,
-        colorSetUCode: 'sample-color-set-info-00',
-        // effect : sample-color-set-info-01, 02, 04, 09, 11, 12, 13, 14, 15, 16, 18, 19
-        colorIndex: 0, // length : 395
-        // select : 2, 3, 5, 6, 7, 8, 10, 11, 15, 16, 17, 18
-        num: 97 * 2, // sum : 97, max : 321632
-        row: 7,
-        type: 0, // 0 : common mtxNum, color / 1 : common color, other mtxNum per part / 2 : other
-        fMtxNum: 3,
-        lMtxNum: 5,
-        bkMtxNum: 7,
-        bdMtxNum: 11,
-        fColorIndex: 8,
-        lColorIndex: 7,
-        bkColorIndex: 17,
-        bdColorIndex: 18,
-        canvasHS: 8,
-        partType: 4, // 0: unit / 1: f / 2: l / 3: bk / 4: bd
-        rawIndex: 0,
-        presetNum: 1000
+        canvasHS: 10
       }
 
       checkParams(window, paramInfo)
@@ -74,6 +74,8 @@
       const colorSample = colorSampleList.concat(colorSampleList01, colorSampleList02, colorSampleList03)
       const colorSetList = createColorSetInfoList('color-set-info-crt-smp', colorSample)
       console.log(colorSetList)
+      const colorIndexLabel = document.getElementById('id-label-color-index')
+      colorIndexLabel.textContent = `colorIndex(length:${colorSetList.length}): `
 
       resInfo.rawInfoList = layerRawInfoList00F.concat(layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
       resInfo.rawInfoList.push(rawInfo00Mis00)
@@ -86,10 +88,10 @@
 
       preResInfo.colorSetInfoList = colorSetList
 
-      const fLength = preResInfo.fList.length // 19 : 18
-      const lLength = preResInfo.lList.length // 32
-      const bkLength = preResInfo.bkList.length // 23
-      const bdLength = preResInfo.bdList.length // 23
+      fLength = preResInfo.fList.length // 19 : 18
+      lLength = preResInfo.lList.length // 32
+      bkLength = preResInfo.bkList.length // 23
+      bdLength = preResInfo.bdList.length // 23
       const num = fLength * lLength * bkLength * bdLength // 321632 : 304704
       const sum = fLength + lLength + bkLength + bdLength // 97 : 96
       console.log(`f : ${fLength}, l : ${lLength}, bk : ${bkLength}, bd : ${bdLength}, num : ${num}, sum : ${sum}`)
@@ -97,72 +99,72 @@
       const colorLength = colorSetList.length // 20
       console.log(`color length : ${colorLength}`)
 
-      if (paramInfo.type === 0) {
-        preSetInfo.f.mtxNum = paramInfo.mtxNum
-        preSetInfo.l.mtxNum = paramInfo.mtxNum
-        preSetInfo.bk.mtxNum = paramInfo.mtxNum
-        preSetInfo.bd.mtxNum = paramInfo.mtxNum
-        preSetInfo.f.colorIndex = paramInfo.colorIndex
-        preSetInfo.l.colorIndex = paramInfo.colorIndex
-        preSetInfo.bk.colorIndex = paramInfo.colorIndex
-        preSetInfo.bd.colorIndex = paramInfo.colorIndex
+      preSetInfo.f.mtxNum = paramInfo.mtxNum
+      preSetInfo.l.mtxNum = paramInfo.mtxNum
+      preSetInfo.bk.mtxNum = paramInfo.mtxNum
+      preSetInfo.bd.mtxNum = paramInfo.mtxNum
 
-      } else if (paramInfo.type === 1) {
-        preSetInfo.f.mtxNum = paramInfo.fMtxNum
-        preSetInfo.l.mtxNum = paramInfo.lMtxNum
-        preSetInfo.bk.mtxNum = paramInfo.bkMtxNum
-        preSetInfo.bd.mtxNum = paramInfo.bdMtxNum
-        preSetInfo.f.colorIndex = paramInfo.colorIndex
-        preSetInfo.l.colorIndex = paramInfo.colorIndex
-        preSetInfo.bk.colorIndex = paramInfo.colorIndex
-        preSetInfo.bd.colorIndex = paramInfo.colorIndex
-      } else {
-        preSetInfo.f.mtxNum = paramInfo.fMtxNum
-        preSetInfo.l.mtxNum = paramInfo.lMtxNum
-        preSetInfo.bk.mtxNum = paramInfo.bkMtxNum
-        preSetInfo.bd.mtxNum = paramInfo.bdMtxNum
-        preSetInfo.f.colorIndex = paramInfo.fColorIndex
-        preSetInfo.l.colorIndex = paramInfo.lColorIndex
-        preSetInfo.bk.colorIndex = paramInfo.bkColorIndex
-        preSetInfo.bd.colorIndex = paramInfo.bdColorIndex
+      drawList()
+    }
+
+    function drawList() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      while (unitList.length > 0) {
+        unitList.splice(unitList.length-1, 1)
       }
+
+      const partTypeInput = document.getElementById('id-input-part-type')
+      const rawIndexInput = document.getElementById('id-input-raw-index')
+      const presetNumInput = document.getElementById('id-input-preset-num')
+      const colorIndexInput = document.getElementById('id-input-color-index')
+      const partType = Number(partTypeInput.value)
+      const rawIndex = Number(rawIndexInput.value)
+      const presetNum = Number(presetNumInput.value)
+      const colorIndex = Number(colorIndexInput.value)
+
+      preSetInfo.f.colorIndex = colorIndex
+      preSetInfo.l.colorIndex = colorIndex
+      preSetInfo.bk.colorIndex = colorIndex
+      preSetInfo.bd.colorIndex = colorIndex
 
       // const length = 19 * paramInfo.num
-      let length = paramInfo.num
-      if (paramInfo.partType === 1) { // f
+      let length = 97 * 2
+      if (partType === 1) { // f
         length = fLength
       }
-      if (paramInfo.partType === 2) { // l
+      if (partType === 2) { // l
         length = lLength
       }
-      if (paramInfo.partType === 3) { // bk
+      if (partType === 3) { // bk
         length = bkLength
       }
-      if (paramInfo.partType === 4) { // bd
+      if (partType === 4) { // bd
         length = bdLength
       }
+      const rawIndexLabel = document.getElementById('id-label-raw-index')
+      rawIndexLabel.textContent = `rawIndex(length:${length}): `
 
       console.log(`length : ${length}`)
       // const enemyPresetList = createEnemyPresetInfoList(length)
       let enemyPresetList = []
-      if (paramInfo.partType === 0) {
+      if (partType === 0) {
         enemyPresetList = createEnemyPresetInfoList(length)
       } else {
         let partIList = []
         let partPreSet = null
-        if (paramInfo.partType === 1) {
+        if (partType === 1) {
           partIList = preResInfo.fList
           partPreSet = preSetInfo.f
         }
-        if (paramInfo.partType === 2) {
+        if (partType === 2) {
           partIList = preResInfo.lList
           partPreSet = preSetInfo.l
         }
-        if (paramInfo.partType === 3) {
+        if (partType === 3) {
           partIList = preResInfo.bkList
           partPreSet = preSetInfo.bk
         }
-        if (paramInfo.partType === 4) {
+        if (partType === 4) {
           partIList = preResInfo.bdList
           partPreSet = preSetInfo.bd
         }
@@ -178,9 +180,9 @@
         //   }
         // }
 
-        partPreSet.rawIndex = paramInfo.rawIndex
+        partPreSet.rawIndex = rawIndex
         // const presetNum = 13 * 30
-        const presetNum = paramInfo.presetNum
+
         for (let i=0; i<presetNum; i++) {
           partPreSet.mtxNum = i
           enemyPresetList.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
@@ -188,12 +190,12 @@
 
       }
 
-      let row = paramInfo.row
+      let row = 7
       let mg = 100
       const sr = 10
       const sc = 10
 
-      if (paramInfo.partType > 0) {
+      if (partType > 0) {
         // row = 13
         row = 10
         mg = 40
@@ -207,7 +209,7 @@
         moveUnit(enemy, r, c)
         addUnit(enemy)
 
-        if (paramInfo.partType > 0) {
+        if (partType > 0) {
           const partF = enemy.partInfo.child.find(p => p.tCode === 'f')
           const partL = enemy.partInfo.child.find(p => p.tCode === 'l')
           const partR = enemy.partInfo.child.find(p => p.tCode === 'r')
@@ -218,14 +220,18 @@
           partR.state = 'invisible'
           partBk.state = 'invisible'
           partBd.state = 'invisible'
-          if (paramInfo.partType === 1) partF.state = 'normal'
-          if (paramInfo.partType === 2) partL.state = 'normal'
-          if (paramInfo.partType === 3) partBk.state = 'normal'
-          if (paramInfo.partType === 4) partBd.state = 'normal'
+          if (partType === 1) partF.state = 'normal'
+          if (partType === 2) partL.state = 'normal'
+          if (partType === 3) partBk.state = 'normal'
+          if (partType === 4) partBd.state = 'normal'
         }
       }
 
       draw()
+    }
+
+    function onClickDraw() {
+      drawList()
     }
 
   </script>
