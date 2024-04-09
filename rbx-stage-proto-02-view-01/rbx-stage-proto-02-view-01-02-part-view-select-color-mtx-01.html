@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>rbx stage proto 02 view 01 02 part view select color mtx 01</title>
+
+  <style>
+    canvas {
+      /*width: 100%;*/
+      /*height: 100%;*/
+      border: 1px solid #000000;
+      /*background-color: beige;*/
+      background-color: gray;
+    }
+  </style>
+</head>
+<body onload="loadLib()">
+  <div style="margin:8px">
+    <label for="id-input-part-type">partType(unit:0,f:1,l:2,bk:3,bd:4):</label>
+    <input type="number" id="id-input-part-type" name="part-type" value="1" />
+    <label for="id-input-raw-index" id="id-label-raw-index">rawIndex:</label>
+    <input type="number" id="id-input-raw-index" name="raw-index" value="0" />
+    <label for="id-input-color-index" id="id-label-color-index">colorIndex :</label>
+    <input type="number" id="id-input-color-index" name="color-index" value="0" />
+    <label for="id-input-preset-num">presetNum :</label>
+    <input type="number" id="id-input-preset-num" name="preset-num" value="1000" />
+  </div>
+  <div style="margin:8px">
+    <button onclick="onClickDraw()">draw</button>
+  </div>
+  <canvas id="id-canvas"></canvas>
+
+  <script type="application/javascript" src="../rbx-stage-proto-02/lib-load.js"></script>
+  <script type="application/javascript" src="mngr/mngr-unit.js"></script>
+  <script type="application/javascript" src="info/color-set-info-list-01.js"></script>
+  <script type="application/javascript" src="info/color-sample.js"></script>
+  <script type="application/javascript" src="info/color-sample-01.js"></script>
+  <script type="application/javascript" src="info/color-sample-02.js"></script>
+  <script type="application/javascript" src="info/color-sample-03.js"></script>
+  <script type="application/javascript" src="info/color-sample-select.js"></script>
+  <script type="application/javascript" src="info/raw-index-select-list.js"></script>
+  <script>
+    function loadLib() {
+      startLoad('../rbx-stage-proto-02/', () => {
+        console.log('onLoad')
+        init()
+      })
+    }
+
+    let fLength = 0
+    let lLength = 0
+    let bkLength = 0
+    let bdLength = 0
+
+    function init() {
+      let canvasW = window.innerWidth - 8 * 2
+      let canvasH = window.innerHeight - 8 * 2
+
+      size = 2
+
+      const paramInfo = {
+        // select : 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15
+        mtxNum: 17,
+        bSetNum: -1,
+        canvasHS: 13
+      }
+
+      checkParams(window, paramInfo)
+
+      initCanvas('id-canvas', canvasW, canvasH * paramInfo.canvasHS)
+
+      updateHitFunc = updateHit00
+
+      // const mtxPresetX3IndicesTopEdge = [7, 63, 146, 151, 175, 191, 365, 383, 469, 493, 495, 506]
+      // const mtxPresetX3IndicesLeftEdge = [46, 89, 121, 191, 249, 251, 255, 413, 463, 487, 501]
+      // const mtxPresetX3IndicesBottomEdge = [186, 189, 367, 448, 466, 490, 495, 504, 509]
+      // const mtxPresetX3IndicesLeftTop = [22, 63, 95, 111, 127, 255, 427, 443, 494, 495]
+      // const mtxPresetX3IndicesLeftBottom = [234, 345, 473, 489, 491, 503, 504, 507]
+      // const mtxPresetX3IndicesHorizontalCenterLine = [56, 63, 381, 383, 469, 493, 495]
+      // const mtxPresetX3IndicesVerticalCenterLine = [135, 146, 365, 381, 466, 490, 495, 511]
+      // const mtxPresetX3IndicesTopLine = [7, 23, 47, 63, 383, 453, 455]
+      // const mtxPresetX3IndicesLeftLine = [73, 89, 219, 251, 383, 409, 475, 479, 495, 507]
+      // const mtxPresetX3IndicesBottomLine = [343, 448, 469, 504, 506, 511]
+
+      // select topEdge : 7, 63, 146, 151, 175, 191, 383, 495
+      // select leftEdge : 89, 121, 249, 251, 255, 463
+      // select bottomEdge : 186, 189, 448, 466, 490, 495, 504, 509
+      // select leftTop : 63, 95, 111, 127, 255, 443, 495
+      // select leftBottom : 473, 489, 491, 504, 507
+      // select hCLine : 56, 63, 382, 495, 511
+      // select vCLine : 146, 365, 381, 466, 495, 511
+      // select topLine : 7, 23, 47, 63, 383, 511
+      // select leftLine : 73, 89, 219, 251, 383, 475, 479, 495, 507, 511
+      // select bottomLine : 448, 504, 506, 511
+
+
+      // changeList(mtxPresetX3IndicesTopEdge, [7, 63, 146, 151, 175, 191, 383, 495])
+      changeList(mtxPresetX3IndicesTopEdge, [146, 151, 175, 191, 383, 495, 7, 63])
+      changeList(mtxPresetX3IndicesLeftEdge, [89, 121, 249, 251, 255, 463])
+      changeList(mtxPresetX3IndicesBottomEdge, [186, 189, 448, 466, 490, 495, 504, 509])
+      changeList(mtxPresetX3IndicesLeftTop, [63, 95, 111, 127, 255, 443, 495])
+      changeList(mtxPresetX3IndicesLeftBottom, [473, 489, 491, 504, 507])
+      changeList(mtxPresetX3IndicesHorizontalCenterLine, [56, 63, 382, 495, 511])
+      changeList(mtxPresetX3IndicesVerticalCenterLine, [146, 365, 381, 466, 495, 511])
+      changeList(mtxPresetX3IndicesTopLine, [7, 23, 47, 63, 383, 511])
+      // changeList(mtxPresetX3IndicesLeftLine, [73, 89, 219, 251, 383, 475, 479, 495, 507, 511])
+      changeList(mtxPresetX3IndicesLeftLine, [73, 89, 219, 251, 383, 475, 479, 495])
+      changeList(mtxPresetX3IndicesBottomLine, [448, 504, 506, 511])
+
+      console.log(mtxPresetX3IndicesDot) // length: 2
+      console.log(mtxPresetX3IndicesTopEdge) // length: 12
+      console.log(mtxPresetX3IndicesLeftEdge) // length: 11
+      console.log(mtxPresetX3IndicesBottomEdge) // length: 9
+      console.log(mtxPresetX3IndicesLeftTop) // length: 10
+      console.log(mtxPresetX3IndicesLeftBottom) // length: 8
+      console.log(mtxPresetX3IndicesHorizontalCenterLine) // length: 7
+      console.log(mtxPresetX3IndicesVerticalCenterLine) // length: 8
+      console.log(mtxPresetX3IndicesTopLine) // length: 7
+      console.log(mtxPresetX3IndicesLeftLine) // length: 10 (base)
+      console.log(mtxPresetX3IndicesBottomLine) // length: 6
+      // mtxNum type 0 ~ 9 by leftLine (length: 10)
+
+      const colorSample = colorSampleSelectList
+      const colorSetList = createColorSetInfoList('color-set-info-crt-smp', colorSample)
+      console.log(colorSetList)
+      const colorIndexLabel = document.getElementById('id-label-color-index')
+      colorIndexLabel.textContent = `colorIndex(length:${colorSetList.length}): `
+
+      resInfo.rawInfoList = layerRawInfoList00F.concat(layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
+      resInfo.rawInfoList.push(rawInfo00Mis00)
+      resInfo.jrcInfoList = [calcJrcInfo00, calcJrcInfo01, calcJrcInfo02, calcJrcInfo03]
+      resInfo.colorSetInfoList = colorSetList
+      resInfo.hitSetInfoList = hitSetInfoList00
+      resInfo.armsPresetList = [armsPresetInfo00ShootF, armsPresetInfo00ShootL, armsPresetInfo00ShootR]
+
+      setRawSelectList(preResInfo, layerRawInfoList00F, layerRawInfoList00L, layerRawInfoList00BK, layerRawInfoList00BD)
+
+      preResInfo.colorSetInfoList = colorSetList
+
+      fLength = preResInfo.fList.length // 19 : 18
+      lLength = preResInfo.lList.length // 32
+      bkLength = preResInfo.bkList.length // 23
+      bdLength = preResInfo.bdList.length // 23
+      const num = fLength * lLength * bkLength * bdLength // 321632 : 304704
+      const sum = fLength + lLength + bkLength + bdLength // 97 : 96
+      console.log(`f : ${fLength}, l : ${lLength}, bk : ${bkLength}, bd : ${bdLength}, num : ${num}, sum : ${sum}`)
+
+      const colorLength = colorSetList.length // 395 : 365
+      console.log(`color length : ${colorLength}`)
+
+      preSetInfo.f.mtxNum = paramInfo.mtxNum
+      preSetInfo.l.mtxNum = paramInfo.mtxNum
+      preSetInfo.bk.mtxNum = paramInfo.mtxNum
+      preSetInfo.bd.mtxNum = paramInfo.mtxNum
+
+      drawList()
+    }
+
+    function drawList() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      while (unitList.length > 0) {
+        unitList.splice(unitList.length-1, 1)
+      }
+
+      const partTypeInput = document.getElementById('id-input-part-type')
+      const rawIndexInput = document.getElementById('id-input-raw-index')
+      const presetNumInput = document.getElementById('id-input-preset-num')
+      const colorIndexInput = document.getElementById('id-input-color-index')
+      const partType = Number(partTypeInput.value)
+      const rawIndex = Number(rawIndexInput.value)
+      const presetNum = Number(presetNumInput.value)
+      const colorIndex = Number(colorIndexInput.value)
+
+      preSetInfo.f.colorIndex = colorIndex
+      preSetInfo.l.colorIndex = colorIndex
+      preSetInfo.bk.colorIndex = colorIndex
+      preSetInfo.bd.colorIndex = colorIndex
+
+      // const length = 19 * paramInfo.num
+      let length = 97 * 2
+      if (partType === 1) { // f
+        length = fLength
+      }
+      if (partType === 2) { // l
+        length = lLength
+      }
+      if (partType === 3) { // bk
+        length = bkLength
+      }
+      if (partType === 4) { // bd
+        length = bdLength
+      }
+      const rawIndexLabel = document.getElementById('id-label-raw-index')
+      rawIndexLabel.textContent = `rawIndex(length:${length}): `
+
+      console.log(`length : ${length}`)
+      // const enemyPresetList = createEnemyPresetInfoList(length)
+      let enemyPresetList = []
+      if (partType === 0) {
+        preSetInfo.f.mtxNum = rawIndex
+        preSetInfo.l.mtxNum = rawIndex
+        preSetInfo.bk.mtxNum = rawIndex
+        preSetInfo.bd.mtxNum = rawIndex
+        enemyPresetList = createEnemyPresetInfoList(length)
+      } else {
+        let partIList = []
+        let partPreSet = null
+        if (partType === 1) {
+          partIList = preResInfo.fList
+          partPreSet = preSetInfo.f
+        }
+        if (partType === 2) {
+          partIList = preResInfo.lList
+          partPreSet = preSetInfo.l
+        }
+        if (partType === 3) {
+          partIList = preResInfo.bkList
+          partPreSet = preSetInfo.bk
+        }
+        if (partType === 4) {
+          partIList = preResInfo.bdList
+          partPreSet = preSetInfo.bd
+        }
+
+        console.log(partIList)
+        console.log(partPreSet)
+
+        // for (let i=0; i<partIList.length; i++) {
+        //   partPreSet.rawIndex = i
+        //   for (let j=0; j<13 * 5; j++) {
+        //     partPreSet.mtxNum = j
+        //     enemyPresetList.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
+        //   }
+        // }
+
+        partPreSet.rawIndex = rawIndex
+        // const presetNum = 13 * 30
+
+        for (let i=0; i<presetNum; i++) {
+          partPreSet.mtxNum = i
+          // if (i < 10) partPreSet.mtxNum = -1
+          enemyPresetList.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
+        }
+
+      }
+
+      let row = 7
+      let mg = 100
+      const sr = 10
+      const sc = 10
+
+      if (partType > 0) {
+        // row = 13
+        // row = 10
+        row = mtxPresetX3IndicesLeftLine.length
+        mg = 40
+      }
+
+      for (let i=0; i<enemyPresetList.length; i++) {
+        const preset = enemyPresetList[i]
+        const enemy = createUnit(preset, resInfo)
+        const r = i % row * mg + sr
+        const c = Math.floor(i / row) * mg + sc
+        moveUnit(enemy, r, c)
+        addUnit(enemy)
+
+        if (partType > 0) {
+          const partF = enemy.partInfo.child.find(p => p.tCode === 'f')
+          const partL = enemy.partInfo.child.find(p => p.tCode === 'l')
+          const partR = enemy.partInfo.child.find(p => p.tCode === 'r')
+          const partBk = enemy.partInfo.child.find(p => p.tCode === 'bk')
+          const partBd = enemy.partInfo.child.find(p => p.tCode === 'bd')
+          partF.state = 'invisible'
+          partL.state = 'invisible'
+          partR.state = 'invisible'
+          partBk.state = 'invisible'
+          partBd.state = 'invisible'
+          if (partType === 1) partF.state = 'normal'
+          if (partType === 2) partL.state = 'normal'
+          if (partType === 3) partBk.state = 'normal'
+          if (partType === 4) partBd.state = 'normal'
+        }
+      }
+
+      draw()
+    }
+
+    function onClickDraw() {
+      drawList()
+    }
+
+    function changeList(list, cList=[]) {
+      while (list.length > 0) {
+        list.splice(list.length-1, 1)
+      }
+      for (const i of cList) list.push(i)
+    }
+
+  </script>
+</body>
+</html>
