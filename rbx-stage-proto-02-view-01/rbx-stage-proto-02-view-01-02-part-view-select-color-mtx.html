@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>rbx stage proto 02 view 01 02 part view select color</title>
+  <title>rbx stage proto 02 view 01 02 part view select color mtx</title>
 
   <style>
     canvas {
@@ -62,7 +62,7 @@
         // select : 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15
         mtxNum: 17,
         bSetNum: -1,
-        canvasHS: 10
+        canvasHS: 13
       }
 
       checkParams(window, paramInfo)
@@ -70,6 +70,28 @@
       initCanvas('id-canvas', canvasW, canvasH * paramInfo.canvasHS)
 
       updateHitFunc = updateHit00
+
+      // const mtxPresetX3IndicesTopEdge = [7, 63, 146, 151, 175, 191, 365, 383, 469, 493, 495, 506]
+      // const mtxPresetX3IndicesLeftEdge = [46, 89, 121, 191, 249, 251, 255, 413, 463, 487, 501]
+      // const mtxPresetX3IndicesBottomEdge = [186, 189, 367, 448, 466, 490, 495, 504, 509]
+      // const mtxPresetX3IndicesLeftTop = [22, 63, 95, 111, 127, 255, 427, 443, 494, 495]
+      // const mtxPresetX3IndicesLeftBottom = [234, 345, 473, 489, 491, 503, 504, 507]
+      // const mtxPresetX3IndicesHorizontalCenterLine = [56, 63, 381, 383, 469, 493, 495]
+      // const mtxPresetX3IndicesVerticalCenterLine = [135, 146, 365, 381, 466, 490, 495, 511]
+      // const mtxPresetX3IndicesTopLine = [7, 23, 47, 63, 383, 453, 455]
+      // const mtxPresetX3IndicesLeftLine = [73, 89, 219, 251, 383, 409, 475, 479, 495, 507]
+      // const mtxPresetX3IndicesBottomLine = [343, 448, 469, 504, 506, 511]
+
+      changeList(mtxPresetX3IndicesTopEdge, [146, 175, 365, 383, 469, 493, 7])
+      // changeList(mtxPresetX3IndicesLeftEdge, [46, 89, 121, 191, 249, 251])
+      // changeList(mtxPresetX3IndicesBottomEdge, [186, 189, 367])
+      // changeList(mtxPresetX3IndicesLeftTop, [22, 63])
+      // changeList(mtxPresetX3IndicesLeftBottom, [234, 345, 473])
+      // changeList(mtxPresetX3IndicesHorizontalCenterLine, [56, 63, 381, 383])
+      // changeList(mtxPresetX3IndicesVerticalCenterLine, [135, 146, 365, 381])
+      // changeList(mtxPresetX3IndicesTopLine, [7, 23, 47, 383])
+      changeList(mtxPresetX3IndicesLeftLine, [73, 89, 219, 251, 383, 409, 475])
+      // changeList(mtxPresetX3IndicesBottomLine, [343, 448, 469, 504])
 
       console.log(mtxPresetX3IndicesDot) // length: 2
       console.log(mtxPresetX3IndicesTopEdge) // length: 12
@@ -215,7 +237,8 @@
 
       if (partType > 0) {
         // row = 13
-        row = 10
+        // row = 10
+        row = mtxPresetX3IndicesLeftLine.length
         mg = 40
       }
 
@@ -250,6 +273,13 @@
 
     function onClickDraw() {
       drawList()
+    }
+
+    function changeList(list, cList=[]) {
+      while (list.length > 0) {
+        list.splice(list.length-1, 1)
+      }
+      for (const i of cList) list.push(i)
     }
 
   </script>
