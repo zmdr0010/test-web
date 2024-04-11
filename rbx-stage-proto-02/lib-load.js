@@ -5,6 +5,7 @@ const jsList = [
   'fnc/fnc-draw-raw-info.js',
   'fnc/fnc-hit.js',
   'fnc/fnc-hit-part.js',
+  'fnc/fnc-list.js',
   'fnc/fnc-part-join.js',
   'fnc/fnc-raw-layer.js',
   'fnc/fnc-raw-mtx.js',
