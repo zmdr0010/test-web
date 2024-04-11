@@ -277,7 +277,7 @@
         preSetInfo.bd.colorIndex = bdColorIndex
       }
 
-      const preset = createEnemyPresetInfoByIndex(preSetInfo, preResInfo)
+      const preset = createEnemyPresetInfo(preSetInfo, preResInfo)
       const enemy = createUnit(preset, resInfo)
       moveUnit(enemy, 10, 10)
       addUnit(enemy)

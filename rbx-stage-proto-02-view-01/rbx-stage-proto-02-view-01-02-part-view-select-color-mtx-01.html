@@ -152,6 +152,10 @@
       preSetInfo.l.mtxNum = paramInfo.mtxNum
       preSetInfo.bk.mtxNum = paramInfo.mtxNum
       preSetInfo.bd.mtxNum = paramInfo.mtxNum
+      preSetInfo.f.bSetNum = paramInfo.bSetNum
+      preSetInfo.l.bSetNum = paramInfo.bSetNum
+      preSetInfo.bk.bSetNum = paramInfo.bSetNum
+      preSetInfo.bd.bSetNum = paramInfo.bSetNum
 
       drawList()
     }
@@ -239,7 +243,7 @@
         for (let i=0; i<presetNum; i++) {
           partPreSet.mtxNum = i
           // if (i < 10) partPreSet.mtxNum = -1
-          enemyPresetList.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
+          enemyPresetList.push(createEnemyPresetInfo(preSetInfo, preResInfo))
         }
 
       }

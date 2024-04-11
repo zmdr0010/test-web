@@ -68,10 +68,22 @@
 
       initCanvas('id-canvas', canvasW, canvasH * paramInfo.canvasHS)
 
-
       updateHitFunc = updateHit00
 
-      const colorSample = colorSampleList.concat(colorSampleList01, colorSampleList02, colorSampleList03)
+      console.log(mtxPresetX3IndicesDot) // length: 2
+      console.log(mtxPresetX3IndicesTopEdge) // length: 12
+      console.log(mtxPresetX3IndicesLeftEdge) // length: 11
+      console.log(mtxPresetX3IndicesBottomEdge) // length: 9
+      console.log(mtxPresetX3IndicesLeftTop) // length: 10
+      console.log(mtxPresetX3IndicesLeftBottom) // length: 8
+      console.log(mtxPresetX3IndicesHorizontalCenterLine) // length: 7
+      console.log(mtxPresetX3IndicesVerticalCenterLine) // length: 8
+      console.log(mtxPresetX3IndicesTopLine) // length: 7
+      console.log(mtxPresetX3IndicesLeftLine) // length: 10 (base)
+      console.log(mtxPresetX3IndicesBottomLine) // length: 6
+      // mtxNum type 0 ~ 9 by leftLine (length: 10)
+
+      const colorSample = colorSampleList01.concat(colorSampleList02, colorSampleList03)
       const colorSetList = createColorSetInfoList('color-set-info-crt-smp', colorSample)
       console.log(colorSetList)
       const colorIndexLabel = document.getElementById('id-label-color-index')
@@ -96,7 +108,7 @@
       const sum = fLength + lLength + bkLength + bdLength // 97 : 96
       console.log(`f : ${fLength}, l : ${lLength}, bk : ${bkLength}, bd : ${bdLength}, num : ${num}, sum : ${sum}`)
 
-      const colorLength = colorSetList.length // 20
+      const colorLength = colorSetList.length // 395 : 365
       console.log(`color length : ${colorLength}`)
 
       preSetInfo.f.mtxNum = paramInfo.mtxNum
@@ -185,7 +197,8 @@
 
         for (let i=0; i<presetNum; i++) {
           partPreSet.mtxNum = i
-          enemyPresetList.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
+          // if (i < 10) partPreSet.mtxNum = -1
+          enemyPresetList.push(createEnemyPresetInfo(preSetInfo, preResInfo))
         }
 
       }

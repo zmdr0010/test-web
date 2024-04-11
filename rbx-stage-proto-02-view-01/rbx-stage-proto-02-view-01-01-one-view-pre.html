@@ -75,6 +75,11 @@
 
   <script type="application/javascript" src="../rbx-stage-proto-02/lib-load.js"></script>
   <script type="application/javascript" src="mngr/mngr-unit.js"></script>
+  <script type="application/javascript" src="info/color-set-info-list-01.js"></script>
+  <script type="application/javascript" src="info/color-sample.js"></script>
+  <script type="application/javascript" src="info/color-sample-01.js"></script>
+  <script type="application/javascript" src="info/color-sample-02.js"></script>
+  <script type="application/javascript" src="info/color-sample-03.js"></script>
   <script>
     function loadLib() {
       startLoad('../rbx-stage-proto-02/', () => {
@@ -145,6 +150,12 @@
       preResInfo.bkList = layerRawInfoList00BK
       preResInfo.bdList = layerRawInfoList00BD
       preResInfo.colorSetInfoList = colorSetInfoList00
+
+
+      // test create colorSet
+      const colorSetList = createColorSetInfoList('color-set-info-crt-smp-00', colorSampleList)
+      console.log(colorSetList)
+
       // start()
     }
 
@@ -292,7 +303,7 @@
         preSetInfo.bd.colorIndex = bdColorIndex
       }
 
-      const preset = createEnemyPresetInfoByIndex(preSetInfo, preResInfo)
+      const preset = createEnemyPresetInfo(preSetInfo, preResInfo)
       const enemy = createUnit(preset, resInfo)
       moveUnit(enemy, 10, 10)
       addUnit(enemy)
