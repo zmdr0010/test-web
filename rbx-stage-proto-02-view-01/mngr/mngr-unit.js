@@ -1,3 +1,10 @@
+// const cwUCodeList = ['layer-raw-info-raw-left-sample-05',
+//   'layer-raw-info-raw-left-sample-06','layer-raw-info-raw-left-sample-07',
+//   'layer-raw-info-raw-left-sample-08','layer-raw-info-raw-left-sample-09',
+//   'layer-raw-info-raw-left-sample-10','layer-raw-info-raw-left-sample-15',
+//   'layer-raw-info-raw-left-sample-17-max-10']
+const cwUCodeList = []
+
 let preResInfo = {
   fList: [],
   lList: [],
@@ -98,11 +105,7 @@ function createUnitPresetInfo(setInfo, preResInfo) {
   const rawBk = bkList[bkIndex]
   const rawBd = bdList[bdIndex]
 
-  for (const u of ['layer-raw-info-raw-left-sample-05',
-    'layer-raw-info-raw-left-sample-06','layer-raw-info-raw-left-sample-07',
-    'layer-raw-info-raw-left-sample-08','layer-raw-info-raw-left-sample-09',
-    'layer-raw-info-raw-left-sample-10','layer-raw-info-raw-left-sample-15',
-    'layer-raw-info-raw-left-sample-17-max-10']) {
+  for (const u of cwUCodeList) {
     if (u === rawL.uCode) {
       wType = 'cw'
       idleType = 'idle-cw'
