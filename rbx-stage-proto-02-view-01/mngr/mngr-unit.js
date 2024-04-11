@@ -41,13 +41,13 @@ function createEnemyPresetInfoList(length) {
     preSetInfo.l.rawIndex = i
     preSetInfo.bk.rawIndex = i
     preSetInfo.bd.rawIndex = i
-    list.push(createEnemyPresetInfoByIndex(preSetInfo, preResInfo))
+    list.push(createEnemyPresetInfo(preSetInfo, preResInfo))
   }
 
   return list
 }
 
-function createEnemyPresetInfoByIndex(preSetInfo, preResInfo) {
+function createEnemyPresetInfo(preSetInfo, preResInfo) {
   const setInfo = {
     hitType: 'enemy',
     hitTarget: 'friendly',
@@ -127,7 +127,7 @@ function createUnitPresetInfo(setInfo, preResInfo) {
     reverseType: reverseType, // none / v (vertical)
     calcJrcInfo: { uCode: calcJrcInfoUCode },
     skinInfoList: [
-      { rawUCode: rawF.uCode,
+      { rawUCode: rawF.uCode, // mtxNum = -1 : set origin
         tCode: 'f', mtxNum: setInfo.fMtxNum, bSetNum: setInfo.fBSetNum, colorSetUCode: colorSetF.uCode,
         iCode: 'getMtxIndices0002',
         rawDirType: 'normal', rawType: 'layers', hitSetInfoUCode: 'hit-set-info-obj-area-02' },
