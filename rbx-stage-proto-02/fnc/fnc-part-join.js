@@ -29,6 +29,7 @@ function calculateToJrcInfo(partInfoList, calcJrcInfo) {
   const list = []
   for (const cjI of calcJrcInfo.list) {
     const partInfo = partInfoList.find(info => info.tCode === cjI.target)
+    if (!partInfo) continue
     let r = 0
     let c = 0
     let rsz = partInfo.rcInfo.rsz
@@ -56,8 +57,11 @@ function moveByJrcInfo(partInfoList, jrcInfoList) {
   for (const jrcInfo of jrcInfoList) {
     if (jrcInfo.type === 'm') {
       const gJrcInfo = jrcInfoList.find(info => info.key === jrcInfo.key && info.type === 'g')
+      if (!gJrcInfo) continue
       const gPartInfo = partInfoList.find(info => info.tCode === gJrcInfo.target)
+      if (!gPartInfo) continue
       const mPartInfo = partInfoList.find(info => info.tCode === jrcInfo.target)
+      if (!mPartInfo) continue
       mPartInfo.rcInfo.r = gPartInfo.rcInfo.r + gJrcInfo.r - jrcInfo.r
       mPartInfo.rcInfo.c = gPartInfo.rcInfo.c + gJrcInfo.c - jrcInfo.c
     }
