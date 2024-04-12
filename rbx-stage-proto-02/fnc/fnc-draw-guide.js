@@ -35,3 +35,16 @@ function drawHitBox(ctx, partInfo, sr, sc, size, color='red') {
     drawHitBox(ctx, childPart, sr + partInfo.rcInfo.r, sc + partInfo.rcInfo.c, size)
   }
 }
+
+function drawViewport(ctx, viewportInfo, size, color='blue') {
+  const r = viewportInfo.r
+  const c = viewportInfo.c
+  const x = r * size
+  const y = c * size
+  const w = viewportInfo.rsz * size
+  const h = viewportInfo.csz * size
+  ctx.strokeStyle = color
+  ctx.beginPath()
+  ctx.rect(x, y, w, h)
+  ctx.stroke()
+}
