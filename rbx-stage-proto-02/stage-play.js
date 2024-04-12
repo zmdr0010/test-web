@@ -17,6 +17,9 @@ let resInfo = {
   armsPresetList: []
 }
 let updateHitFunc = (unitList) => {}
+let viewportInfo = {
+  r: 0, c: 0, rsz: 1000, csz: 10000
+}
 
 function initCanvas(canvasId, canvasW, canvasH) {
   canvas = document.getElementById(canvasId)
@@ -83,7 +86,9 @@ function update() {
 }
 
 function draw() {
+  if (isUnitGuideOn) drawViewport(ctx, viewportInfo, size)
   for (const unit of unitList) {
+    if (checkViewport(unit, viewportInfo)) continue
     drawPartInfo(ctx, unit.partInfo, 0, 0, size)
 
     if (!isUnitGuideOn) continue
@@ -99,4 +104,22 @@ function addUnit(unit) {
 function moveUnit(unit, r, c) {
   unit.partInfo.rcInfo.r = r
   unit.partInfo.rcInfo.c = c
+}
+
+function checkViewport(unit, viewportInfo) {
+  const uR = unit.partInfo.rcInfo.r
+  const uC = unit.partInfo.rcInfo.c
+  const uRsz = unit.partInfo.rcInfo.rsz
+  const uCsz = unit.partInfo.rcInfo.csz
+  const vR = viewportInfo.r
+  const vC = viewportInfo.c
+  const vRsz = viewportInfo.rsz
+  const vCsz = viewportInfo.csz
+  let isOut = false
+  if (uR + uRsz < vR) isOut = true
+  if (uR > vR + vRsz) isOut = true
+  if (uC + uCsz < vC) isOut = true
+  if (uC > vC + vCsz) isOut = true
+
+  return isOut
 }
