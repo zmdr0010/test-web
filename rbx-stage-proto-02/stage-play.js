@@ -63,10 +63,10 @@ function aniFrame(timestamp) {
   }
   const current = timestamp - prevTimeStamp
   fps = Math.round(frame * 1000 / current)
-  if (current > 1000) {
-    prevTimeStamp = timestamp
-    frame = 0
-  }
+  // if (current > 1000) {
+  //   prevTimeStamp = timestamp
+  //   frame = 0
+  // }
   update()
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   draw()
@@ -89,11 +89,11 @@ function draw() {
   if (isUnitGuideOn) drawViewport(ctx, viewportInfo, size)
   for (const unit of unitList) {
     if (checkViewport(unit, viewportInfo)) continue
-    drawPartInfo(ctx, unit.partInfo, 0, 0, size)
+    drawPartInfo(ctx, unit.partInfo, -viewportInfo.r, -viewportInfo.c, size)
 
     if (!isUnitGuideOn) continue
-    drawRCArea(ctx, unit.partInfo, 0, 0, size)
-    drawHitBox(ctx, unit.partInfo, 0, 0, size)
+    drawRCArea(ctx, unit.partInfo, -viewportInfo.r, -viewportInfo.c, size)
+    drawHitBox(ctx, unit.partInfo, -viewportInfo.r, -viewportInfo.c, size)
   }
 }
 
