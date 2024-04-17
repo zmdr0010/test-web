@@ -109,3 +109,8 @@ function getMtxIndices0002(i) {
 
   return [dot, topEdge, leftEdge, bottomEdge, 0, leftTop, leftBottom, 0, 0, hLine, vLine, topLine, leftLine, bottomLine, 0]
 }
+
+// all : 511 (like no mtx)
+function getMtxIndicesLastSet() {
+  return [511, 511, 511, 511, 0, 511, 511, 0, 0, 511, 511, 511, 511, 511, 0]
+}
