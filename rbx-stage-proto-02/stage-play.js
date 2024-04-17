@@ -6,6 +6,7 @@ let frame = 0
 let totalFrame = 0
 let isPlaying = true
 let fps
+let playFps = 60
 let size = 4
 let unitList = []
 let isUnitGuideOn = false
