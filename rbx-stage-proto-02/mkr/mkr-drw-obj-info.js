@@ -1,4 +1,5 @@
 let getMtxIndicesFunc = (mtxInfo) => {
+  if (mtxInfo.iCode === 'getMtxIndicesLastSet') return getMtxIndicesLastSet()
   return getMtxIndices0002(mtxInfo.num)
 }
 
