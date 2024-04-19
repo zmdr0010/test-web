@@ -15,6 +15,9 @@ function updateFrameOfFrmBhvSetInfo(frmBhvSetInfo, fps, progressFunc=null, first
   if (frame > d) {
     frame = 1
     currentFrmBhv++
+    // change chgInfo event
+    if (changeInfoFunc) changeInfoFunc() // prev change info
+
     if (currentFrmBhv > lastFrmBhv) {
       frmBhvSetInfo.frmBhvInfo.frame = 0
       frmBhvSetInfo.frmBhvInfo.currentFrmBhv = 0
@@ -40,8 +43,6 @@ function updateFrameOfFrmBhvSetInfo(frmBhvSetInfo, fps, progressFunc=null, first
       fpsScale = fps / frmBhvInfo.fps
       d = frmBhvInfo.d * fpsScale
     }
-    // change chgInfo event
-    if (changeInfoFunc) changeInfoFunc()
   }
   const rate = frame / d
   frmBhvInfo.frame = frame
